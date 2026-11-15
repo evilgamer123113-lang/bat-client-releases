@@ -253,6 +253,7 @@ fn main() {
             }
             if !std::env::args().any(|a| a.ends_with("-smoke")) {
                 let _ = runtime::setup(app.handle());
+                companion_mod::spawn_background_prefetch();
             }
             if std::env::args().any(|arg| arg == "--updater-verify-smoke") {
                 if let Some(window) = app.get_webview_window("main") {

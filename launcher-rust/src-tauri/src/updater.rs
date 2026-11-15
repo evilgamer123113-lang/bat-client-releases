@@ -14,7 +14,7 @@ use std::{
 use tauri_plugin_updater::UpdaterExt;
 
 const ENDPOINT: &str = "https://batclient.xyz/update.json";
-const LIMIT: u64 = 512 * 1024 * 1024;
+const LIMIT: u64 = 1024 * 1024 * 1024;
 static BUSY: AtomicBool = AtomicBool::new(false);
 static INSTALLING: AtomicBool = AtomicBool::new(false);
 static STORE: Mutex<Option<Store>> = Mutex::new(None);

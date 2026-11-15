@@ -15,6 +15,11 @@ pub const SUPPORTED_ENGINES: [&str; 2] = ["fabric", "forge"];
 
 const PACK_MAGIC: &[u8; 8] = b"BATMODS1";
 const PACK_MASK: [u8; 4] = [0x42, 0x41, 0x54, 0x21];
+const PACK_DOWNLOAD_URL: &str =
+    "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/bat-mods-v1/bat-mods.dat";
+const PACK_SHA256: &str = "ec113c9f6748149b799d34adfa7bfa2eec41f61062ba40bf900e4e7286b78eed";
+const PACK_SIZE: u64 = 717_785_348;
+static PACK_DOWNLOAD_LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
 
 #[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -277,10 +282,60 @@ pub fn check_availability(version: &str, engine: &str) -> CompanionModStatus {
 
     CompanionModStatus {
         supported: true,
-        available: false,
-        source: None,
-        message: format!("Supported ({engine} {version}) · Bundled mod package not found."),
+        available: true,
+        source: Some("download".into()),
+        message: format!(
+            "Supported · Bat Client mod for {engine} {version} downloads automatically on launch."
+        ),
     }
+}
+
+fn ensure_pack_downloaded(
+    progress: Option<&crate::game_install::Progress>,
+) -> Result<PathBuf, String> {
+    if let Some(existing) = find_pack_file() {
+        return Ok(existing);
+    }
+    let _guard = PACK_DOWNLOAD_LOCK
+        .lock()
+        .map_err(|_| "Companion mod downloader busy")?;
+    if let Some(existing) = find_pack_file() {
+        return Ok(existing);
+    }
+    let root = lib::root()?;
+    let dest = root.join("bat-mods.dat");
+    if let Some(cb) = progress {
+        cb("Downloading Bat Client companion mod bundle…", Some(0.0));
+    }
+    let http = crate::downloads::client_with_timeout(std::time::Duration::from_secs(900))?;
+    crate::downloads::file(
+        &http,
+        PACK_DOWNLOAD_URL,
+        &dest,
+        PACK_SHA256,
+        Some(PACK_SIZE),
+        PACK_SIZE,
+        |done, total| {
+            if let Some(cb) = progress {
+                let pct = if total > 0 {
+                    Some((done as f64 / total as f64).clamp(0.0, 1.0))
+                } else {
+                    None
+                };
+                cb("Downloading Bat Client companion mod bundle…", pct);
+            }
+        },
+    )?;
+    Ok(dest)
+}
+
+pub fn spawn_background_prefetch() {
+    if find_pack_file().is_some() {
+        return;
+    }
+    std::thread::spawn(|| {
+        let _ = ensure_pack_downloaded(None);
+    });
 }
 
 pub fn cleanup_stale_at(root: &Path) {
@@ -333,6 +388,17 @@ pub fn stage_for_launch(
         progress("Preparing Bat Client companion mod…", None);
         fs::copy(&local, &staged_path)
             .map_err(|_| "Cannot stage Bat Client mod into mods folder")?;
+        return Ok(Some(StagedCompanionMod { path: staged_path }));
+    }
+
+    let pack = ensure_pack_downloaded(Some(&progress))?;
+    if let Some((offset, length)) = find_pack_entry(&pack, &key)? {
+        progress("Preparing Bat Client companion mod…", None);
+        extract_from_pack(&pack, offset, length, &staged_path)?;
+        if !valid_mod_jar(&staged_path, &engine) {
+            let _ = fs::remove_file(&staged_path);
+            return Err("Downloaded Bat Client mod failed verification".into());
+        }
         return Ok(Some(StagedCompanionMod { path: staged_path }));
     }
 
