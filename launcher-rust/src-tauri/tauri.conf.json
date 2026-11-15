@@ -1,0 +1,58 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Bat Client",
+  "version": "0.1.6",
+  "identifier": "xyz.batclient.launcher.next",
+  "build": {
+    "frontendDist": "../ui"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "Bat Client",
+        "width": 1320,
+        "height": 850,
+        "minWidth": 940,
+        "minHeight": 660,
+        "decorations": false,
+        "backgroundColor": "#000000"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' data: https://cdn.modrinth.com; style-src 'self'; script-src 'self'; connect-src ipc: http://ipc.localhost; object-src 'none'; base-uri 'self'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "icon": [
+      "icons/icon.ico",
+      "icons/icon.png"
+    ],
+    "targets": [
+      "nsis"
+    ],
+    "useLocalToolsDir": true,
+    "windows": {
+      "nsis": {
+        "installerIcon": "icons/icon.ico",
+        "installMode": "currentUser",
+        "startMenuFolder": "Bat Client"
+      }
+    },
+    "createUpdaterArtifacts": true
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEU2OTAwNDVGQkVBMkZCNDQKUldSRSs2SytYd1NRNWdyTVY2MzNqOXNjUkRpS2grb2w1NDdyQ2ZneXB2bEgzbHBYZkVLSFRnOU4K",
+      "requireSignedVersion": true,
+      "windows": {
+        "installMode": "passive"
+      },
+      "endpoints": [
+        "https://batclient.xyz/update.json"
+      ]
+    }
+  }
+}

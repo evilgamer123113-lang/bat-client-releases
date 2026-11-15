@@ -1,0 +1,1 @@
+{"main-window":{"identifier":"main-window","description":"Basic controls for the launcher preview. No generic shell or filesystem frontend permissions.","local":true,"windows":["main"],"permissions":["core:default","core:window:allow-start-dragging"]}}

@@ -1,0 +1,54 @@
+[package]
+name = "bat-client-next"
+version = "0.1.6"
+description = "Bat Client Rust launcher development preview"
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon"] }
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+dirs = "6"
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "blocking", "json"] }
+
+sha2 = "0.10"
+fs2 = "0.4"
+base64 = "0.22"
+zip = { version = "6", default-features = false, features = ["deflate"] }
+toml = "0.8"
+uuid = { version = "1", features = ["v4"] }
+tempfile = "3"
+png = "0.18.1"
+sha1 = { version = "0.10", features = ["oid"] }
+md-5 = "0.10"
+rsa = { version = "0.9", features = ["sha1", "pem"] }
+rand = "0.8"
+tiny_http = "0.12"
+regex = "1"
+sysinfo = { version = "0.37", default-features = false, features = ["system", "disk"] }
+tauri-plugin-updater = "2.14.1"
+flate2 = "1"
+tar = "0.4"
+tauri-plugin-dialog = "2"
+tauri-plugin-autostart = "2"
+tauri-plugin-notification = "2"
+gif = "0.13"
+discord-rich-presence = "1.1.0"
+
+[features]
+custom-protocol = ["tauri/custom-protocol"]
+
+[target.'cfg(windows)'.dependencies]
+keyring = { version = "3.6", features = ["windows-native"] }
+webview2-com = "=0.39.1"
+windows-core = "0.62"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+keyring = { version = "3.6", features = ["apple-native"] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+keyring = { version = "3.6", features = ["sync-secret-service", "crypto-rust"] }

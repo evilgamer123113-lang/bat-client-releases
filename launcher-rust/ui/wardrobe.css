@@ -1,0 +1,158 @@
+/* Bat wardrobe: compact library + bounded interactive preview. Scoped to this page. */
+#page-wardrobe .page-heading{margin-bottom:0;gap:16px;align-items:center}
+#page-wardrobe h1{font-size:27px;letter-spacing:-.8px;margin:7px 0}
+#page-wardrobe .wardrobe-intro{font-size:12px;color:#8c8c8c;margin:6px 0 0;line-height:1.5}
+#page-wardrobe .wardrobe-workspace{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:26px;align-items:start;margin-top:24px}
+#page-wardrobe .wardrobe-editor{min-width:0;grid-column:1;grid-row:1;background:none;border:0;border-radius:0;padding:0}
+#page-wardrobe .wardrobe-tabs{display:flex;gap:8px;border-bottom:1px solid #242424;padding:0 0 12px;margin:0}
+#page-wardrobe .wardrobe-tabs button{background:#000;border:1px solid transparent;border-radius:8px;color:#888;padding:9px 15px;display:flex;gap:8px;align-items:center;font-size:12px;font-weight:600}
+#page-wardrobe .wardrobe-tabs button[aria-selected=true]{background:#fff;color:#000}
+#page-wardrobe .wardrobe-tabs button:after{display:none}
+#page-wardrobe .wardrobe-card{border:0;background:none;padding:18px 0 0;box-shadow:none;border-radius:0}
+#page-wardrobe .wardrobe-editor-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}
+#page-wardrobe .wardrobe-editor-heading h2{font-size:14px;margin:0;letter-spacing:0}
+#page-wardrobe .wardrobe-model-control{display:flex;align-items:center;gap:8px;font-size:10px;color:#888}
+#page-wardrobe .wardrobe-model-control select{padding:7px 10px;font-size:11px;background:#000;border:1px solid #333;border-radius:7px;color:#ddd}
+#page-wardrobe .cosmetic-upload{display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:12px;text-align:left;background:#000;border:1px dashed #353535;min-height:68px;padding:13px 15px;border-radius:9px;transition:border-color .18s}
+#page-wardrobe .cosmetic-upload:hover{border-color:#aaa}
+#page-wardrobe .cosmetic-upload>svg{width:20px;height:20px;color:#999}
+#page-wardrobe .cosmetic-upload-copy{flex:1;min-width:0}
+#page-wardrobe .cosmetic-upload-copy strong{font-size:12px}
+#page-wardrobe .cosmetic-upload-copy span{font-size:10px;color:#777;overflow-wrap:anywhere}
+#page-wardrobe .cosmetic-upload-plus{font-size:17px;color:#aaa}
+#page-wardrobe .wardrobe-apply-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px}
+#page-wardrobe .wardrobe-apply-row button{font-size:11px;padding:9px 12px;min-height:34px}
+#page-wardrobe .wardrobe-apply-row .mods-primary{flex:0 1 auto;min-width:140px;background:#fff;color:#000}
+#page-wardrobe .wardrobe-apply-row .cosmetic-remove{margin-left:auto;color:#b98080;background:none;border:0;min-width:0}
+#page-wardrobe .mods-primary:disabled{opacity:.4;cursor:not-allowed}
+#page-wardrobe .wardrobe-format-tag,#page-wardrobe .wardrobe-sharing-note,#page-wardrobe #wardrobe-cape-info{font-size:10px;color:#888;line-height:1.5}
+#page-wardrobe .wardrobe-sharing-note{margin:8px 0 0}
+#page-wardrobe #wardrobe-cape-info:empty{display:none}
+#page-wardrobe .cosmetic-collection{margin-top:20px;padding-top:18px;border-top:1px solid #242424}
+#page-wardrobe .collection-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+#page-wardrobe .collection-heading h3{font-size:14px;margin:0}
+#page-wardrobe .collection-count{border:0;color:#888;font-size:10px;padding:0}
+#page-wardrobe .cosmetic-collection>p{font-size:10px;color:#888;margin:6px 0 12px}
+#page-wardrobe .cosmetic-collection>input[type=search]{width:100%;padding:9px 11px;background:#000;border:1px solid #292929;border-radius:7px;font-size:11px;margin:0 0 9px}
+#page-wardrobe .cosmetic-collection-bar{display:flex;gap:8px;margin:0 0 12px}
+#page-wardrobe .cosmetic-collection-bar input{min-width:0;flex:1;background:#000;border-color:#292929;padding:8px 10px;font-size:10px}
+#page-wardrobe .cosmetic-collection-bar button{font-size:10px;padding:8px 11px}
+#page-wardrobe .cosmetic-slot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,180px),1fr));gap:10px}
+#page-wardrobe .cosmetic-slot{position:relative;display:flex;flex-direction:column;min-height:92px;border:1px solid #292929;background:#000;border-radius:9px;padding:0;overflow:hidden;animation:wardrobe-look-in .2s both;animation-delay:var(--slot-delay,0ms);transition:border-color .16s,transform .16s}
+#page-wardrobe .cosmetic-slot[hidden]{display:none}
+#page-wardrobe .cosmetic-slot:hover{border-color:#777;transform:translateY(-2px)}
+#page-wardrobe .cosmetic-slot.is-equipped{border-color:#aaa}
+#page-wardrobe .cosmetic-slot>div{margin:0}
+#page-wardrobe .slot-main{border:0;background:none;color:#fff;display:flex;flex:1;align-items:center;flex-direction:row;width:100%;min-height:65px;padding:12px 28px 12px 12px;gap:11px;text-align:left;cursor:pointer}
+#page-wardrobe .slot-main:disabled{opacity:1;cursor:default}
+#page-wardrobe .slot-art{width:36px;height:38px;display:flex;align-items:center;justify-content:center;background:none;border:0;flex:0 0 36px;border-radius:0}
+#page-wardrobe .slot-art canvas.slot-skin-preview{width:34px;height:34px;image-rendering:pixelated}
+#page-wardrobe .slot-art canvas.slot-cape-preview{width:24px;height:36px;image-rendering:pixelated}
+#page-wardrobe .slot-art>svg{width:22px;height:22px;color:#888}
+#page-wardrobe .slot-info{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0}
+#page-wardrobe .slot-info strong{font-size:11px;overflow-wrap:anywhere}
+#page-wardrobe .slot-info small{font-size:9px;color:#888}
+#page-wardrobe .slot-state{border-top:1px solid #1c1c1c;padding:5px 8px;font-size:9px;color:#888;width:100%;text-align:center}
+#page-wardrobe .is-equipped .slot-state{color:#eee}
+#page-wardrobe .cosmetic-slot .mod-remove{position:absolute;right:6px;top:6px;z-index:2;background:#160909;border:1px solid #542727;color:#e39a9a;padding:5px;border-radius:6px;opacity:0;transition:opacity .15s}
+#page-wardrobe .cosmetic-slot:hover .mod-remove,#page-wardrobe .cosmetic-slot:focus-within .mod-remove{opacity:1}
+#page-wardrobe .cosmetic-slots-empty{padding:20px;font-size:11px;min-height:90px}
+#page-wardrobe .cosmetic-slots-empty p{font-size:10px;line-height:1.6}
+#page-wardrobe #wardrobe-status{margin:15px 0 0;padding:0;border:0;font-size:11px;line-height:1.6;color:#999;overflow-wrap:anywhere}
+#page-wardrobe #wardrobe-status[data-error=true]{color:#f0a2a2}
+#page-wardrobe .wardrobe-stage{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;grid-template-columns:none;grid-column:2;grid-row:1;position:sticky;top:18px;border:1px solid #262626;border-radius:13px;background:#000;min-height:0;padding:18px 10px 13px;overflow:hidden}
+#page-wardrobe .wardrobe-stage-copy{position:relative;text-align:center;padding:0;z-index:1}
+#page-wardrobe .wardrobe-live-label{font-size:8px;justify-content:center}
+#page-wardrobe .wardrobe-stage-copy h2{font-size:15px;margin:8px 0 5px}
+#page-wardrobe .wardrobe-stage-copy p{font-size:10px;color:#888;line-height:1.5;margin:0}
+#page-wardrobe #wardrobe-draft-indicator{display:inline-block;font-size:9px;border:1px solid #555;border-radius:12px;padding:4px 8px;margin:7px 0 0;color:#fff}
+#page-wardrobe #wardrobe-draft-indicator[hidden]{display:none}
+#page-wardrobe .wardrobe-stage .wardrobe-preview{grid-column:auto;grid-row:auto;display:flex;justify-content:center;align-items:center;width:100%;min-height:0!important;height:340px;margin:0;padding:0;align-self:stretch}
+#page-wardrobe .wardrobe-stage #wardrobe-canvas{display:block;width:280px!important;height:340px!important;max-width:100%;max-height:none;aspect-ratio:auto;object-fit:contain;touch-action:none}
+#page-wardrobe #wardrobe-fallback{width:100px;image-rendering:pixelated}
+#page-wardrobe .wardrobe-camera{position:relative;display:flex;flex-direction:row;justify-content:center;align-items:center;gap:7px;flex-wrap:wrap;grid-column:auto;margin:0 0 10px;padding:0;bottom:auto;left:auto;right:auto}
+#page-wardrobe .wardrobe-camera button[aria-pressed=true]{border-color:#888;color:#fff}
+#page-wardrobe .wardrobe-camera button{font-size:10px;padding:7px 9px;border:1px solid #303030;border-radius:6px;background:#000;color:#999}
+#page-wardrobe .wardrobe-camera span{font-size:9px;color:#777}
+#page-wardrobe .wardrobe-persistence-note{border-top:1px solid #222;padding:11px 0 0;font-size:9px;color:#888;display:flex;align-items:center;justify-content:center;gap:6px;line-height:1.5}
+#page-wardrobe .wardrobe-persistence-note svg{width:11px;height:11px;flex-shrink:0}
+@keyframes wardrobe-look-in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:1100px){#page-wardrobe .wardrobe-workspace{grid-template-columns:minmax(0,1fr) 270px;gap:18px}#page-wardrobe .wardrobe-stage #wardrobe-canvas{width:248px!important}#page-wardrobe .account-chip{min-width:165px}}
+@media(max-width:760px){#page-wardrobe .wardrobe-workspace{grid-template-columns:minmax(0,1fr)}#page-wardrobe .wardrobe-stage{grid-column:1;grid-row:2;position:relative;top:0}#page-wardrobe .wardrobe-editor{grid-row:1}#page-wardrobe .page-heading{align-items:flex-start;flex-wrap:wrap}#page-wardrobe .cosmetic-slot .mod-remove{opacity:1}}
+@media(prefers-reduced-motion:reduce){#page-wardrobe *{animation:none!important;transition:none!important}}body.reduce-motion #page-wardrobe *{animation:none!important;transition:none!important}
+
+/* Reference-led slot library. All other launcher pages retain their own styling. */
+#page-wardrobe .page-heading{padding-bottom:16px;border-bottom:1px solid #222}
+#page-wardrobe h1{font-size:23px;margin:5px 0 0}
+#page-wardrobe>.wardrobe-tabs{margin-top:14px;border:1px solid #272727;border-radius:11px;padding:8px;gap:6px;align-items:center}
+#page-wardrobe .wardrobe-tabs button{padding:9px 13px;color:#888}
+#page-wardrobe .wardrobe-tabs button[aria-selected=true]{background:#141414;border:1px solid #444;color:#fff}
+#page-wardrobe .wardrobe-tabs button>span{font-size:9px;min-width:18px;padding:2px 5px;border-radius:12px;background:#000;border:1px solid #444;color:#aaa}
+#page-wardrobe .wardrobe-category-note{margin-left:auto;font-size:8px;color:#666;letter-spacing:1.3px;padding-right:10px}
+#page-wardrobe .wardrobe-workspace{margin-top:16px;gap:16px}
+#page-wardrobe .wardrobe-editor{border:1px solid #252525;border-radius:12px;background:#000;padding:16px}
+#page-wardrobe .wardrobe-card{padding:0}
+#page-wardrobe .cosmetic-collection{margin:0;padding:0;border:0}
+#page-wardrobe .collection-heading{padding-bottom:12px;border-bottom:1px solid #222}
+#page-wardrobe .collection-heading h3{font-size:11px;letter-spacing:.6px}
+#page-wardrobe .collection-tools{display:flex;gap:8px;margin:12px 0}
+#page-wardrobe .collection-tools input{min-width:0;flex:1;padding:8px 10px;background:#000;border:1px solid #292929;border-radius:7px;font-size:10px}
+#page-wardrobe .collection-tools button{font-size:10px;padding:8px 11px;white-space:nowrap}
+#page-wardrobe .cosmetic-slot-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#page-wardrobe .cosmetic-slot,#page-wardrobe .cosmetic-empty-slot{min-height:166px;border:1px solid #292929;border-radius:10px;background:#000;animation:wardrobe-look-in .2s both}
+#page-wardrobe .cosmetic-slot.is-equipped{border-color:#fff;box-shadow:none}
+#page-wardrobe .slot-main{flex-direction:column;text-align:center;gap:7px;min-height:134px;padding:15px 16px 10px}
+#page-wardrobe .slot-art{width:54px;height:54px;flex:0 0 54px;border:1px solid #303030;border-radius:9px;background:#101010;overflow:hidden}
+#page-wardrobe .slot-art canvas.slot-skin-preview{width:54px;height:54px}
+#page-wardrobe .slot-art canvas.slot-cape-preview{width:33px;height:51px}
+#page-wardrobe .slot-info{align-items:center;gap:4px}
+#page-wardrobe .slot-info strong{font-size:11px}
+#page-wardrobe .slot-state{padding:7px;background:#080808;font-size:9px}
+#page-wardrobe .cosmetic-slot .mod-remove{opacity:1;background:#100707;right:6px;top:6px;padding:4px}
+#page-wardrobe .cosmetic-empty-slot{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:14px;text-align:center}
+#page-wardrobe .cosmetic-empty-slot[hidden]{display:none}
+#page-wardrobe .slot-plus{width:54px;height:54px;display:grid;place-items:center;font-size:24px;font-weight:300;color:#666;background:#101010;border:1px solid #333;border-radius:9px}
+#page-wardrobe .cosmetic-empty-slot strong{font-size:11px;color:#bbb}
+#page-wardrobe .cosmetic-empty-slot small{font-size:9px;color:#777}
+#page-wardrobe .cosmetic-empty-slot button{padding:5px 10px;font-size:9px;min-height:25px}
+#page-wardrobe .cosmetic-collection-bar{border-top:1px solid #222;padding-top:12px;margin:14px 0 10px}
+#page-wardrobe .cosmetic-remove{background:none;border:0;font-size:10px;color:#b98080;padding:6px 0}
+#page-wardrobe .wardrobe-draft{border:1px solid #555;border-radius:8px;padding:12px;margin:12px 0;background:#080808;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+#page-wardrobe .wardrobe-draft[hidden]{display:none}
+#page-wardrobe .wardrobe-draft strong{font-size:11px;display:block}
+#page-wardrobe .wardrobe-draft span{display:block;font-size:10px;color:#999;margin-top:5px;overflow-wrap:anywhere}
+#page-wardrobe .wardrobe-draft .wardrobe-apply-row{margin:0}
+#page-wardrobe #wardrobe-status{font-size:10px;margin-top:10px}
+#page-wardrobe .wardrobe-stage{padding:13px 12px;background:#030303;border-radius:12px}
+#page-wardrobe .wardrobe-preview-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 0 12px;border-bottom:1px solid #222}
+#page-wardrobe .wardrobe-live-label{font-size:9px;letter-spacing:1.1px;color:#ccc;white-space:nowrap}
+#page-wardrobe .wardrobe-stage .wardrobe-preview{position:relative;isolation:isolate;border-radius:8px;overflow:hidden;margin:12px 0;background:#0c0c0c}
+#page-wardrobe .wardrobe-preview:before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(to bottom,#0002,#000b),url('assets/cliffside-home-v2.png') center/cover;filter:grayscale(1);opacity:.6}
+#page-wardrobe .wardrobe-stage #wardrobe-canvas[hidden],#page-wardrobe #wardrobe-fallback[hidden]{display:none!important}
+#page-wardrobe .wardrobe-stage-copy{text-align:left;display:flex;flex-direction:column;align-items:flex-start;border:1px solid #292929;border-radius:7px;padding:9px 11px;background:#080808}
+#page-wardrobe .wardrobe-stage-copy h2{font-size:12px;margin:0 0 4px}
+#page-wardrobe .wardrobe-stage-copy p{font-size:9px}
+#page-wardrobe .wardrobe-camera{margin:10px 0 0;gap:6px}
+#page-wardrobe .wardrobe-camera span{width:100%;text-align:center;padding-top:4px;font-size:9px}
+@media(min-width:1500px){#page-wardrobe .wardrobe-workspace{grid-template-columns:minmax(0,1fr) 340px}#page-wardrobe .cosmetic-slot,#page-wardrobe .cosmetic-empty-slot{min-height:185px}}
+@media(max-width:1100px){#page-wardrobe .cosmetic-slot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#page-wardrobe .wardrobe-category-note{display:none}}
+@media(max-width:760px){#page-wardrobe .wardrobe-workspace{grid-template-columns:minmax(0,1fr)}#page-wardrobe .wardrobe-stage{grid-column:1;grid-row:1}#page-wardrobe .wardrobe-editor{grid-row:2}}
+
+/* Bat identity: black canvas, white trim/actions, restrained brand marks. */
+#page-wardrobe .cosmetic-slot,#page-wardrobe .cosmetic-empty-slot{position:relative;background:#000;border-radius:11px;transition:border-color .18s,transform .18s}
+#page-wardrobe .slot-bat-mark{position:absolute;left:12px;top:12px;width:20px;height:12px;object-fit:contain;filter:brightness(0) invert(1);opacity:.35;pointer-events:none}
+#page-wardrobe .is-equipped .slot-bat-mark{opacity:1}
+#page-wardrobe .slot-main{padding-top:20px;padding-bottom:12px}
+#page-wardrobe .slot-art{background:#000;border-color:#242424;border-radius:7px}
+#page-wardrobe .slot-state{background:#000;border-top:1px solid #292929;color:#bbb;font-size:10px;padding:8px;font-weight:600;letter-spacing:.1px}
+#page-wardrobe .cosmetic-slot:hover .slot-state{color:#fff}
+#page-wardrobe .is-equipped .slot-state{background:#fff;color:#000;border-top-color:#fff}
+#page-wardrobe .cosmetic-slot.is-equipped:hover .slot-state{color:#000}
+#page-wardrobe .cosmetic-slot:focus-within{border-color:#fff}
+#page-wardrobe .cosmetic-empty-slot{border-style:dashed;border-color:#303030}
+#page-wardrobe .cosmetic-empty-slot:hover{border-color:#777;transform:translateY(-2px)}
+#page-wardrobe .slot-plus{background:#000;border-color:#292929;border-radius:7px;color:#aaa}
+#page-wardrobe .cosmetic-empty-slot button{background:#fff!important;border-color:#fff;color:#000;font-weight:600;border-radius:6px;padding:6px 13px}
+#page-wardrobe .cosmetic-empty-slot button:hover{background:#e5e5e5}
+#page-wardrobe .cosmetic-slot .mod-remove{border-color:transparent;background:#000;color:#a76d6d}
+#page-wardrobe .cosmetic-slot .mod-remove:hover{border-color:#683737;background:#1a0808;color:#ffaaaa}

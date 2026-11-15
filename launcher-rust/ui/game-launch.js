@@ -1,0 +1,38 @@
+"use strict";
+(() => {
+  const button=$('#play-button'),caption=$('#game-launch-status'),bar=$('#launch-progress');
+  let launching=false,running=false,timer,requestPending=false,lastFailureId='',lastServer=null;
+  const supported=profile=>profile&&['vanilla','fabric','quilt','forge','neoforge'].includes(profile.engine);
+  let preparationTimer, lastPrepared='', preparationRequest=0;
+  function schedulePreparation(){
+    clearTimeout(preparationTimer);
+    if(!invoke||!state.native||!$('#startup-screen').hidden||launching||running||requestPending||lastFailureId)return;
+    const profile=state.profiles.find(p=>p.id===selected);
+    if(!supported(profile))return;
+    const key=profile.id+'|'+profile.version;
+    if(key===lastPrepared)return;
+    const request=++preparationRequest;
+    preparationTimer=setTimeout(async()=>{
+      if(launching||running||requestPending||selected!==profile.id)return;
+      lastPrepared=key;
+      caption.textContent='Preparing base game files in the background…';
+      try{
+        const ready=await invoke('prepare_selected_game',{profileId:profile.id});
+        if(request===preparationRequest&&selected===profile.id&&!launching&&!running&&!requestPending&&!lastFailureId)
+          caption.textContent=ready?'Base game files ready':'Ready to launch';
+      }catch{
+        if(request===preparationRequest&&selected===profile.id&&!launching&&!running&&!requestPending&&!lastFailureId)
+          caption.textContent='Remaining files will download on launch';
+      }
+    },500);
+  }
+  window.addEventListener('bat-startup-complete',schedulePreparation);
+  window.addEventListener('bat-profile-selected',schedulePreparation);
+  function progress(value){bar.hidden=!launching;if(Number.isFinite(value))bar.value=Math.max(0,Math.min(1,value));else bar.removeAttribute('value');}
+  function update(){const profile=state.profiles.find(p=>p.id===selected);const disabled=!invoke||!state.native||!selected||!state.username||!supported(profile)||launching||running||requestPending;button.disabled=disabled;for(const el of [button]){el.replaceChildren();const mark=document.createElement('span');mark.className=launching?'launch-busy-mark':'play-triangle';el.append(mark,document.createTextNode(launching?'Opening Minecraft…':running?'Minecraft running':'Launch Minecraft'));}bar.hidden=!launching;if(!invoke){caption.textContent='Design preview';button.title='Open the Rust desktop app to launch';}else{button.title='Launch the selected Minecraft loadout';if(!supported(profile)&&!launching&&!running){caption.textContent='Choose a saved loadout with a supported Minecraft loader.';}}}
+  function fallback(error){return{id:'local-'+String(error),code:'LAUNCH_FAILED',title:'Minecraft could not launch',detail:String(error),remedies:['Check this loadout’s Java runtime, JVM arguments and installed mods.','Use the launch log for the first reported error, then retry.'],excerpt:'',logName:null};}
+  function showFailure(failure){if(!failure||failure.id===lastFailureId)return;lastFailureId=failure.id;const old=document.querySelector('#launch-error');if(old?.open)old.close();old?.remove();const dialog=document.createElement('dialog');dialog.id='launch-error';dialog.className='launch-error';dialog.setAttribute('aria-label','Minecraft launch error');const head=document.createElement('div');head.className='launch-error-heading';const title=document.createElement('h2');title.textContent=failure.title;const close=document.createElement('button');close.type='button';close.textContent='×';close.className='mod-detail-close';close.setAttribute('aria-label','Close launch error');close.addEventListener('click',()=>dialog.close());head.append(title,close);const detail=document.createElement('p');detail.textContent=failure.detail;const fixes=document.createElement('ul');for(const message of failure.remedies||[]){const li=document.createElement('li');li.textContent=message;fixes.append(li);}const actions=document.createElement('div');actions.className='launch-error-actions';function action(label,work,primary=false){const b=document.createElement('button');b.type='button';b.textContent=label;b.className=primary?'mods-primary':'mods-secondary';b.addEventListener('click',async()=>{b.disabled=true;try{await work();}catch(error){notify(String(error));}finally{b.disabled=false;}});actions.append(b);}action('Retry',()=>{dialog.close();window.BatLaunch(lastServer);},true);action('Settings',()=>{dialog.close();showPage('settings');});action(failure.code==='MOD_CONFLICT'?'Find compatible mods':'Mods',()=>{dialog.close();showPage('mods');if(failure.code==='MOD_CONFLICT')window.dispatchEvent(new Event('bat-mod-repair'));});action('Open logs folder',()=>invoke('tools_action',{action:'open_folder',payload:{kind:'logs'}}));const log=document.createElement('details'),summary=document.createElement('summary'),output=document.createElement('pre');summary.textContent='Launch log'+(failure.logName?' · '+failure.logName:'');output.textContent=failure.excerpt||'No game log was created. The error occurred during preparation.';log.append(summary,output);log.addEventListener('toggle',async()=>{if(log.open&&!failure.excerpt){try{const data=await invoke('launch_diagnostics');if(data.excerpt)output.textContent=data.excerpt;}catch(error){output.textContent=String(error);}}});action('Copy details',async()=>{const text=[failure.title,failure.detail,...(failure.remedies||[]),output.textContent].join('\n\n');if(navigator.clipboard?.writeText)await navigator.clipboard.writeText(text);else{const area=document.createElement('textarea');area.value=text;dialog.append(area);area.select();const copied=document.execCommand('copy');area.remove();if(!copied)throw Error('Copy unavailable. Select the launch log text instead.');}notify('Launch details copied.');});dialog.append(head,detail,fixes,actions,log);dialog.addEventListener('close',()=>dialog.remove(),{once:true});document.body.append(dialog);dialog.showModal();}
+  async function poll(){clearTimeout(timer);if(!invoke)return;try{const status=await invoke('game_status');running=status.stage==='running';launching=['preparing','starting'].includes(status.stage);if(status.message)caption.textContent=status.message;update();progress(status.progress);if(status.stage==='failed')showFailure(status.failure||fallback(status.message));}catch(error){if(launching)caption.textContent='Waiting for launch status…';}if(running||launching)timer=setTimeout(poll,document.hidden?4000:1000);}
+  window.BatLaunch=async(server=null)=>{if(button.disabled||!invoke)return;lastServer=server;clearTimeout(preparationTimer);preparationRequest++;requestPending=launching=true;running=false;lastFailureId='';caption.textContent='Checking Minecraft, Java and the selected account…';progress();update();timer=setTimeout(poll,1000);try{const result=await invoke('launch_installed_game',{profileId:selected,server});caption.textContent=result.message;running=result.stage==='running';launching=['preparing','starting'].includes(result.stage);if(result.failure)showFailure(result.failure);}catch(error){launching=running=false;caption.textContent=String(error);let failure;try{const diagnostics=await invoke('launch_diagnostics');failure=diagnostics.failure;}catch{}showFailure(failure||fallback(error));}finally{requestPending=false;await poll();update();}};
+  button.addEventListener('click',()=>window.BatLaunch());window.addEventListener('bat-library-ready',update);window.addEventListener('bat-profile-selected',update);window.addEventListener('beforeunload',()=>clearTimeout(timer));update();poll();
+})();
