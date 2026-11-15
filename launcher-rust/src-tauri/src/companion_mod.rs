@@ -15,11 +15,87 @@ pub const SUPPORTED_ENGINES: [&str; 2] = ["fabric", "forge"];
 
 const PACK_MAGIC: &[u8; 8] = b"BATMODS1";
 const PACK_MASK: [u8; 4] = [0x42, 0x41, 0x54, 0x21];
-const PACK_DOWNLOAD_URL: &str =
-    "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/bat-mods-v1/bat-mods.dat";
-const PACK_SHA256: &str = "ec113c9f6748149b799d34adfa7bfa2eec41f61062ba40bf900e4e7286b78eed";
-const PACK_SIZE: u64 = 717_785_348;
+const MOD_BUNDLE_BASE_URL: &str =
+    "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/bat-mods-v2";
+const MOD_BUNDLES: &[(&str, &str, u64)] = &[
+    ("fabric-1.8", "90087e1369f66f31ba74736da53e672df2bf4404bcdadf186521fc2534986d6f", 22355793),
+    ("forge-1.8", "4bc45de3ffc6247d23fabbf13f47d31e1e94cb3939bef42bed7299e93b098348", 23565512),
+    ("fabric-1.8.9", "a8589decf6dd46c9946daf7cf8b7bb937ab7da4f2cc8be01e101ac47f63c0b62", 22356614),
+    ("forge-1.8.9", "a2543a70cf2adc6de75f2f0fa6a69fc99c1ec56654780492e3790d92bd88897d", 23566063),
+    ("fabric-1.16.5", "ce9b788fa14a0b996041f7ad0a02943c91cee5f9f5dec1a7fbc386afc2bebf8a", 22409498),
+    ("forge-1.16.5", "631ad089a7ae40d219c0a8219a115fab57326ca4e4dbceebed1002d7f946b23f", 44178318),
+    ("fabric-1.17.1", "6d62233eb5b2c16fc90b5f8eccd106927c97a490b58ae36493f79f466ea22f8f", 22407237),
+    ("forge-1.17.1", "05d7dfdd0f3f9649b0b5dc94fa28ff42dab27896e9258c8f24132947ac700ace", 44168269),
+    ("fabric-1.18.2", "13a48d3f4040bc0d5b61c45f61d103eaa3ccdf6e6042367014464ea543063ba6", 22392097),
+    ("forge-1.18.2", "39ee6f49a375e42d22cc6d7da7210f15e03d0bfcc5581403f8a6c25eca7ff438", 22408456),
+    ("fabric-1.19.2", "4c073b1a5211603bc82456c73bab7d0d2aecd0bf0003ac6b1c9355faed4dc00a", 22393967),
+    ("forge-1.19.2", "a6b747e2ac11e59cb9cadd07e0ee68bb4d36d5a8af058c2c1c1974ba4774ba88", 22410754),
+    ("fabric-1.19.4", "6a2ad639f04cb83f510d80da6e472d2f4664e0d660d9645954e8696c217a8377", 22393483),
+    ("forge-1.19.4", "55f827c6a9e857a5afe8d04938a464c052c98ebf362477ba00d1d9af4e0cb2bd", 22410265),
+    ("fabric-1.20.1", "dee73e6ce16ba47b7495089622f4e997fefde5cf437b67ad1ee83f8e69d144e4", 22391204),
+    ("forge-1.20.1", "26e7a88540538b2ed10a3913c62371a5740f3e2487bec73784ef281085d7c0a3", 22406783),
+    ("fabric-1.20.4", "cbc82153338b1661bf6e760f501b3c7c4bce309b20d95bb9c93e87ec755b26bc", 22387178),
+    ("forge-1.20.4", "f8452cf037c7d022c38b35cce2ed991d9f13658204282f8477014bf254749394", 22402311),
+    ("fabric-1.20.6", "77be454bc457676fab04ff64444666f40ff3789315ed19c7045177fb09b65f09", 22383294),
+    ("forge-1.20.6", "d46799d100ab0928979d9ae4f1fc19d8cd2b3c3f20234b9724deaf69f76ac904", 22398905),
+    ("fabric-1.21.1", "ba7f396c469f689e8c73b8f48665c977f16efce0826a3711a38b36353e9118da", 22370313),
+    ("forge-1.21.1", "ddb0e1a49ac955a6e8ee4fa75445be511293d7b4f77e5b945e753fbc2b48cf48", 22398514),
+    ("fabric-1.21.4", "b2b6cc73bb3bee1ca0e9efbd54adbe61f737e0b72b1c32ce64c5cf42c3f3c0ea", 22388509),
+    ("forge-1.21.4", "760137396babb35dab8e2761e507e1040be66949846a3de020f38da7fecdee3e", 22405666),
+    ("fabric-1.21.5", "ef3d060866c379eced12980c569de05628484edad4a0f1d4762714b370ed0184", 22398467),
+    ("forge-1.21.5", "205692a638ef2622795f38e7eff0ca6bf8ffaea58af3b7520fabcb83809be6f3", 22415243),
+    ("fabric-1.21.8", "0e5bea68cee663c1c86a499947a5f0bf6302d26e27a441123cc2a371d7f3c17a", 22395443),
+    ("forge-1.21.8", "9dc36d5e7773a7ad32500df6fd81bbcc24de236a4c69b6e2e34aba90b8a21fb9", 22412380),
+    ("fabric-1.21.11", "1b0d134891c5add90428170c5e9523f4e00174c501b2070111f46c2d0fbe6d21", 22398606),
+    ("forge-1.21.11", "20223dbc86da1555e026024e1c623c52f6aea31c73598777fc3e8be3a1d588ab", 22415441),
+];
 static PACK_DOWNLOAD_LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
+
+fn bundle_meta(key: &str) -> Option<(&'static str, u64)> {
+    MOD_BUNDLES
+        .iter()
+        .find(|(k, _, _)| *k == key)
+        .map(|(_, sha, size)| (*sha, *size))
+}
+
+fn bundle_matches(path: &Path, expected_sha: &str, expected_size: u64) -> bool {
+    let Ok(meta) = fs::metadata(path) else {
+        return false;
+    };
+    if meta.len() != expected_size {
+        return false;
+    }
+    let Ok(mut file) = fs::File::open(path) else {
+        return false;
+    };
+    use sha2::{Digest, Sha256};
+    let mut hasher = Sha256::new();
+    let mut buf = [0u8; 64 * 1024];
+    loop {
+        let Ok(n) = file.read(&mut buf) else {
+            return false;
+        };
+        if n == 0 {
+            break;
+        }
+        hasher.update(&buf[..n]);
+    }
+    let hex: String = hasher.finalize().iter().map(|b| format!("{b:02x}")).collect();
+    hex.eq_ignore_ascii_case(expected_sha)
+}
+
+fn cached_target_bundle_path(key: &str) -> Option<PathBuf> {
+    let (sha, size) = bundle_meta(key)?;
+    let path = lib::root()
+        .ok()?
+        .join("companion-bundles")
+        .join(format!("bat-mods-{key}.dat"));
+    if bundle_matches(&path, sha, size) {
+        Some(path)
+    } else {
+        None
+    }
+}
 
 #[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -63,47 +139,6 @@ fn valid_mod_jar(path: &Path, engine: &str) -> bool {
         }
         _ => false,
     }
-}
-
-fn find_pack_file() -> Option<PathBuf> {
-    let mut candidates: Vec<PathBuf> = Vec::new();
-    if let Ok(custom) = std::env::var("BAT_CLIENT_MOD_PACK") {
-        candidates.push(PathBuf::from(custom));
-    }
-    if let Ok(exe) = std::env::current_exe() {
-        if let Some(dir) = exe.parent() {
-            candidates.push(dir.join("resources").join("bat-mods.dat"));
-            candidates.push(dir.join("bat-mods.dat"));
-            if cfg!(target_os = "macos") {
-                candidates.push(dir.join("..").join("Resources").join("resources").join("bat-mods.dat"));
-                candidates.push(dir.join("..").join("Resources").join("bat-mods.dat"));
-            } else if cfg!(target_os = "linux") {
-                candidates.push(
-                    dir.join("..")
-                        .join("lib")
-                        .join("bat-client-next")
-                        .join("resources")
-                        .join("bat-mods.dat"),
-                );
-                candidates.push(
-                    dir.join("..")
-                        .join("share")
-                        .join("bat-client-next")
-                        .join("bat-mods.dat"),
-                );
-            }
-        }
-    }
-    if let Ok(root) = lib::root() {
-        candidates.push(root.join("bat-mods.dat"));
-    }
-    candidates.push(
-        Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("resources")
-            .join("bat-mods.dat"),
-    );
-    candidates.push(PathBuf::from("D:/BatClientBuildCache/bat-mods.dat"));
-    candidates.into_iter().find(|p| p.is_file())
 }
 
 fn read_u16_le(file: &mut fs::File) -> Result<u16, String> {
@@ -260,18 +295,7 @@ pub fn check_availability(version: &str, engine: &str) -> CompanionModStatus {
     let version = version.trim();
     let key = format!("{engine}-{version}");
 
-    if let Some(pack) = find_pack_file() {
-        if matches!(find_pack_entry(&pack, &key), Ok(Some(_))) {
-            return CompanionModStatus {
-                supported: true,
-                available: true,
-                source: Some("bundled".into()),
-                message: format!("Supported · Bat Client mod for {engine} {version} loads automatically on launch."),
-            };
-        }
-    }
-
-    if find_local_port_jar(version, &engine).is_some() {
+    if cached_target_bundle_path(&key).is_some() || find_local_port_jar(version, &engine).is_some() {
         return CompanionModStatus {
             supported: true,
             available: true,
@@ -290,31 +314,36 @@ pub fn check_availability(version: &str, engine: &str) -> CompanionModStatus {
     }
 }
 
-fn ensure_pack_downloaded(
+fn ensure_target_bundle_downloaded(
+    key: &str,
     progress: Option<&crate::game_install::Progress>,
 ) -> Result<PathBuf, String> {
-    if let Some(existing) = find_pack_file() {
+    if let Some(existing) = cached_target_bundle_path(key) {
         return Ok(existing);
     }
+    let (expected_sha, size) =
+        bundle_meta(key).ok_or_else(|| format!("Unsupported companion mod target: {key}"))?;
     let _guard = PACK_DOWNLOAD_LOCK
         .lock()
         .map_err(|_| "Companion mod downloader busy")?;
-    if let Some(existing) = find_pack_file() {
+    if let Some(existing) = cached_target_bundle_path(key) {
         return Ok(existing);
     }
-    let root = lib::root()?;
-    let dest = root.join("bat-mods.dat");
+    let dir = lib::root()?.join("companion-bundles");
+    fs::create_dir_all(&dir).map_err(|_| "Cannot create companion bundle folder")?;
+    let dest = dir.join(format!("bat-mods-{key}.dat"));
+    let url = format!("{MOD_BUNDLE_BASE_URL}/bat-mods-{key}.dat");
     if let Some(cb) = progress {
-        cb("Downloading Bat Client companion mod bundle…", Some(0.0));
+        cb("Downloading Bat Client companion mod…", Some(0.0));
     }
-    let http = crate::downloads::client_with_timeout(std::time::Duration::from_secs(900))?;
+    let http = crate::downloads::client_with_timeout(std::time::Duration::from_secs(300))?;
     crate::downloads::file(
         &http,
-        PACK_DOWNLOAD_URL,
+        &url,
         &dest,
-        PACK_SHA256,
-        Some(PACK_SIZE),
-        PACK_SIZE,
+        expected_sha,
+        Some(size),
+        size,
         |done, total| {
             if let Some(cb) = progress {
                 let pct = if total > 0 {
@@ -322,20 +351,11 @@ fn ensure_pack_downloaded(
                 } else {
                     None
                 };
-                cb("Downloading Bat Client companion mod bundle…", pct);
+                cb("Downloading Bat Client companion mod…", pct);
             }
         },
     )?;
     Ok(dest)
-}
-
-pub fn spawn_background_prefetch() {
-    if find_pack_file().is_some() {
-        return;
-    }
-    std::thread::spawn(|| {
-        let _ = ensure_pack_downloaded(None);
-    });
 }
 
 pub fn cleanup_stale_at(root: &Path) {
@@ -372,13 +392,13 @@ pub fn stage_for_launch(
     fs::create_dir_all(&mods).map_err(|_| "Cannot access mods folder")?;
     let staged_path = mods.join(format!("bat-client-{engine}-{version}.jar"));
 
-    if let Some(pack) = find_pack_file() {
+    if let Some(pack) = cached_target_bundle_path(&key) {
         if let Some((offset, length)) = find_pack_entry(&pack, &key)? {
             progress("Preparing Bat Client companion mod…", None);
             extract_from_pack(&pack, offset, length, &staged_path)?;
             if !valid_mod_jar(&staged_path, &engine) {
                 let _ = fs::remove_file(&staged_path);
-                return Err("Bundled Bat Client mod failed verification".into());
+                return Err("Cached Bat Client mod failed verification".into());
             }
             return Ok(Some(StagedCompanionMod { path: staged_path }));
         }
@@ -391,7 +411,7 @@ pub fn stage_for_launch(
         return Ok(Some(StagedCompanionMod { path: staged_path }));
     }
 
-    let pack = ensure_pack_downloaded(Some(&progress))?;
+    let pack = ensure_target_bundle_downloaded(&key, Some(&progress))?;
     if let Some((offset, length)) = find_pack_entry(&pack, &key)? {
         progress("Preparing Bat Client companion mod…", None);
         extract_from_pack(&pack, offset, length, &staged_path)?;
@@ -525,6 +545,20 @@ mod tests {
         cleanup_stale_at(root.path());
         assert!(!stale.exists());
         assert!(user.is_file());
+    }
+
+    #[test]
+    fn mod_bundle_manifest_covers_all_30_targets() {
+        assert_eq!(MOD_BUNDLES.len(), 30);
+        for v in SUPPORTED_VERSIONS {
+            for e in SUPPORTED_ENGINES {
+                let key = format!("{e}-{v}");
+                let (sha, size) = bundle_meta(&key).unwrap_or_else(|| panic!("Missing {key}"));
+                assert_eq!(sha.len(), 64, "bad sha length for {key}");
+                assert!(sha.chars().all(|c| c.is_ascii_hexdigit()), "bad sha hex for {key}");
+                assert!(size > 1_000_000, "unexpected small size for {key}");
+            }
+        }
     }
 
     #[test]
