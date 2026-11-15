@@ -299,6 +299,8 @@ fn main() {
             settings::launcher_settings,
             settings::save_launcher_settings,
             microsoft::start_microsoft_login,
+            microsoft::start_microsoft_browser_login,
+            microsoft::cancel_microsoft_login,
             microsoft::refresh_microsoft_account,
             accounts::account_action,
             accounts::account_skin,

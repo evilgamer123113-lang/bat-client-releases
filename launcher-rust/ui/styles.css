@@ -330,3 +330,11 @@ html,body,#main,.app-shell,.titlebar,.sidebar,.sidebar-bottom,.page,.quick-card,
 .flying-bat-settings p { margin: 0 0 14px; color: #aaa; font-size: 12px; }
 .settings-groups .flying-bat-settings select { width: auto; min-width: 115px; }
 .settings-groups .flying-bat-settings label:last-child { display: flex; flex-direction: row; align-items: center; justify-content: space-between; }
+.microsoft-auth-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.microsoft-browser-panel { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin: 0 0 18px; padding: 14px 16px; border: 1px solid #333; border-radius: 10px; background: #0a0a0a; }
+.microsoft-browser-panel[hidden] { display: none; }
+.microsoft-browser-copy strong { display: block; font-size: 13px; margin-bottom: 4px; }
+.microsoft-browser-copy p { margin: 0; font-size: 12px; color: #bbb; }
+.microsoft-browser-copy a { color: #fff; text-decoration: underline; }
+#microsoft-device-code { display: inline-block; padding: 2px 8px; margin: 0 2px; border: 1px solid #444; border-radius: 6px; background: #000; color: #fff; font: 600 13px/1.4 Consolas, monospace; letter-spacing: 1px; user-select: all; }
+.microsoft-browser-buttons { display: flex; gap: 8px; flex-wrap: wrap; }

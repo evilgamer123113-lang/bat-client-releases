@@ -11,13 +11,15 @@ use std::{
         atomic::{AtomicBool, Ordering},
         mpsc,
     },
-    time::{Duration, SystemTime, UNIX_EPOCH},
+    time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
-use tauri::{WebviewUrl, WebviewWindowBuilder, WindowEvent};
+use tauri::{Emitter, WebviewUrl, WebviewWindowBuilder, WindowEvent};
+use tauri_plugin_opener::OpenerExt;
 const CLIENT_ID: &str = "00000000402b5328";
 const REDIRECT: &str = "https://login.live.com/oauth20_desktop.srf";
 const SERVICE: &str = "xyz.batclient.launcher.next.auth";
 static SIGNING_IN: AtomicBool = AtomicBool::new(false);
+static BROWSER_CANCELLED: AtomicBool = AtomicBool::new(false);
 struct LoginGuard;
 impl Drop for LoginGuard {
     fn drop(&mut self) {
@@ -394,6 +396,152 @@ pub async fn start_microsoft_login(app: tauri::AppHandle) -> Result<PublicLogin,
     .await
     .map_err(|_| "Microsoft authentication failed")?
 }
+#[derive(Debug, PartialEq, Eq)]
+enum DevicePoll {
+    Pending,
+    SlowDown,
+}
+fn build_device_link_url(verification_uri: &str, user_code: &str) -> String {
+    let mut open_url = reqwest::Url::parse(verification_uri)
+        .ok()
+        .filter(|u| u.scheme() == "https")
+        .unwrap_or_else(|| {
+            reqwest::Url::parse("https://www.microsoft.com/link").expect("valid fallback url")
+        });
+    open_url.query_pairs_mut().append_pair("otc", user_code);
+    open_url.to_string()
+}
+fn classify_device_poll_error(error_code: &str) -> Result<DevicePoll, String> {
+    match error_code {
+        "authorization_pending" => Ok(DevicePoll::Pending),
+        "slow_down" => Ok(DevicePoll::SlowDown),
+        "authorization_declined" => Err("Microsoft sign-in was declined or cancelled".into()),
+        "expired_token" => Err("Microsoft sign-in code expired. Try again.".into()),
+        _ => Err("Microsoft browser sign-in failed. Try again.".into()),
+    }
+}
+fn browser_login(app: tauri::AppHandle) -> Result<PublicLogin, String> {
+    let client = http()?;
+    let res = client
+        .post("https://login.live.com/oauth20_connect.srf")
+        .form(&[
+            ("client_id", CLIENT_ID),
+            ("scope", "XboxLive.signin offline_access"),
+            ("response_type", "device_code"),
+        ])
+        .send()
+        .map_err(|_| "Cannot reach Microsoft sign-in service")?;
+    let cookies: Vec<String> = res
+        .headers()
+        .get_all(reqwest::header::SET_COOKIE)
+        .iter()
+        .filter_map(|value| value.to_str().ok())
+        .filter_map(|raw| raw.split(';').next())
+        .map(str::trim)
+        .filter(|pair| !pair.is_empty())
+        .map(str::to_owned)
+        .collect();
+    let device = response(res, "Microsoft device code")?;
+    let user_code = text(&device, "user_code")?.to_owned();
+    let device_code = text(&device, "device_code")?.to_owned();
+    let verification_uri = device
+        .get("verification_uri")
+        .and_then(Value::as_str)
+        .filter(|s| s.starts_with("https://"))
+        .unwrap_or("https://www.microsoft.com/link")
+        .to_owned();
+    let mut interval_secs = device
+        .get("interval")
+        .and_then(Value::as_u64)
+        .unwrap_or(5)
+        .clamp(2, 15);
+    let expires_in = device
+        .get("expires_in")
+        .and_then(Value::as_u64)
+        .unwrap_or(900)
+        .clamp(60, 900);
+    let open_url = build_device_link_url(&verification_uri, &user_code);
+    let _ = app.emit(
+        "bat-microsoft-device-code",
+        json!({
+            "userCode": user_code,
+            "verificationUri": verification_uri,
+            "openUrl": open_url,
+            "expiresIn": expires_in,
+        }),
+    );
+    let _ = app.opener().open_url(&open_url, None::<&str>);
+    let deadline = Instant::now() + Duration::from_secs(expires_in);
+    let cookie_header = cookies.join("; ");
+    let msa = loop {
+        let wait_until = Instant::now() + Duration::from_secs(interval_secs);
+        while Instant::now() < wait_until {
+            if BROWSER_CANCELLED.load(Ordering::SeqCst) {
+                return Err("Microsoft browser sign-in cancelled".into());
+            }
+            if Instant::now() >= deadline {
+                return Err("Microsoft browser sign-in timed out".into());
+            }
+            std::thread::sleep(Duration::from_millis(250));
+        }
+        if BROWSER_CANCELLED.load(Ordering::SeqCst) {
+            return Err("Microsoft browser sign-in cancelled".into());
+        }
+        let mut req = client.post("https://login.live.com/oauth20_token.srf").form(&[
+            ("client_id", CLIENT_ID),
+            ("device_code", device_code.as_str()),
+            ("grant_type", "urn:ietf:params:oauth:grant-type:device_code"),
+        ]);
+        if !cookie_header.is_empty() {
+            req = req.header(reqwest::header::COOKIE, &cookie_header);
+        }
+        let mut poll_res = req
+            .send()
+            .map_err(|_| "Cannot reach Microsoft token service")?;
+        let status = poll_res.status();
+        let mut bytes = Vec::new();
+        poll_res
+            .by_ref()
+            .take(1024 * 1024 + 1)
+            .read_to_end(&mut bytes)
+            .map_err(|_| "Microsoft token poll interrupted")?;
+        if bytes.len() > 1024 * 1024 {
+            return Err("Microsoft token response too large".into());
+        }
+        let body: Value =
+            serde_json::from_slice(&bytes).map_err(|_| "Invalid Microsoft token response")?;
+        if status.is_success() {
+            break body;
+        }
+        let error_code = body.get("error").and_then(Value::as_str).unwrap_or("");
+        match classify_device_poll_error(error_code)? {
+            DevicePoll::Pending => continue,
+            DevicePoll::SlowDown => {
+                interval_secs = (interval_secs + 2).min(20);
+                continue;
+            }
+        }
+    };
+    persist(&lib::root()?, minecraft(&msa)?, None)
+}
+#[tauri::command]
+pub async fn start_microsoft_browser_login(app: tauri::AppHandle) -> Result<PublicLogin, String> {
+    if SIGNING_IN.swap(true, Ordering::SeqCst) {
+        return Err("Microsoft sign-in is already open".into());
+    }
+    BROWSER_CANCELLED.store(false, Ordering::SeqCst);
+    tauri::async_runtime::spawn_blocking(move || {
+        let _guard = LoginGuard;
+        lib::ensure_legacy_launcher_closed()?;
+        browser_login(app)
+    })
+    .await
+    .map_err(|_| "Microsoft authentication failed")?
+}
+#[tauri::command]
+pub fn cancel_microsoft_login() {
+    BROWSER_CANCELLED.store(true, Ordering::SeqCst);
+}
 pub fn refresh_at(root: &Path, username: &str) -> Result<PublicLogin, String> {
     let config = lib::config(root)?;
     let account = config["savedAccounts"]
@@ -523,5 +671,30 @@ mod tests {
         assert_eq!(saved.refresh_token, tokens.refresh_token);
         remove_credentials(&id).unwrap();
         assert!(read_tokens(&id).is_err());
+    }
+    #[test]
+    fn device_link_url_appends_otc_and_rejects_non_https() {
+        assert_eq!(
+            build_device_link_url("https://www.microsoft.com/link", "ABCD1234"),
+            "https://www.microsoft.com/link?otc=ABCD1234"
+        );
+        assert_eq!(
+            build_device_link_url("http://insecure.example/link", "ABCD1234"),
+            "https://www.microsoft.com/link?otc=ABCD1234"
+        );
+    }
+    #[test]
+    fn device_poll_errors_classify_pending_slowdown_and_terminal() {
+        assert_eq!(
+            classify_device_poll_error("authorization_pending"),
+            Ok(DevicePoll::Pending)
+        );
+        assert_eq!(
+            classify_device_poll_error("slow_down"),
+            Ok(DevicePoll::SlowDown)
+        );
+        assert!(classify_device_poll_error("authorization_declined").is_err());
+        assert!(classify_device_poll_error("expired_token").is_err());
+        assert!(classify_device_poll_error("unknown").is_err());
     }
 }
