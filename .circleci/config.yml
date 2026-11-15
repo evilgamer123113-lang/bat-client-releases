@@ -1,0 +1,44 @@
+version: 2.1
+
+jobs:
+  build-linux:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: medium
+    steps:
+      - checkout
+      - run:
+          name: Install Linux native dependencies, Node 22, and Rust
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf libxdo-dev curl
+            curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+            if ! command -v rustup >/dev/null 2>&1; then
+              curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+            fi
+            "$HOME/.cargo/bin/rustup" target add x86_64-unknown-linux-gnu
+      - run:
+          name: Build Linux x64 AppImage and deb
+          environment:
+            APPIMAGE_EXTRACT_AND_RUN: "1"
+          command: |
+            export PATH="$HOME/.cargo/bin:$PATH"
+            cd launcher-rust
+            printf '%s\n' '{"bundle":{"createUpdaterArtifacts":false}}' > /tmp/bundle.json
+            npm exec --yes --package @tauri-apps/cli@2.12.4 -- tauri build --target x86_64-unknown-linux-gnu --bundles appimage,deb --config /tmp/bundle.json
+            bundle="src-tauri/target/x86_64-unknown-linux-gnu/release/bundle"
+            mkdir -p artifacts/x86_64-unknown-linux-gnu
+            cp "$bundle"/appimage/*.AppImage "$bundle"/deb/*.deb artifacts/x86_64-unknown-linux-gnu/
+      - store_artifacts:
+          path: launcher-rust/artifacts/x86_64-unknown-linux-gnu
+          destination: linux-x64
+
+workflows:
+  linux-release:
+    jobs:
+      - build-linux:
+          filters:
+            branches:
+              only:
+                - /build\/rust-native-.*/
