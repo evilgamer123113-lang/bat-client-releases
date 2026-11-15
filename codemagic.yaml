@@ -1,0 +1,65 @@
+workflows:
+  rust-macos:
+    name: Bat Client Rust macOS (ARM64 + Intel)
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    environment:
+      node: 22
+    scripts:
+      - name: Install Rust toolchains
+        script: |
+          if ! command -v rustup >/dev/null 2>&1; then
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          fi
+          export PATH="$HOME/.cargo/bin:$PATH"
+          rustup target add aarch64-apple-darwin x86_64-apple-darwin
+      - name: Build macOS ARM64 and Intel packages
+        script: |
+          export PATH="$HOME/.cargo/bin:$PATH"
+          export APPLE_SIGNING_IDENTITY="-"
+          cd launcher-rust
+          printf '%s\n' '{"bundle":{"createUpdaterArtifacts":false}}' > /tmp/bundle.json
+          mkdir -p artifacts
+          for target in aarch64-apple-darwin x86_64-apple-darwin; do
+            npm exec --yes --package @tauri-apps/cli@2.12.4 -- tauri build --target "$target" --bundles app,dmg --config /tmp/bundle.json
+            bundle="src-tauri/target/$target/release/bundle"
+            app="$bundle/macos/Bat Client.app"
+            codesign --verify --deep --strict "$app"
+            mkdir -p "artifacts/$target"
+            tar -czf "artifacts/$target/Bat Client.app.tar.gz" -C "$bundle/macos" "Bat Client.app"
+            for dmg in "$bundle"/dmg/*.dmg; do
+              hdiutil verify "$dmg"
+              cp "$dmg" "artifacts/$target/"
+            done
+          done
+    artifacts:
+      - launcher-rust/artifacts/**
+
+  rust-linux:
+    name: Bat Client Rust Linux x64
+    instance_type: linux_x2
+    max_build_duration: 60
+    environment:
+      node: 22
+    scripts:
+      - name: Install Linux native dependencies & Rust
+        script: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf libxdo-dev
+          if ! command -v rustup >/dev/null 2>&1; then
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          fi
+          export PATH="$HOME/.cargo/bin:$PATH"
+          rustup target add x86_64-unknown-linux-gnu
+      - name: Build Linux x64 packages
+        script: |
+          export PATH="$HOME/.cargo/bin:$PATH"
+          export APPIMAGE_EXTRACT_AND_RUN=1
+          cd launcher-rust
+          printf '%s\n' '{"bundle":{"createUpdaterArtifacts":false}}' > /tmp/bundle.json
+          npm exec --yes --package @tauri-apps/cli@2.12.4 -- tauri build --target x86_64-unknown-linux-gnu --bundles appimage,deb --config /tmp/bundle.json
+          bundle="src-tauri/target/x86_64-unknown-linux-gnu/release/bundle"
+          mkdir -p artifacts/x86_64-unknown-linux-gnu
+          cp "$bundle"/appimage/*.AppImage "$bundle"/deb/*.deb artifacts/x86_64-unknown-linux-gnu/
+    artifacts:
+      - launcher-rust/artifacts/**
