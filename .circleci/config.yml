@@ -10,8 +10,8 @@ jobs:
       - run:
           name: Install Linux native dependencies, Node 22, and Rust
           command: |
-            sudo apt-get update
-            sudo apt-get install -y libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf libxdo-dev curl
+            sudo DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a apt-get update
+            sudo DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a apt-get install -y libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf libxdo-dev curl
             curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
             sudo apt-get install -y nodejs
             if ! command -v rustup >/dev/null 2>&1; then
