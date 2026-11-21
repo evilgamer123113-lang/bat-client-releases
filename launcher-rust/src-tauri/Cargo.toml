@@ -1,6 +1,6 @@
 [package]
 name = "bat-client-next"
-version = "0.1.12"
+version = "0.1.13"
 description = "Bat Client Rust launcher development preview"
 edition = "2021"
 
