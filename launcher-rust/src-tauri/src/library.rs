@@ -169,19 +169,47 @@ pub fn atomic_json(path: &Path, value: &Value) -> Result<(), String> {
 }
 pub fn ensure_game_closed() -> Result<(), String> {
     let system = sysinfo::System::new_all();
+    let bat_dir = root()
+        .ok()
+        .and_then(|r| game_dir(&r).ok())
+        .map(|p| p.to_string_lossy().to_lowercase().replace('\\', "/"));
     if system.processes().values().any(|p| {
+        if matches!(
+            p.status(),
+            sysinfo::ProcessStatus::Zombie | sysinfo::ProcessStatus::Dead
+        ) {
+            return false;
+        }
         let name = p.name().to_string_lossy().to_lowercase();
-        (name == "java" || name == "java.exe" || name == "javaw.exe")
-            && p.cmd().iter().any(|s| {
-                let s = s.to_string_lossy().to_lowercase();
-                s.contains("net.minecraft")
-                    || s.contains("knotclient")
-                    || s.contains("modlauncher")
-                    || s.contains("launchwrapper")
-                    || s.contains("minecraftclient")
+        if !(name == "java" || name == "java.exe" || name == "javaw.exe") {
+            return false;
+        }
+        let args: Vec<String> = p
+            .cmd()
+            .iter()
+            .map(|s| s.to_string_lossy().to_lowercase().replace('\\', "/"))
+            .collect();
+        let is_mc_client = args.iter().any(|s| {
+            s.contains("net.minecraft.client")
+                || s.contains("knotclient")
+                || s.contains("modlauncher")
+                || s.contains("launchwrapper")
+                || s.contains("minecraftclient")
+        });
+        if !is_mc_client {
+            return false;
+        }
+        if let Some(ref dir) = bat_dir {
+            args.iter().any(|s| {
+                s.contains(dir.as_str())
+                    || s.contains("bat-client")
+                    || s.contains("bat-cosmetics")
             })
+        } else {
+            true
+        }
     }) {
-        return Err("Save and fully close Minecraft before changing mods".into());
+        return Err("Save and fully close Bat Client's Minecraft window first".into());
     }
     Ok(())
 }
@@ -266,6 +294,12 @@ where
 pub fn ensure_legacy_launcher_closed() -> Result<(), String> {
     let system = sysinfo::System::new_all();
     if system.processes().values().any(|p| {
+        if matches!(
+            p.status(),
+            sysinfo::ProcessStatus::Zombie | sysinfo::ProcessStatus::Dead
+        ) {
+            return false;
+        }
         let name = p.name().to_string_lossy().to_lowercase();
         [
             "bat client.exe",
