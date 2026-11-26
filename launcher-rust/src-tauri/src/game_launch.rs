@@ -419,11 +419,10 @@ fn prepare_for(
         .split('.')
         .filter_map(|v| v.parse::<u32>().ok())
         .collect::<Vec<_>>();
-    if !premium
-        && modern.first() == Some(&1)
-        && (modern.get(1).copied().unwrap_or(0) > 20
-            || (modern.get(1) == Some(&20) && modern.get(2).copied().unwrap_or(0) >= 5))
-    {
+    let major = modern.first().copied().unwrap_or(0);
+    let minor = modern.get(1).copied().unwrap_or(0);
+    let patch = modern.get(2).copied().unwrap_or(0);
+    if !premium && (major > 1 || (major == 1 && (minor > 20 || (minor == 20 && patch >= 5)))) {
         args.extend([
             "--profileProperties".into(),
             bridge.profile_properties.clone(),
@@ -529,8 +528,10 @@ pub async fn launch_installed_game(
         plan._companion_mod=staged_companion;
         if let Some((host,port))=server_address {
             let version=profile["version"].as_str().unwrap_or("");
-            let minor=version.split('.').nth(1).and_then(|v|v.parse::<u32>().ok()).unwrap_or(0);
-            if minor>=20 {
+            let mut vparts=version.split('.').filter_map(|v|v.parse::<u32>().ok());
+            let major=vparts.next().unwrap_or(0);
+            let minor=vparts.next().unwrap_or(0);
+            if major>1 || (major==1 && minor>=20) {
                 let destination=if host.contains(':') { format!("[{host}]:{port}") } else { format!("{host}:{port}") };
                 plan.command.args(["--quickPlayMultiplayer",&destination]);
             } else {

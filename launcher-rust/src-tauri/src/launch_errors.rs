@@ -58,7 +58,12 @@ pub fn classify(
 ) -> Failure {
     let lower = format!("{message}\n{excerpt}").to_lowercase();
     let (code, title, remedies): (&str, &str, Vec<&str>) = if lower.contains("checksum")
-        || lower.contains("signature")
+        || lower.contains("sha256 mismatch")
+        || lower.contains("sha1 mismatch")
+        || lower.contains("hash mismatch")
+        || lower.contains("invalid signature")
+        || lower.contains("signature verification")
+        || lower.contains("signature mismatch")
     {
         (
             "INTEGRITY",
@@ -72,6 +77,11 @@ pub fn classify(
         || lower.contains("disable it in mods before launching")
         || lower.contains("requires version")
         || lower.contains("mixin apply failed")
+        || lower.contains("mixin transformation")
+        || lower.contains("mixintransformererror")
+        || lower.contains("critical injection failure")
+        || lower.contains("@redirect conflict")
+        || lower.contains("injectionerror")
         || lower.contains("mod resolution")
     {
         ("MOD_CONFLICT","Minecraft could not load its mods",vec!["Open Mods and check that each mod matches this loadout’s Minecraft version and loader.","Disable the conflicting mod or add the exact missing dependency reported in the log."])
@@ -197,6 +207,11 @@ mod tests {
                 "MEMORY",
             ),
             ("File checksum mismatch", "INTEGRITY"),
+            ("Invalid signature on downloaded archive", "INTEGRITY"),
+            (
+                r#"Completely ignored arguments: [--profileProperties, [{"name":"textures","signature":"kXbq..."}]] Caused by: java.lang.RuntimeException: Mixin transformation of net.minecraft.class_425 failed @Redirect conflict"#,
+                "MOD_CONFLICT",
+            ),
         ] {
             assert_eq!(classify(text, "", Some(1), None).code, code);
         }

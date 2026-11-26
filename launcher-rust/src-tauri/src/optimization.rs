@@ -17,11 +17,10 @@ fn transform(original: &str, version: &str, settings: &Value) -> String {
             lines.push(format!("{key}:{value}"));
         }
     };
-    let modern = version
-        .split('.')
-        .nth(1)
-        .and_then(|v| v.parse::<u32>().ok())
-        .is_some_and(|v| v >= 13);
+    let mut parts = version.split('.').filter_map(|v| v.parse::<u32>().ok());
+    let major = parts.next().unwrap_or(0);
+    let minor = parts.next().unwrap_or(0);
+    let modern = major > 1 || (major == 1 && minor >= 13);
     for (key, value) in [
         ("fancyGraphics", "false"),
         ("smoothLighting", "false"),
@@ -196,6 +195,10 @@ mod tests {
         assert!(!v.contains("ofFastMath:"));
         assert_eq!(v, transform(&v, "1.21.1", &json!({"fastMath":false})));
         assert!(transform("", "1.8.9", &json!({})).contains("maxFps:999"));
+        // Year-based Minecraft 26.x versions are modern (maxFps range 10..=260; 999 resets to 120).
+        let v26 = transform("maxFps:999\n", "26.3", &json!({}));
+        assert!(v26.contains("maxFps:260"));
+        assert!(!v26.contains("maxFps:999"));
     }
     #[test]
     fn disabled_does_not_create_or_change_options() {

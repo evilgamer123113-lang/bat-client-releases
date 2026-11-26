@@ -140,6 +140,98 @@ pub(crate) fn validate_launch(root: &Path, version: &str, engine: &str) -> Resul
     Ok(())
 }
 
+fn is_modern_mc(version: &str) -> bool {
+    let mut parts = version.split('.').filter_map(|p| p.parse::<u32>().ok());
+    let major = parts.next().unwrap_or(0);
+    let minor = parts.next().unwrap_or(0);
+    major > 1 || (major == 1 && minor >= 13)
+}
+
+fn compare_ver(a: &str, b: &str) -> Option<std::cmp::Ordering> {
+    let parse = |s: &str| -> Option<Vec<u32>> {
+        let nums: Vec<u32> = s
+            .trim()
+            .split('.')
+            .map(|p| p.parse::<u32>().ok())
+            .collect::<Option<Vec<_>>>()?;
+        if nums.is_empty() { None } else { Some(nums) }
+    };
+    let va = parse(a)?;
+    let vb = parse(b)?;
+    let len = va.len().max(vb.len());
+    for i in 0..len {
+        let ord = va.get(i).copied().unwrap_or(0).cmp(&vb.get(i).copied().unwrap_or(0));
+        if ord != std::cmp::Ordering::Equal {
+            return Some(ord);
+        }
+    }
+    Some(std::cmp::Ordering::Equal)
+}
+
+/// Evaluates Maven-style Forge/NeoForge `versionRange` strings (e.g. `[1.20.1]`, `[1.20.1,1.21)`, `[1.20,)`).
+/// Returns `None` for unrecognized syntax so we never false-positive block a valid mod.
+fn matches_maven_range(version: &str, range: &str) -> Option<bool> {
+    let trimmed = range.trim();
+    if trimmed.is_empty() || trimmed == "*" {
+        return Some(true);
+    }
+    if !(trimmed.starts_with('[') || trimmed.starts_with('(')) {
+        return Some(compare_ver(version, trimmed)? == std::cmp::Ordering::Equal);
+    }
+    let min_inc = trimmed.starts_with('[');
+    let max_inc = trimmed.ends_with(']');
+    if !(trimmed.ends_with(']') || trimmed.ends_with(')')) {
+        return None;
+    }
+    let inner = &trimmed[1..trimmed.len() - 1];
+    if let Some((lo, hi)) = inner.split_once(',') {
+        let lo = lo.trim();
+        let hi = hi.trim();
+        if !lo.is_empty() {
+            let ord = compare_ver(version, lo)?;
+            let ok = if min_inc { ord != std::cmp::Ordering::Less } else { ord == std::cmp::Ordering::Greater };
+            if !ok {
+                return Some(false);
+            }
+        }
+        if !hi.is_empty() {
+            let ord = compare_ver(version, hi)?;
+            let ok = if max_inc { ord != std::cmp::Ordering::Greater } else { ord == std::cmp::Ordering::Less };
+            if !ok {
+                return Some(false);
+            }
+        }
+        Some(true)
+    } else {
+        Some(compare_ver(version, inner)? == std::cmp::Ordering::Equal)
+    }
+}
+
+fn forge_toml_matches(jar: &mut zip::ZipArchive<fs::File>, entry_name: &str, version: &str) -> Option<bool> {
+    let entry = jar.by_name(entry_name).ok()?;
+    let mut text = String::new();
+    entry.take(256 * 1024).read_to_string(&mut text).ok()?;
+    let doc: toml::Value = toml::from_str(&text).ok()?;
+    let deps_table = doc.get("dependencies")?.as_table()?;
+    for dep_list in deps_table.values() {
+        let Some(items) = dep_list.as_array() else { continue };
+        for dep in items {
+            if dep.get("modId").and_then(toml::Value::as_str) != Some("minecraft") {
+                continue;
+            }
+            if dep.get("mandatory").and_then(toml::Value::as_bool) == Some(false) {
+                continue;
+            }
+            if let Some(range) = dep.get("versionRange").and_then(toml::Value::as_str) {
+                if matches_maven_range(version, range) == Some(false) {
+                    return Some(false);
+                }
+            }
+        }
+    }
+    Some(true)
+}
+
 fn jar_compatible_with(path: &Path, name: &str, version: &str, engine: &str) -> bool {
     let Ok(file) = fs::File::open(path) else {
         return false;
@@ -149,8 +241,9 @@ fn jar_compatible_with(path: &Path, name: &str, version: &str, engine: &str) -> 
     };
     let fabric = jar.index_for_name("fabric.mod.json").is_some();
     let quilt = jar.index_for_name("quilt.mod.json").is_some();
-    let forge = jar.index_for_name("META-INF/mods.toml").is_some()
-        || jar.index_for_name("mcmod.info").is_some();
+    let has_mods_toml = jar.index_for_name("META-INF/mods.toml").is_some();
+    let has_mcmod_info = jar.index_for_name("mcmod.info").is_some();
+    let forge = has_mods_toml || has_mcmod_info;
     let neo = jar.index_for_name("META-INF/neoforge.mods.toml").is_some();
     let mismatched = match engine {
         "fabric" => !fabric && (forge || neo || quilt),
@@ -161,6 +254,26 @@ fn jar_compatible_with(path: &Path, name: &str, version: &str, engine: &str) -> 
     };
     if mismatched {
         return false;
+    }
+    if engine == "forge" {
+        if is_modern_mc(version) {
+            // Legacy 1.8/1.12 Forge JARs (mcmod.info only) cannot load on modern 1.13+ Forge.
+            if has_mcmod_info && !has_mods_toml {
+                return false;
+            }
+            if has_mods_toml && forge_toml_matches(&mut jar, "META-INF/mods.toml", version) == Some(false) {
+                return false;
+            }
+        } else if has_mods_toml && !has_mcmod_info {
+            // Modern Forge JARs (mods.toml only) cannot load on legacy 1.8/1.8.9 Forge.
+            return false;
+        }
+    }
+    if engine == "neoforge" {
+        let toml_entry = if neo { "META-INF/neoforge.mods.toml" } else if has_mods_toml { "META-INF/mods.toml" } else { "" };
+        if !toml_entry.is_empty() && forge_toml_matches(&mut jar, toml_entry, version) == Some(false) {
+            return false;
+        }
     }
     if fabric && matches!(engine, "fabric" | "quilt") {
         let Ok(metadata) = jar.by_name("fabric.mod.json") else {
@@ -459,5 +572,51 @@ mod tests {
         assert_eq!(auto_fix_for_launch(root.path(), "1.21.1", "fabric").unwrap(), 1);
         assert!(path.is_file());
         assert!(validate_launch(root.path(), "1.21.1", "fabric").is_ok());
+    }
+    #[test]
+    fn auto_fix_stashes_mismatched_forge_versions_and_keeps_matching_1201() {
+        let root = tempfile::tempdir().unwrap();
+        let game = root.path().join("game");
+        let mods = game.join("mods");
+        fs::create_dir_all(&mods).unwrap();
+        lib::atomic_json(
+            &root.path().join("profiles.config.json"),
+            &serde_json::json!({"appSettings":{"gameDir":game}}),
+        )
+        .unwrap();
+
+        let mk_jar = |name: &str, entry: &str, body: &[u8]| {
+            let p = mods.join(name);
+            let mut z = zip::ZipWriter::new(fs::File::create(&p).unwrap());
+            z.start_file(entry, zip::write::SimpleFileOptions::default()).unwrap();
+            z.write_all(body).unwrap();
+            z.finish().unwrap();
+            p
+        };
+        let bloodbathen = mk_jar(
+            "bloodbathen-1.4.1-forge-1.20.1.jar",
+            "META-INF/mods.toml",
+            br#"[[dependencies.bloodbathen]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.1]"
+"#,
+        );
+        let old_189 = mk_jar("legacy-1.8.9.jar", "mcmod.info", br#"[{"modid":"legacy"}]"#);
+        let other_1211 = mk_jar(
+            "other-1.21.1.jar",
+            "META-INF/mods.toml",
+            br#"[[dependencies.other]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.21.1]"
+"#,
+        );
+
+        // Launching 1.20.1 Forge keeps Bloodbathen and stashes both 1.8.9 and 1.21.1 Forge mods.
+        assert_eq!(auto_fix_for_launch(root.path(), "1.20.1", "forge").unwrap(), 2);
+        assert!(bloodbathen.is_file());
+        assert!(!old_189.exists());
+        assert!(!other_1211.exists());
     }
 }

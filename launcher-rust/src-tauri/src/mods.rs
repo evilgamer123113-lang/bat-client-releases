@@ -608,12 +608,10 @@ pub fn install_at(root: &Path, project: &str, profile_id: &str) -> Result<Vec<Mo
     install_selected_at(root, project, profile_id, None, None, None)
 }
 pub(crate) fn ensure_fabric_api(root: &Path, profile_id: &str, version: &str) -> Result<(), String> {
-    let minor = version
-        .split('.')
-        .nth(1)
-        .and_then(|v| v.parse::<u32>().ok())
-        .unwrap_or(0);
-    if minor < 18 {
+    let mut parts = version.split('.').filter_map(|v| v.parse::<u32>().ok());
+    let major = parts.next().unwrap_or(0);
+    let minor = parts.next().unwrap_or(0);
+    if major == 1 && minor < 18 {
         return Ok(());
     }
     let dir = lib::mods_dir(root)?;
