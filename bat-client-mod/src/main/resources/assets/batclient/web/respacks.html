@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Bat Client — Resource Packs</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="overlay-page respacks-page">
+    <div class="overlay-dim"></div>
+
+    <!-- ============ HEADER (Feather-style) ============ -->
+    <header class="rp-head">
+        <div class="rp-title">
+            <img src="bat-logo.png" alt="">
+            <span>RESOURCE PACKS</span>
+            <span class="time-pill" id="rp-clock">&#9790;</span>
+        </div>
+        <button class="shots-x" data-action="respacksclose" aria-label="Close resource packs">&#10005;</button>
+    </header>
+
+    <!-- ============ BROWSER PANEL ============ -->
+    <div class="rp-panel">
+        <aside class="rp-side">
+            <button class="rp-red" id="rp-updates">Check For Updates</button>
+            <button class="rp-red" id="rp-clear">Clear Filters</button>
+
+            <div class="rp-group">
+                <div class="rp-group-head" data-group="cats">&#9656; CATEGORIES</div>
+                <div class="rp-group-body" id="rp-cats"></div>
+            </div>
+            <div class="rp-group">
+                <div class="rp-group-head" data-group="feats">&#9656; FEATURES</div>
+                <div class="rp-group-body" id="rp-feats"></div>
+            </div>
+        </aside>
+
+        <main class="rp-main">
+            <div class="rp-bar">
+                <input class="rp-search" id="rp-search" type="text" placeholder="Search..." spellcheck="false" autocomplete="off">
+                <div class="rp-sort" id="rp-sort">
+                    <span id="rp-sort-label">Relevance</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#9aa0aa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                    <div class="rp-sort-menu hidden" id="rp-sort-menu">
+                        <div class="rp-sort-opt" data-sort="relevance">Relevance</div>
+                        <div class="rp-sort-opt" data-sort="downloads">Downloads</div>
+                        <div class="rp-sort-opt" data-sort="updated">Recently Updated</div>
+                    </div>
+                </div>
+            </div>
+            <!-- The grid must NOT be the scroller: this WebKit mis-sizes auto
+                 grid rows (56px clip) when the grid element itself has
+                 overflow — the wrapper scrolls instead. -->
+            <div class="rp-scroll" id="rp-scroll">
+                <div class="rp-grid" id="rp-grid"></div>
+            </div>
+            <div class="rp-status" id="rp-status">Loading resource packs&hellip;</div>
+        </main>
+    </div>
+
+    <div class="rp-toast hidden" id="rp-toast"></div>
+
+    <script src="app.js"></script>
+    <script src="client-tools.js"></script>
+    <script>
+        // ---- Resource packs browser (Modrinth, resourcepack project type) ----
+        const RP_STATE = { q: "", cats: [], feats: [], sort: "relevance", offset: 0 };
+        const RP_LIMIT = 24;
+        let rpSearchTimer = null;
+        let rpInstalling = {};
+        let rpLoading = false;
+        let rpTotal = 0;
+
+        // Sidebar definitions — slugs verified against
+        // https://api.modrinth.com/v2/tag/category?project_type=resourcepack
+        const RP_ICONS = {
+            combat: '<path d="M5 5l9 9M19 5l-9 9M4 20l4-4M20 20l-4-4M8 16l-4 4M16 16l4 4"/>',
+            cursed: '<circle cx="12" cy="10" r="6"/><path d="M9.5 9.5h.01M14.5 9.5h.01M10 17l-1 4M14 17l1 4"/>',
+            decoration: '<path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M10 20v-5h4v5"/>',
+            modded: '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',
+            realistic: '<rect x="3" y="7" width="18" height="12" rx="2.5"/><circle cx="12" cy="13" r="3.4"/><path d="M8.5 7l1.6-2.5h3.8L15.5 7"/>',
+            simplistic: '<circle cx="12" cy="12" r="7.5"/>',
+            themed: '<path d="M4 4h7l9 9-7 7-9-9z"/><circle cx="8.5" cy="8.5" r="1.4"/>',
+            tweaks: '<path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="8" cy="17" r="2"/>',
+            utility: '<path d="M14.5 6a4 4 0 0 0 5 5l-8.4 8.4a2.4 2.4 0 0 1-3.4-3.4L16.1 7.6"/><path d="M14.5 6l-2 2"/>',
+            'vanilla-like': '<path d="M12 4c4 4 7 7.4 7 11a7 7 0 0 1-14 0c0-3.6 3-7 7-11z"/><path d="M12 10v8"/>',
+            audio: '<path d="M5 14v-2a7 7 0 0 1 14 0v2"/><rect x="3.5" y="13" width="4" height="6.5" rx="2"/><rect x="16.5" y="13" width="4" height="6.5" rx="2"/>',
+            blocks: '<path d="M12 3.5l7.5 4v9L12 20.5 4.5 16.5v-9z"/><path d="M4.5 7.5L12 11.5l7.5-4M12 11.5v9"/>',
+            'core-shaders': '<circle cx="12" cy="12" r="4"/><path d="M12 3v2.4M12 18.6V21M3 12h2.4M18.6 12H21M5.6 5.6l1.7 1.7M16.7 16.7l1.7 1.7M18.4 5.6l-1.7 1.7M7.3 16.7l-1.7 1.7"/>',
+            entities: '<circle cx="12" cy="8" r="3.6"/><path d="M5.5 19.5a6.5 6.5 0 0 1 13 0"/>'
+        };
+        const RP_CATS = [
+            ["combat", "Combat"], ["cursed", "Cursed"], ["decoration", "Decoration"],
+            ["modded", "Modded"], ["realistic", "Realistic"], ["simplistic", "Simplistic"],
+            ["themed", "Themed"], ["tweaks", "Tweaks"], ["utility", "Utility"],
+            ["vanilla-like", "Vanilla-Like"]
+        ];
+        const RP_FEATS = [
+            ["audio", "Audio"], ["blocks", "Blocks"],
+            ["core-shaders", "Core-Shaders"], ["entities", "Entities"]
+        ];
+
+        function rpIcon(slug, size) {
+            const path = RP_ICONS[slug] || '<circle cx="12" cy="12" r="7"/>';
+            return '<svg viewBox="0 0 24 24" width="' + (size || 15) + '" height="' + (size || 15) +
+                '" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + path + '</svg>';
+        }
+
+        function rpRenderSide() {
+            const mk = (list, container, key) => {
+                const box = document.getElementById(container);
+                box.innerHTML = "";
+                list.forEach(([slug, label]) => {
+                    const b = document.createElement("button");
+                    b.className = "rp-side-item" + (RP_STATE[key].indexOf(slug) >= 0 ? " active" : "");
+                    b.dataset.slug = slug;
+                    b.innerHTML = rpIcon(slug) + "<span>" + label + "</span>";
+                    b.addEventListener("click", () => {
+                        const arr = RP_STATE[key];
+                        const i = arr.indexOf(slug);
+                        if (i >= 0) arr.splice(i, 1); else arr.push(slug);
+                        rpRenderSide();
+                        rpSearch();
+                    });
+                    box.appendChild(b);
+                });
+            };
+            mk(RP_CATS, "rp-cats", "cats");
+            mk(RP_FEATS, "rp-feats", "feats");
+        }
+
+        function rpBuildUrl(offset) {
+            const facets = [["project_type:resourcepack"]];
+            if (RP_STATE.cats.length) facets.push(RP_STATE.cats.map(c => "categories:" + c));
+            if (RP_STATE.feats.length) facets.push(RP_STATE.feats.map(f => "categories:" + f));
+            let url = "https://api.modrinth.com/v2/search?limit=" + RP_LIMIT +
+                "&offset=" + (offset || 0) +
+                "&index=" + encodeURIComponent(RP_STATE.sort) +
+                "&facets=" + encodeURIComponent(JSON.stringify(facets));
+            if (RP_STATE.q) url += "&query=" + encodeURIComponent(RP_STATE.q);
+            return url;
+        }
+
+        function rpStatus(msg) {
+            const el = document.getElementById("rp-status");
+            el.textContent = msg || "";
+            el.classList.toggle("hidden", !msg);
+        }
+
+        function rpToast(msg, isErr) {
+            const t = document.getElementById("rp-toast");
+            t.textContent = msg;
+            t.classList.toggle("rp-toast-err", !!isErr);
+            t.classList.remove("hidden");
+            t.classList.add("show");
+            clearTimeout(t._timer);
+            clearTimeout(t._timer2);
+            t._timer = setTimeout(() => {
+                t.classList.remove("show");
+                t._timer2 = setTimeout(() => t.classList.add("hidden"), 260);
+            }, 4200);
+        }
+
+        function rpRender(hits, append) {
+            const grid = document.getElementById("rp-grid");
+            if (!append) grid.innerHTML = "";
+            if (!hits || !hits.length) {
+                if (!append) {
+                    rpStatus("No resource packs found. Try another search or clear filters.");
+                }
+                return;
+            }
+            rpStatus("");
+            hits.forEach(h => {
+                const card = document.createElement("div");
+                card.className = "rp-card";
+                const art = h.featured_gallery || (h.gallery && h.gallery[0]) || h.icon_url || "";
+                const catChips = (h.display_categories && h.display_categories.length ? h.display_categories : (h.categories || []))
+                    .slice(0, 5)
+                    .map(c => '<span class="rp-chip">' + c.replace(/-/g, " ") + "</span>").join("");
+                card.innerHTML =
+                    '<div class="rp-card-media">' +
+                    (art ? '<img src="' + art + '" alt="" onerror="this.style.display=\'none\'">' : "") +
+                    '<div class="rp-card-install"><span>INSTALL</span></div>' +
+                    "</div>" +
+                    '<div class="rp-card-body">' +
+                    '<div class="rp-card-row">' +
+                    '<div class="rp-card-name">' + rpEscape(h.title) + '<span class="rp-by"> by ' + rpEscape(h.author || "unknown") + "</span></div>" +
+                    '<div class="rp-card-dl"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10M7.5 10L12 14.5 16.5 10M5 19h14"/></svg>' +
+                    "<span>" + (h.downloads || 0) + "</span></div>" +
+                    "</div>" +
+                    '<div class="rp-card-desc">' + rpEscape(h.description || "") + "</div>" +
+                    '<div class="rp-card-chips">' + catChips + "</div>" +
+                    "</div>";
+                card.addEventListener("click", () => rpInstall(h.project_id, h.title));
+                grid.appendChild(card);
+            });
+        }
+
+        function rpEscape(s) {
+            return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+        }
+
+        async function rpFetch(append) {
+            if (rpLoading) return;
+            rpLoading = true;
+            if (!append) rpStatus("Loading resource packs\u2026");
+            try {
+                const resp = await fetch(rpBuildUrl(RP_STATE.offset));
+                if (!resp.ok) throw new Error("HTTP " + resp.status);
+                const data = await resp.json();
+                rpTotal = data.total_hits || 0;
+                rpRender(data.hits, append);
+                RP_STATE.offset += (data.hits ? data.hits.length : 0);
+                rpMaybeFill();
+            } catch (e) {
+                if (append) {
+                    rpToast("Couldn't load more packs.", true);
+                } else {
+                    rpStatus("Couldn't reach Modrinth — check your connection and try again.");
+                }
+                console.log("[bat] respacks search failed: " + e);
+            } finally {
+                rpLoading = false;
+            }
+        }
+
+        function rpSearch() {
+            RP_STATE.offset = 0;
+            rpFetch(false);
+        }
+
+        function rpMore() {
+            if (rpLoading || RP_STATE.offset <= 0 || RP_STATE.offset >= rpTotal) return;
+            rpFetch(true);
+        }
+
+        // If the current page doesn't even fill the viewport, keep fetching so
+        // the scroll listener has something to trigger on.
+        function rpMaybeFill() {
+            const sc = document.getElementById("rp-scroll");
+            if (!sc) return;
+            if (sc.scrollHeight <= sc.clientHeight + 8 && RP_STATE.offset < rpTotal) {
+                rpFetch(true);
+            }
+        }
+
+        function rpInstall(id, title) {
+            if (!id || rpInstalling[id]) return;
+            rpInstalling[id] = true;
+            rpToast("Installing " + title + "\u2026");
+            callBat("installrespack:" + id);
+        }
+
+        // Java calls this (WebController.queueScript) when the download finishes.
+        window.__rpInstallDone = function (ok, message) {
+            rpInstalling = {};
+            if (ok) {
+                rpToast("Installed — apply it in Options \u203A Resource Packs.");
+            } else {
+                rpToast("Install failed: " + message, true);
+            }
+        };
+
+        // ---- wiring ----
+        document.getElementById("rp-search").addEventListener("input", e => {
+            RP_STATE.q = e.target.value.trim();
+            clearTimeout(rpSearchTimer);
+            rpSearchTimer = setTimeout(rpSearch, 350);
+        });
+
+        const sortBox = document.getElementById("rp-sort");
+        const sortMenu = document.getElementById("rp-sort-menu");
+        sortBox.addEventListener("click", e => {
+            if (e.target.closest(".rp-sort-opt")) return;
+            sortMenu.classList.toggle("hidden");
+        });
+        document.querySelectorAll(".rp-sort-opt").forEach(opt => {
+            opt.addEventListener("click", () => {
+                RP_STATE.sort = opt.dataset.sort;
+                document.getElementById("rp-sort-label").textContent = opt.textContent;
+                sortMenu.classList.add("hidden");
+                rpSearch();
+            });
+        });
+        document.addEventListener("click", e => {
+            if (!sortBox.contains(e.target)) sortMenu.classList.add("hidden");
+        });
+
+        document.getElementById("rp-clear").addEventListener("click", () => {
+            RP_STATE.q = "";
+            RP_STATE.cats = [];
+            RP_STATE.feats = [];
+            document.getElementById("rp-search").value = "";
+            rpRenderSide();
+            rpSearch();
+            rpToast("Filters cleared.");
+        });
+        document.getElementById("rp-updates").addEventListener("click", () => {
+            rpSearch();
+            rpToast("Checked for updates — feed refreshed.");
+        });
+        document.querySelectorAll(".rp-group-head").forEach(head => {
+            head.addEventListener("click", () => {
+                head.classList.toggle("collapsed");
+            });
+        });
+
+        rpRenderSide();
+        rpSearch();
+
+        // Infinite scroll: fetch the next page when nearing the bottom.
+        document.getElementById("rp-scroll").addEventListener("scroll", e => {
+            const sc = e.target;
+            if (sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 400) rpMore();
+        }, { passive: true });
+    </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+allprojects {
+    afterEvaluate {
+        def compileFixture=tasks.register('compileLauncherComparison',JavaCompile){
+            source file('scripts/LauncherComparisonSmoke.java')
+            source file('scripts/FlightRouteController.java')
+            source file('scripts/CustomRenderingNativeChecks.java')
+            classpath=sourceSets.main.compileClasspath
+            destinationDirectory=layout.buildDirectory.dir('launcher-comparison/classes')
+            options.release=21
+        }
+        def meta=tasks.register('launcherComparisonMetadata'){
+            outputs.dir layout.buildDirectory.dir('launcher-comparison/metadata')
+            doLast {
+                def f=layout.buildDirectory.file('launcher-comparison/metadata/fabric.mod.json').get().asFile
+                f.parentFile.mkdirs();f.text='{"schemaVersion":1,"id":"bat_launcher_comparison","version":"1.0.0","environment":"client","entrypoints":{"client":["LauncherComparisonSmoke"]},"depends":{"minecraft":"1.21.1","fabric-api":"*"}}'
+            }
+        }
+        def fixtureJar=tasks.register('jarLauncherComparison',Jar){
+            dependsOn compileFixture,meta
+            from compileFixture.flatMap{it.destinationDirectory}
+            from layout.buildDirectory.dir('launcher-comparison/metadata')
+            archiveFileName='comparison-named.jar'
+            destinationDirectory=layout.buildDirectory.dir('launcher-comparison')
+        }
+        def remapType=tasks.named('remapJar').get().class.superclass
+        tasks.register('remapLauncherComparison',remapType){
+            dependsOn fixtureJar
+            inputFile=fixtureJar.flatMap{it.archiveFile}
+            archiveFileName='comparison-intermediary.jar'
+            destinationDirectory=layout.buildDirectory.dir('launcher-comparison')
+            addNestedDependencies=false
+        }
+        // PRIVATE control only: run development classes under the launcher's
+        // intermediary namespace. Never replace the protected remapJar output.
+        tasks.register('remapReadableComparison',remapType){
+            dependsOn tasks.named('jar')
+            inputFile=tasks.named('jar').flatMap{it.archiveFile}
+            archiveFileName='readable-intermediary-private.jar'
+            destinationDirectory=layout.buildDirectory.dir('launcher-comparison')
+            addNestedDependencies=true
+        }
+    }
+}

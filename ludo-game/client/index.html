@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ludo — Play with a friend</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- Landing -->
+    <section id="landing" class="screen">
+      <div class="card">
+        <h1 class="logo">LUDO</h1>
+        <p class="tagline">2-player online board game.<br>Two devices, any network.</p>
+
+        <div class="field">
+          <label for="nameInput">Your name</label>
+          <input id="nameInput" type="text" maxlength="16" placeholder="Enter your name" autocomplete="off">
+        </div>
+
+        <button id="createBtn" class="btn primary">Create a room</button>
+
+        <div class="divider"><span>or</span></div>
+
+        <div class="field">
+          <label for="joinCode">Room code</label>
+          <input id="joinCode" type="text" maxlength="4" placeholder="ABCD" autocomplete="off" style="text-transform:uppercase">
+        </div>
+        <button id="joinBtn" class="btn">Join a room</button>
+        <p id="landingError" class="error"></p>
+        <p id="connStatus" class="status hidden"></p>
+      </div>
+    </section>
+
+    <!-- Waiting -->
+    <section id="waiting" class="screen hidden">
+      <div class="card">
+        <h2>Room created</h2>
+        <p>Share this code with your friend:</p>
+        <div class="code-big" id="roomCode">----</div>
+        <button id="copyLinkBtn" class="btn primary">Copy invite link</button>
+        <p class="hint">Your friend opens the link and joins. The game starts automatically when both players are in.</p>
+        <p id="waitStatus"></p>
+        <button id="cancelRoomBtn" class="btn ghost">Leave room</button>
+      </div>
+    </section>
+
+    <!-- Game -->
+    <section id="game" class="screen hidden">
+      <div class="topbar">
+        <div id="meTag" class="player-tag"></div>
+        <div id="turnBanner"></div>
+        <div id="oppTag" class="player-tag"></div>
+      </div>
+
+      <div class="layout">
+        <div class="board-wrap">
+          <canvas id="board" width="600" height="600"></canvas>
+        </div>
+
+        <aside class="side">
+          <canvas id="die" width="96" height="96"></canvas>
+          <button id="rollBtn" class="btn primary big hidden">Roll the dice</button>
+
+          <div id="lastMove" class="lastmove"></div>
+
+          <div id="log" class="log"></div>
+
+          <div class="chatbox">
+            <input id="chatInput" type="text" maxlength="120" placeholder="Message your opponent…" autocomplete="off">
+          </div>
+
+          <div class="actions">
+            <button id="rematchBtn" class="btn ghost hidden">Rematch</button>
+            <button id="leaveBtn" class="btn ghost">Leave</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="hidden"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/shared/rules.js"></script>
+  <script src="/js/main.js"></script>
+</body>
+</html>

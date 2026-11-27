@@ -1,0 +1,23 @@
+modLoader="javafml"
+loaderVersion="[54,)"
+license="LicenseRef-Bat-Client-Proprietary"
+
+[[mods]]
+modId="batclient"
+version="0.1.0-forge-internal"
+displayName="Bat Client INTERNAL Forge port"
+description="Internal test only. Full source integration under validation and is not a supported release."
+
+[[dependencies.batclient]]
+modId="forge"
+mandatory=true
+versionRange="[54.1.22,)"
+ordering="NONE"
+side="CLIENT"
+
+[[dependencies.batclient]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.21.4]"
+ordering="NONE"
+side="CLIENT"

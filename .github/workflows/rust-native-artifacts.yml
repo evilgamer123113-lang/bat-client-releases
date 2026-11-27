@@ -1,0 +1,80 @@
+name: Rust native build artifacts
+on:
+  push:
+    branches: ['build/rust-native-*']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+            bundles: appimage,deb
+          - runner: macos-15-intel
+            target: x86_64-apple-darwin
+            bundles: app,dmg
+          - runner: macos-15
+            target: aarch64-apple-darwin
+            bundles: app,dmg
+    runs-on: ${{ matrix.runner }}
+    defaults:
+      run:
+        working-directory: launcher-rust
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - name: Linux native dependencies
+        if: runner.os == 'Linux'
+        run: |
+          printf '%s\n' 'deb http://archive.ubuntu.com/ubuntu jammy main universe' 'deb http://archive.ubuntu.com/ubuntu jammy-updates main universe' 'deb http://security.ubuntu.com/ubuntu jammy-security main universe' > "$RUNNER_TEMP/ubuntu.list"
+          apt_opts=(-o "Dir::Etc::sourcelist=$RUNNER_TEMP/ubuntu.list" -o 'Dir::Etc::sourceparts=-' -o Acquire::Retries=2 -o Acquire::http::Timeout=20)
+          sudo apt-get "${apt_opts[@]}" update
+          sudo apt-get "${apt_opts[@]}" install -y libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf libxdo-dev
+      - name: Build packages
+        env:
+          APPIMAGE_EXTRACT_AND_RUN: '1'
+          APPLE_SIGNING_IDENTITY: '-'
+        run: |
+          printf '%s\n' '{"bundle":{"createUpdaterArtifacts":false}}' > "$RUNNER_TEMP/bundle.json"
+          npm exec --yes --package @tauri-apps/cli@2.12.4 -- tauri build --target '${{ matrix.target }}' --bundles '${{ matrix.bundles }}' --config "$RUNNER_TEMP/bundle.json"
+      - name: Collect Mac installers and updater archive
+        if: runner.os == 'macOS'
+        run: |
+          bundle='src-tauri/target/${{ matrix.target }}/release/bundle'
+          mkdir -p artifacts
+          app="$bundle/macos/Bat Client.app"
+          codesign --verify --deep --strict "$app"
+          executable=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$app/Contents/Info.plist")
+          file "$app/Contents/MacOS/$executable"
+          tar -czf 'artifacts/Bat Client.app.tar.gz' -C "$bundle/macos" 'Bat Client.app'
+          for dmg in "$bundle"/dmg/*.dmg; do
+            hdiutil verify "$dmg"
+            cp "$dmg" artifacts/
+          done
+      - name: Collect Linux packages
+        if: runner.os == 'Linux'
+        run: |
+          bundle='src-tauri/target/${{ matrix.target }}/release/bundle'
+          mkdir -p artifacts
+          cp "$bundle"/appimage/*.AppImage "$bundle"/deb/*.deb artifacts/
+          file artifacts/*.AppImage
+          dpkg-deb --info artifacts/*.deb
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rust-launcher-${{ matrix.target }}
+          path: launcher-rust/artifacts/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7

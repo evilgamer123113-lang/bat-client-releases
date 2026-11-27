@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://ads.halalspark.co.uk">
+    <link rel="dns-prefetch" href="https://ads.halalspark.co.uk">
+    <title>Contact Us | Bat Client</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --bg-soft: #0b0b0c;
+            --ink: #f4f4f2;
+            --ink-dim: #9c9c98;
+            --ink-faint: #6b6b68;
+            --line: #1a1a1d;
+            --font-head: 'DM Sans', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+            --nav-h: 72px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--ink); font-family: var(--font-body); line-height: 1.7; padding-top: var(--nav-h); -webkit-font-smoothing: antialiased; }
+        a { color: inherit; }
+
+        /* ---------- nav ---------- */
+        .nav {
+            position: fixed; top: 0; left: 0; width: 100%; height: var(--nav-h);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 clamp(1.25rem, 4vw, 3rem);
+            background: rgba(10,10,10,0.82); backdrop-filter: blur(14px);
+            z-index: 1000; border-bottom: 1px solid var(--line);
+        }
+        .nav-brand { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; }
+        .nav-brand img { height: 34px; width: auto; display: block; }
+        .nav-brand b { font-family: var(--font-head); font-weight: 700; font-size: 1.2rem; letter-spacing: 0.3px; }
+        .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+        .nav-links a { color: var(--ink-dim); text-decoration: none; font-size: 0.92rem; font-weight: 500; transition: color 0.2s ease; }
+        .nav-links a:hover { color: var(--ink); }
+        .nav-cta { color: var(--bg) !important; background: var(--ink); border-radius: 6px; padding: 0.5rem 1.1rem; font-weight: 700 !important; }
+        .nav-cta:hover { color: var(--bg) !important; background: #ffffff; }
+
+        /* ---------- content ---------- */
+        .content { max-width: 900px; margin: 0 auto; padding: 4.5rem clamp(1.25rem, 4vw, 3rem) 5rem; }
+        .page-head { margin-bottom: 3rem; }
+        .page-head h1 { font-family: var(--font-head); font-size: clamp(2.2rem, 5vw, 3.2rem); letter-spacing: -0.02em; line-height: 1.05; margin-bottom: 0.6rem; }
+        .page-head .sub { color: var(--ink-dim); font-size: 1.02rem; max-width: 40rem; }
+        .section h2 {
+            font-family: var(--font-head); font-size: 1.35rem; font-weight: 700; color: var(--ink);
+            margin: 3rem 0 1rem; padding-top: 1.5rem; border-top: 1px solid var(--line);
+        }
+        .section h2:first-of-type { border-top: none; padding-top: 0; }
+        .section p, .section li, .section .txt { color: var(--ink-dim); margin-bottom: 1rem; font-size: 0.97rem; line-height: 1.75; }
+        .section ul, .section ol { padding-left: 1.4rem; margin-bottom: 1rem; }
+        .section li { margin-bottom: 0.5rem; }
+        .section strong { color: var(--ink); font-weight: 600; }
+        .section a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+        .section code { background: #141417; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; color: var(--ink); }
+        .troubleshooting-steps { counter-reset: step; list-style: none; padding-left: 0; }
+        .troubleshooting-steps li { counter-increment: step; padding-left: 2.6rem; position: relative; margin-bottom: 1rem; color: var(--ink-dim); }
+        .troubleshooting-steps li::before {
+            content: counter(step); position: absolute; left: 0; top: 0.15rem;
+            width: 1.8rem; height: 1.8rem; background: #121214; border: 1px solid var(--line);
+            border-radius: 6px; display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-head); font-size: 0.8rem; font-weight: 700; color: var(--ink);
+        }
+
+        .contact-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
+        .contact-card { background: var(--bg-soft); padding: 2rem; border-radius: 10px; border: 1px solid var(--line); transition: border-color 0.2s; }
+        .contact-card:hover { border-color: var(--ink-faint); }
+        .contact-card h3 { font-family: var(--font-head); font-size: 1.15rem; color: var(--ink); margin-bottom: 0.6rem; }
+        .contact-card a { color: var(--ink); text-decoration: underline; font-weight: 600; text-underline-offset: 3px; word-break: break-all; }
+        .contact-card p { color: var(--ink-dim); font-size: 0.9rem; margin-bottom: 0.8rem; }
+
+        /* ---------- footer ---------- */
+        footer { border-top: 1px solid var(--line); background: var(--bg); }
+        .footer-inner { max-width: 1280px; margin: 0 auto; padding: 3.5rem clamp(1.25rem,4vw,3rem) 2rem; }
+        .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; padding-bottom: 3rem; }
+        .footer-brand img { height: 30px; width: auto; margin-bottom: 1rem; }
+        .footer-brand p { color: var(--ink-dim); font-size: 0.88rem; max-width: 22rem; }
+        .footer-col h3 { font-family: var(--font-head); font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 1rem; }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+        .footer-col a { color: var(--ink-dim); text-decoration: none; font-size: 0.92rem; transition: color 0.2s; }
+        .footer-col a:hover { color: var(--ink); }
+        .footer-bottom { border-top: 1px solid var(--line); padding-top: 1.6rem; color: var(--ink-faint); font-size: 0.82rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+        .footer-disclaimer { margin-top: 1.4rem; padding-top: 1.2rem; border-top: 1px solid var(--line); color: var(--ink-faint); font-size: 0.75rem; line-height: 1.6; max-width: 60rem; }
+        .footer-disclaimer a { color: var(--ink-dim); text-decoration: underline; text-underline-offset: 3px; }
+
+        /* ---------- intro card ---------- */
+        .intro-card {
+            background: var(--bg-soft); border: 1px solid var(--line); border-radius: 10px;
+            padding: 1.8rem 2rem; margin: 5rem 0 3rem;
+        }
+        .intro-card p { margin-bottom: 0; }
+
+        @media (max-width: 900px) {
+            .nav-links { display: none; }
+            .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
+            .footer-brand { grid-column: span 2; }
+        }
+        @media (max-width: 620px) {
+            .contact-methods { grid-template-columns: 1fr; }
+            .footer-top { grid-template-columns: 1fr; }
+            .footer-brand { grid-column: span 1; }
+        }
+    </style>
+
+    <meta name="description" content="Contact the Bat Client team for bug reports, security issues and partnerships. Discord support is fastest; email gets a reply in 48-72 hours.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://batclient.xyz/contact.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Bat Client">
+    <meta property="og:title" content="Contact Us | Bat Client">
+    <meta property="og:description" content="Reach the Bat Client team — bug reports, security disclosures and partnerships. Email or join the Discord community.">
+    <meta property="og:url" content="https://batclient.xyz/contact.html">
+    <meta property="og:image" content="https://batclient.xyz/bat-logo.png">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Contact Us | Bat Client">
+    <meta name="twitter:description" content="Bug reports, security issues and partnerships — contact the Bat Client team.">
+    <meta name="twitter:image" content="https://batclient.xyz/bat-logo.png">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      "name": "Contact Us | Bat Client",
+      "url": "https://batclient.xyz/contact.html",
+      "about": {"@type": "Organization", "name": "Bat Client", "url": "https://batclient.xyz/"}
+    }
+    </script>
+</head>
+<body>
+    <nav class="nav">
+        <a href="index.html" class="nav-brand">
+            <img src="bat-logo.png" alt="Bat Client Logo">
+            <b>Bat Client</b>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html#features">Features</a></li>
+            <li><a href="index.html#compare">Compare</a></li>
+            <li><a href="index.html#faq">FAQ</a></li>
+            <li><a href="changelog.html">Changelog</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <a href="download.html" class="nav-cta">Download</a>
+    </nav>
+
+    <div class="content">
+        <div class="page-head">
+            <h1>Contact Us</h1>
+            <div class="sub">A real person reads these messages. Here's the best way to reach us, depending on what you're dealing with.</div>
+        </div>
+
+        <div class="section">
+            <div class="intro-card">
+                <p>Bat Client is built by a small team, and we try to actually read and answer everything that comes in. Before you write, check the <a href="index.html#faq">FAQ</a> — most quick questions are already answered there.</p>
+            </div>
+
+            <h2>Technical support</h2>
+            <p>If something isn't working, run through these first. Most common problems clear up in a minute or two:</p>
+            <ol class="troubleshooting-steps">
+                <li>Make sure your Minecraft version matches a supported one (Forge: 1.7.10, 1.8.9, 1.12.2 / Fabric: 1.16.5, 1.18.2, 1.19.4, 1.20.1, 26.2+).</li>
+                <li>Double-check your mod loader version. Bat Client needs Forge or Fabric depending on your Minecraft version.</li>
+                <li>Turn off other performance mods (OptiFine, Sodium, etc.) before reporting a problem. They can fight Bat Client's optimizations and cause exactly the crashes you're seeing.</li>
+                <li>Clear the Bat Client config folder and let it rebuild defaults. A corrupt config is one of the most common crash sources.</li>
+                <li>Check the crash log at <code>.minecraft/logs/latest.log</code> for anything mentioning Bat Client.</li>
+            </ol>
+            <div class="txt">If none of that fixes it, paste the crash log into your message — it saves us a round-trip and gets you an answer faster.</div>
+
+            <h2>Bug reports &amp; security issues</h2>
+            <p>Found a bug or a crash? Include these and we can usually pinpoint it quickly:</p>
+            <ul>
+                <li><strong>Minecraft version</strong> and mod loader (Forge or Fabric, with the exact version)</li>
+                <li><strong>Bat Client version</strong> (visible in the mod settings)</li>
+                <li><strong>Steps to reproduce</strong> — what you were doing when it happened</li>
+                <li><strong>Crash log or error output</strong> from the launcher</li>
+                <li><strong>Operating system</strong> (Windows 10/11, macOS version, or Linux distro)</li>
+            </ul>
+            <div class="txt">If it's a security issue that could affect users' data, email us directly instead of posting it publicly on Discord. We'll acknowledge within 24 hours.</div>
+
+            <h2>Partnerships &amp; creators</h2>
+            <p>Making videos about Bat Client or running a server that wants to recommend it? We're keen. When you reach out, tell us:</p>
+            <ul>
+                <li>Links to your YouTube channel, Twitch, or wherever you post</li>
+                <li>A rough sense of your audience and what you make</li>
+                <li>What kind of collaboration you have in mind</li>
+            </ul>
+
+            <h2>What to expect</h2>
+            <ul>
+                <li><strong>Discord</strong> — Fastest for casual questions. Someone's usually around every day.</li>
+                <li><strong>Email</strong> — Best for bug reports, security stuff, and partnerships. Expect a reply in 48–72 hours.</li>
+                <li><strong>Details help</strong> — The more specifics you include, the quicker we can give you a real answer instead of a shrug.</li>
+            </ul>
+
+            <div class="contact-methods">
+                <div class="contact-card">
+                    <h3>Email</h3>
+                    <p>Bug reports, security disclosures, partnerships, legal.</p>
+                    <a href="mailto:batsupport@batclient.xyz">batsupport@batclient.xyz</a>
+                </div>
+                <div class="contact-card">
+                    <h3>Discord</h3>
+                    <p>Real-time support, community chat, quick questions.</p>
+                    <a href="https://batclient.xyz/discord" target="_blank" rel="noopener noreferrer">batclient.xyz/discord</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <img src="bat-logo.png" alt="Bat Client Logo">
+                    <p>A Minecraft performance client focused on one thing: making the game run better on the hardware you've already got.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Client</h3>
+                    <ul>
+                        <li><a href="index.html#features">Features</a></li>
+                        <li><a href="index.html#compare">Compare</a></li>
+                        <li><a href="index.html#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Community</h3>
+                    <ul>
+                        <li><a href="https://batclient.xyz/discord" target="_blank">Discord</a></li>
+                        <li><a href="https://www.youtube.com/@ravenplayzzdev" target="_blank">YouTube</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="terms.html">Terms</a></li>
+                        <li><a href="privacy.html">Privacy</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="javascript:void(0)" onclick="BatConsent.show()">Ad Consent</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 Bat Client. All rights reserved.</span>
+                <span>Bat Client by Raven — made for players, not dashboards.</span>
+            </div>
+            <p class="footer-disclaimer">Bat Client is not the same as, and is not affiliated with, <a href="https://batmod.com/" target="_blank" rel="noopener noreferrer">Bat Mod (batmod.com)</a> or BatMUD. Three separate projects, three different teams.</p>
+        </div>
+    </footer>
+
+    <script src="consent-manager.js"></script>
+    <script src="ads-loader.js"></script>
+    <script>
+        window.BatAds && window.BatAds.refresh();
+    </script>
+</body>
+</html>

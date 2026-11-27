@@ -1,0 +1,12 @@
+pluginManagement {
+    repositories {
+        maven { url 'https://maven.architectury.dev/' }
+        maven { url 'https://maven.minecraftforge.net/' }
+        maven { url 'https://maven.fabricmc.net/' }
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+rootProject.name = 'bat-client-forge-1.21.11-internal'
+include 'web-runtime'
+project(':web-runtime').projectDir=file('../forge-web-runtime')

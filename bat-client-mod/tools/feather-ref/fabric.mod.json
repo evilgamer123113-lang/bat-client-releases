@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "feather",
+  "version": "release/743f0ee9",
+  "name": "Feather Client",
+  "description": "The ultimate client with FPS Boost and unlimited flexibility",
+  "authors": [
+    "Digital Ingot, Inc."
+  ],
+  "contact": {
+    "homepage": "https://feathermc.com/",
+    "issues": "https://feathermc.com/discord"
+  },
+  "license": "All Rights Reserved",
+  "icon": "feather_logo.png",
+  "environment": "client",
+  "entrypoints": {
+    "main": [
+      "net.digitalingot.feather.FeatherMod"
+    ]
+  },
+  "mixins": [
+    "mixins.feather.core.json",
+    "mixins.feather.json"
+  ],
+  "accessWidener": "feather.accesswidener",
+  "depends": {
+    "fabricloader": "*",
+    "minecraft": "*",
+    "java": "*"
+  }
+}

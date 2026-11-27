@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "artifacts": {
+    "ultralight-bindings-1.0.0-SNAPSHOT.jar": {
+      "sha512": "99bc61590f45689f9368c09cecc9341d5829d3ebe1892a69eb12349123644f67606b49ef887bb19485d6a827e0176536f7b99f415f84c6e5b4073521fa568d7d"
+    },
+    "ultralight-bindings-1.0.0-SNAPSHOT-windows-x64.jar": {
+      "sha512": "b3694ede942f5b5f99505438e47030eb7f33d2f7de56334e28e89db9b9eb2c49ef790eb80e0447264d4d2847c03e24fa1adaeacd9c523d8f6b86e2996a9dc47c"
+    },
+    "ultralight-bindings-1.0.0-SNAPSHOT-linux-x64.jar": {
+      "sha512": "e1efde1742c52ad2b23471e178fa8c4d08979986490306d6bfad6f172e5668b9a139fae514f712b2c51998ba38541c865e1921f830470183e60c5ba30bc4b4d4"
+    },
+    "ultralight-bindings-1.0.0-SNAPSHOT-mac-x64.jar": {
+      "sha512": "0731af95daa877a7648ef47a4b5e1ac55eb237879fecc5bf14c75f1133224e183b4eea1109e9d55021c14097a3132855d6ded2cd228092612315f6d5b7effd9f"
+    },
+    "ultralight-bindings-1.0.0-SNAPSHOT-mac-arm64.jar": {
+      "sha512": "f4fac08f7b170fe47185201e91dc2b56f8c4eb340351fb619c693c3232484d57034a507ac82b39cfce9692ccbf1fb10bb6e8c0b3b9b4141e8451df5e88c9791c"
+    }
+  }
+}

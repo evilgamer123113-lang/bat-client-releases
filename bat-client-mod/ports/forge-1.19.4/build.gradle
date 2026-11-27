@@ -1,0 +1,212 @@
+plugins { id 'dev.architectury.loom' version '1.17.487' }
+group='com.batclient.internal'
+version='0.1.0-forge-internal'
+base { archivesName='bat-client-forge-1.19.4-INTERNAL-UNVERIFIED' }
+repositories {
+    exclusiveContent {
+        forRepository { maven { url 'https://repo.maven.apache.org/maven2/' } }
+        filter { includeGroup 'io.github.juuxel' }
+    }
+    mavenCentral()
+    maven { url 'https://maven.fabricmc.net/' }
+    maven { url 'https://repo.repsy.io/nilsen84/maven' }
+}
+configurations { webBinding; webNatives }
+evaluationDependsOn(':web-runtime')
+def combinedWebLibrary=project(':web-runtime').tasks.named('jar')
+def verifyWebLibrary=tasks.register('verifyWebLibrary') {
+    dependsOn combinedWebLibrary
+    inputs.file combinedWebLibrary.flatMap { it.archiveFile }
+    doLast {
+        new java.util.zip.ZipFile(combinedWebLibrary.get().archiveFile.get().asFile).withCloseable { merged ->
+            if(merged.getEntry('io/github/nilsen84/ultralight/UltralightLoader.class')==null)
+                throw new GradleException('Forge web runtime is missing its loader class')
+            new java.util.zip.ZipFile(configurations.webNatives.singleFile).withCloseable { original ->
+                ['Sph0.dll','Sph1.dll','Sph2.dll','Sph3.dll','ultralight-jni.dll'].each { name ->
+                    def path='io/github/nilsen84/ultralight/natives/windows-x64/'+name
+                    if(merged.getEntry(path)==null||original.getEntry(path)==null)
+                        throw new GradleException('Missing native in Forge web module: '+name)
+                    def digest={ zip -> zip.getInputStream(zip.getEntry(path)).withCloseable { stream -> java.security.MessageDigest.getInstance('SHA-256').digest(stream.readAllBytes()) } }
+                    if(!java.util.Arrays.equals(digest(merged),digest(original)))
+                        throw new GradleException('Forge native bytes changed: '+name)
+                }
+            }
+        }
+        logger.lifecycle('FORGE_WEB_MODULE_OK: loader and all five byte-identical native libraries share one module')
+    }
+}
+dependencies {
+    minecraft 'com.mojang:minecraft:1.19.4'
+    mappings 'net.fabricmc:yarn:1.19.4+build.2:v2'
+    forge 'net.minecraftforge:forge:1.19.4-45.4.0'
+    webBinding('io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT') { transitive=false }
+    webNatives('io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:windows-x64') { transitive=false }
+    implementation files(combinedWebLibrary.flatMap { it.archiveFile })
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.3.10'
+    include project(':web-runtime')
+    include('org.jetbrains.kotlin:kotlin-stdlib:2.3.10') { transitive=false }
+}
+configurations { obfuscator }
+dependencies { obfuscator 'com.guardsquare:proguard-base:7.6.1' }
+def forgeRules=tasks.register('prepareForgeProtection') {
+    inputs.file '../../proguard.pro'
+    outputs.file layout.buildDirectory.file('private-obfuscation/forge.pro')
+    doLast {
+        def rules=layout.buildDirectory.file('private-obfuscation/forge.pro').get().asFile
+        rules.parentFile.mkdirs()
+        rules.setText(file('../../proguard.pro').getText('UTF-8')+'\n-keep class com.batclient.platform.forge.** { *; }\n-keep class com.batclient.platform.mc1194.** { *; }\n','UTF-8')
+    }
+}
+def obfuscate=tasks.register('obfuscateJava',JavaExec) {
+    dependsOn tasks.named('jar'),forgeRules
+    classpath=configurations.obfuscator
+    mainClass='proguard.ProGuard'
+    maxHeapSize='2G'
+    inputs.file tasks.named('jar').flatMap { it.archiveFile }
+    inputs.file layout.buildDirectory.file('private-obfuscation/forge.pro')
+    outputs.file layout.buildDirectory.file('protected/bat-client-forge.jar')
+    outputs.file layout.buildDirectory.file('private-obfuscation/mapping.txt')
+    doFirst {
+        def protectedJar=layout.buildDirectory.file('protected/bat-client-forge.jar').get().asFile
+        protectedJar.parentFile.mkdirs()
+        def arguments=['@'+layout.buildDirectory.file('private-obfuscation/forge.pro').get().asFile.absolutePath,
+            '-injars',tasks.named('jar').get().archiveFile.get().asFile.absolutePath,
+            '-outjars',protectedJar.absolutePath,'-printmapping',layout.buildDirectory.file('private-obfuscation/mapping.txt').get().asFile.absolutePath]
+        configurations.compileClasspath.files.each { arguments.addAll(['-libraryjars',it.absolutePath]) }
+        ['java.base','java.desktop','java.net.http','java.logging','java.management','jdk.unsupported'].each { module ->
+            arguments.addAll(['-libraryjars',new File(System.getProperty('java.home'),'jmods/'+module+'.jmod').absolutePath+'(!**.jar;!module-info.class)'])
+        }
+        setArgs(arguments)
+    }
+}
+tasks.named('remapJar') {
+    dependsOn obfuscate,verifyWebLibrary
+    inputFile.set(layout.buildDirectory.file('protected/bat-client-forge.jar'))
+}
+java { toolchain.languageVersion=JavaLanguageVersion.of(21) }
+tasks.named('compileJava') { dependsOn verifyWebLibrary }
+// The game/toolchain use Java 21; upstream Forge 47's Mixin requires genuine
+// Java 17-compatible mixin bytecode. Shared adapters remove newer JDK API calls.
+tasks.withType(JavaCompile).configureEach { options.release=17 }
+sourceSets.main.java {
+    srcDir '../../src/main/java'
+    srcDir '../forge/src/main/java'
+    exclude 'com/batclient/platform/fabric/**'
+    exclude 'com/batclient/performance/PerformanceMixinPlugin.java'
+    // Forge 47's native factory event handles custom tooltip data.
+    exclude 'com/batclient/platform/forge/mixin/ForgeTooltipComponentMixin.java'
+}
+sourceSets.main.resources {
+    srcDir '../../src/main/resources'
+    exclude 'fabric.mod.json'
+    exclude 'META-INF/services/**'
+    exclude 'assets/batclient/web/**'
+}
+processResources {
+    inputs.property('upstreamMixinCompatibility','JAVA_17')
+    filesMatching('*.mixins.json') {
+        filter { line -> line.replace('JAVA_21','JAVA_17') }
+    }
+    from('src/loader-services') { into 'META-INF/services' }
+    filesMatching('batclient.mixins.json') {
+        filter { line -> line.replace('com.batclient.performance.PerformanceMixinPlugin','com.batclient.platform.forge.ForgePerformanceMixinPlugin') }
+    }
+    duplicatesStrategy=DuplicatesStrategy.EXCLUDE
+}
+def internalRunPath='build/internal-runtime-'+(project.findProperty('internalRunId') ?: 'default')
+loom {
+    forge {
+        mixinConfig 'batclient.mixins.json'
+        mixinConfig 'batclient-forge-hooks.mixins.json'
+    }
+    runs { client { client(); runDir internalRunPath; name 'Bat Client INTERNAL Forge 1.19.4'; vmArg '-Dbatclient.internalSmoke=true'; vmArg '-Dbatclient.test.noPresence=true' } }
+}
+tasks.named('runClient') {
+    if(providers.gradleProperty('diagnosticMixin').isPresent()) jvmArgs '-Dmixin.debug.export=true'
+    timeout=java.time.Duration.ofMinutes(4)
+    doFirst { java.nio.file.Files.deleteIfExists(file(internalRunPath+'/result.txt').toPath()) }
+    doLast {
+        def result=file(internalRunPath+'/result.txt')
+        if(!result.isFile()||!result.text.startsWith('BAT_FORGE_FULL_INTERNAL_WORLD_OK:'))
+            throw new GradleException('Internal Forge runtime did not complete its gameplay assertions.')
+    }
+}
+if(providers.gradleProperty('compatAgent').isPresent()){
+    tasks.named('runClient') {
+        def agent=file('../../../bat-client-agent/build/libs/bat-cosmetics.jar')
+        if(!agent.isFile())throw new GradleException('Build the real existing cosmetics agent before the compatibility fixture')
+        classpath+=files(agent)
+        jvmArgs '-XX:+UseSerialGC','-Dbatclient.compatAgent=true',
+            '-javaagent:'+agent.absolutePath+'=1.19.4,named,http://127.0.0.1:9'
+    }
+}
+jar {
+    manifest.attributes('MixinConfigs':'batclient.mixins.json,batclient-forge-hooks.mixins.json')
+    from('../../LICENSE') { rename { 'LICENSE_bat-client-mod' } }
+}
+tasks.register('verifyProtectedForgeJar') {
+    dependsOn tasks.named('remapJar')
+    doLast {
+        new java.util.zip.ZipFile(tasks.named('remapJar').get().archiveFile.get().asFile).withCloseable { zip ->
+            def names=zip.entries().collect { it.name }
+            if(names.any { it.endsWith('.java')||it.endsWith('.map')||it.endsWith('mapping.txt') })throw new GradleException('Private source/debug file in Forge artifact')
+            if(names.contains('com/batclient/web/WebAssetManager.class'))throw new GradleException('Forge implementation was not obfuscated')
+            if(names.any { it.startsWith('assets/batclient/web/')&&!it.endsWith('/')&&!it.endsWith('.bin') })throw new GradleException('Readable web assets in Forge artifact')
+            ['META-INF/mods.toml','META-INF/jarjar/metadata.json','batclient.mixins.json','batclient-forge-hooks.mixins.json',
+                'com/batclient/platform/forge/ForgePortEntrypoint.class','assets/batclient/web/app.js.bin',
+                'META-INF/services/com.batclient.platform.ClientHooks','META-INF/services/com.batclient.platform.ClientResources',
+                'META-INF/services/com.batclient.platform.PlatformEnvironment','LICENSE_bat-client-mod'].each { name ->
+                if(zip.getEntry(name)==null)throw new GradleException('Forge artifact entry missing: '+name)
+            }
+            if(names.contains('fabric.mod.json')||names.any { it.startsWith('com/batclient/platform/fabric/') })throw new GradleException('Fabric provider leaked into Forge artifact')
+            ['batclient.mixins.json','batclient-forge-hooks.mixins.json'].each { configName ->
+                def config=new groovy.json.JsonSlurper().parseText(zip.getInputStream(zip.getEntry(configName)).getText('UTF-8'))
+                if(config.compatibilityLevel!='JAVA_17')throw new GradleException('Forge 47 requires Java 17 Mixin compatibility')
+                ((config.client?:[])+(config.mixins?:[])).each { mixin ->
+                    def path=config.package.replace('.','/')+'/'+mixin.replace('.','/')+'.class'
+                    def entry=zip.getEntry(path)
+                    if(entry==null)throw new GradleException('Configured Mixin missing: '+path)
+                    def bytes=zip.getInputStream(entry).readAllBytes()
+                    int major=((bytes[6]&255)<<8)|(bytes[7]&255)
+                    if(major>61)throw new GradleException('Mixin is newer than genuine Java 17 bytecode: '+path)
+                    if(new String(bytes,java.nio.charset.StandardCharsets.ISO_8859_1).contains('org/spongepowered/asm/mixin/injection/invoke/arg/Args'))
+                        throw new GradleException('Forge 47 synthetic argument dependency reintroduced: '+path)
+                }
+            }
+            logger.lifecycle('FORGE_47_MIXIN_BYTECODE_OK: actual Java 17 classes and no generated Args dependency')
+            logger.lifecycle('PROTECTED_FORGE_ARTIFACT_OK: encrypted UI, obfuscated implementation, Forge providers and JarJar metadata')
+        }
+    }
+}
+tasks.named('build') { dependsOn tasks.named('verifyProtectedForgeJar') }
+if(providers.gradleProperty('protectedClient').isPresent()){
+    def runJar=layout.buildDirectory.file('protected-runs/'+UUID.randomUUID()+'/bat-client-forge.jar')
+    def stage=tasks.register('stageProtectedClient',Jar) {
+        dependsOn tasks.named('verifyProtectedForgeJar')
+        archiveFileName=runJar.get().asFile.name
+        destinationDirectory=runJar.get().asFile.parentFile
+        duplicatesStrategy=DuplicatesStrategy.EXCLUDE
+        manifest.attributes('MixinConfigs':'batclient.mixins.json,batclient-forge-hooks.mixins.json')
+        from { zipTree(layout.buildDirectory.file('protected/bat-client-forge.jar')) }
+        from({ zipTree(tasks.named('remapJar').get().archiveFile.get().asFile) }) {
+            include 'META-INF/jarjar/**','META-INF/jars/**'
+        }
+    }
+    tasks.named('runClient') {
+        dependsOn stage
+        // The default development directory otherwise wins duplicate-mod
+        // selection on Forge 47 and hides this JAR's nested dependencies.
+        jvmArgs '-Dfabric.classPathGroups='+runJar.get().asFile.absolutePath
+        def readable=sourceSets.main.output.files.collect { it.canonicalFile } as Set
+        classpath=files(classpath.files.findAll { file ->
+            !readable.contains(file.canonicalFile)&&!file.name.startsWith('ultralight-bat-forge-runtime-')&&!file.name.startsWith('kotlin-stdlib-')
+        },runJar)
+        jvmArgs '-Dbatclient.protectedSmoke=true'
+    }
+}
+tasks.register('release') {
+    doLast { throw new GradleException('INTERNAL UNVERIFIED port: feature compatibility, renderer, protection and packaging must pass before release.') }
+}
+
+apply from: '../shared-ui.gradle'
+apply from: '../mc1.20.1.gradle'

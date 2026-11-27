@@ -1,0 +1,21 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "com.batclient.mixin",
+	"compatibilityLevel": "JAVA_8",
+	"refmap": "batclient-refmap.json",
+	"client": [
+		"NofapiMinecraftHooksMixin",
+		"NofapiScreenInitMixin",
+		"NofapiInGameHudMixin",
+		"NofapiWorldRendererMixin",
+		"NofapiItemTooltipMixin",
+		"NofapiGameOptionsAccessor",
+		"NofapiPlayerRendererMixin",
+		"NofapiResourceReloadMixin",
+		"NofapiNetworkPayloadMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

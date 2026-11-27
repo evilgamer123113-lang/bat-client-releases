@@ -1,0 +1,162 @@
+plugins { id 'dev.architectury.loom' version '1.17.487' }
+group='com.batclient.internal'
+version='0.1.0-forge-internal'
+base { archivesName='bat-client-forge-1.21.1-INTERNAL-UNVERIFIED' }
+repositories {
+    exclusiveContent {
+        forRepository { maven { url 'https://repo.maven.apache.org/maven2/' } }
+        filter { includeGroup 'io.github.juuxel' }
+    }
+    mavenCentral()
+    maven { url 'https://maven.fabricmc.net/' }
+    maven { url 'https://repo.repsy.io/nilsen84/maven' }
+}
+configurations { webBinding; webNatives }
+evaluationDependsOn(':web-runtime')
+def combinedWebLibrary=project(':web-runtime').tasks.named('jar')
+def verifyWebLibrary=tasks.register('verifyWebLibrary') {
+    dependsOn combinedWebLibrary
+    inputs.file combinedWebLibrary.flatMap { it.archiveFile }
+    doLast {
+        new java.util.zip.ZipFile(combinedWebLibrary.get().archiveFile.get().asFile).withCloseable { merged ->
+            if(merged.getEntry('io/github/nilsen84/ultralight/UltralightLoader.class')==null)
+                throw new GradleException('Forge web runtime is missing its loader class')
+            new java.util.zip.ZipFile(configurations.webNatives.singleFile).withCloseable { original ->
+                ['Sph0.dll','Sph1.dll','Sph2.dll','Sph3.dll','ultralight-jni.dll'].each { name ->
+                    def path='io/github/nilsen84/ultralight/natives/windows-x64/'+name
+                    if(merged.getEntry(path)==null||original.getEntry(path)==null)
+                        throw new GradleException('Missing native in Forge web module: '+name)
+                    def digest={ zip -> zip.getInputStream(zip.getEntry(path)).withCloseable { stream -> java.security.MessageDigest.getInstance('SHA-256').digest(stream.readAllBytes()) } }
+                    if(!java.util.Arrays.equals(digest(merged),digest(original)))
+                        throw new GradleException('Forge native bytes changed: '+name)
+                }
+            }
+        }
+        logger.lifecycle('FORGE_WEB_MODULE_OK: loader and all five byte-identical native libraries share one module')
+    }
+}
+dependencies {
+    minecraft 'com.mojang:minecraft:1.21.1'
+    mappings 'net.fabricmc:yarn:1.21.1+build.3:v2'
+    forge 'net.minecraftforge:forge:1.21.1-52.1.20'
+    webBinding('io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT') { transitive=false }
+    webNatives('io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:windows-x64') { transitive=false }
+    implementation files(combinedWebLibrary.flatMap { it.archiveFile })
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.3.10'
+    include project(':web-runtime')
+    include('org.jetbrains.kotlin:kotlin-stdlib:2.3.10') { transitive=false }
+}
+configurations { obfuscator }
+dependencies { obfuscator 'com.guardsquare:proguard-base:7.6.1' }
+def forgeRules=tasks.register('prepareForgeProtection') {
+    inputs.file '../../proguard.pro'
+    outputs.file layout.buildDirectory.file('private-obfuscation/forge.pro')
+    doLast {
+        def rules=layout.buildDirectory.file('private-obfuscation/forge.pro').get().asFile
+        rules.parentFile.mkdirs()
+        rules.setText(file('../../proguard.pro').getText('UTF-8')+'\n-keep class com.batclient.platform.forge.** { *; }\n','UTF-8')
+    }
+}
+def obfuscate=tasks.register('obfuscateJava',JavaExec) {
+    dependsOn tasks.named('jar'),forgeRules
+    classpath=configurations.obfuscator
+    mainClass='proguard.ProGuard'
+    maxHeapSize='2G'
+    inputs.file tasks.named('jar').flatMap { it.archiveFile }
+    inputs.file layout.buildDirectory.file('private-obfuscation/forge.pro')
+    outputs.file layout.buildDirectory.file('protected/bat-client-forge.jar')
+    outputs.file layout.buildDirectory.file('private-obfuscation/mapping.txt')
+    doFirst {
+        def protectedJar=layout.buildDirectory.file('protected/bat-client-forge.jar').get().asFile
+        protectedJar.parentFile.mkdirs()
+        def arguments=['@'+layout.buildDirectory.file('private-obfuscation/forge.pro').get().asFile.absolutePath,
+            '-injars',tasks.named('jar').get().archiveFile.get().asFile.absolutePath,
+            '-outjars',protectedJar.absolutePath,'-printmapping',layout.buildDirectory.file('private-obfuscation/mapping.txt').get().asFile.absolutePath]
+        configurations.compileClasspath.files.each { arguments.addAll(['-libraryjars',it.absolutePath]) }
+        ['java.base','java.desktop','java.net.http','java.logging','java.management','jdk.unsupported'].each { module ->
+            arguments.addAll(['-libraryjars',new File(System.getProperty('java.home'),'jmods/'+module+'.jmod').absolutePath+'(!**.jar;!module-info.class)'])
+        }
+        setArgs(arguments)
+    }
+}
+tasks.named('remapJar') {
+    dependsOn obfuscate,verifyWebLibrary
+    inputFile.set(layout.buildDirectory.file('protected/bat-client-forge.jar'))
+}
+def stageVisualParity=tasks.register('stageVisualParity') {
+    def srcFile=file('../../scripts/VisualParitySmoke.java')
+    inputs.file srcFile
+    outputs.dir layout.buildDirectory.dir('visual-parity-src')
+    doLast {
+        def out=layout.buildDirectory.file('visual-parity-src/com/batclient/platform/forge/VisualParitySmoke.java').get().asFile
+        out.parentFile.mkdirs()
+        def text=srcFile.getText('UTF-8')
+            .replace('package com.batclient.platform.fabric;', 'package com.batclient.platform.forge;')
+            .replace('import net.fabricmc.api.ClientModInitializer;', '')
+            .replace('import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;', '')
+            .replace(' implements ClientModInitializer', '')
+            .replace('@Override public void onInitializeClient()', 'public void onInitializeClient()')
+            .replace('ClientTickEvents.END_CLIENT_TICK.register(this::tick);', 'com.batclient.platform.ClientHookServices.get().endTick(this::tick);')
+        out.setText(text, 'UTF-8')
+    }
+}
+java { toolchain.languageVersion=JavaLanguageVersion.of(21) }
+tasks.named('compileJava') { dependsOn verifyWebLibrary,stageVisualParity; options.compilerArgs.addAll(['-Xmaxerrs','300']) }
+tasks.withType(JavaCompile).configureEach { options.release=21 }
+sourceSets.main.java {
+    srcDir '../../src/main/java'
+    srcDir '../forge/src/main/java'
+    srcDir layout.buildDirectory.dir('visual-parity-src')
+    srcDir layout.buildDirectory.dir('generated/protected-ui')
+    exclude 'com/batclient/platform/fabric/**'
+    exclude 'com/batclient/performance/PerformanceMixinPlugin.java'
+}
+sourceSets.main.resources {
+    srcDir '../../src/main/resources'
+    exclude 'fabric.mod.json'
+    exclude 'META-INF/services/**'
+    exclude 'assets/batclient/web/**'
+}
+processResources {
+    from('src/loader-services') { into 'META-INF/services' }
+    filesMatching('batclient.mixins.json') {
+        filter { line -> line.replace('com.batclient.performance.PerformanceMixinPlugin','com.batclient.platform.forge.ForgePerformanceMixinPlugin') }
+    }
+    duplicatesStrategy=DuplicatesStrategy.EXCLUDE
+}
+def internalRunPath='build/internal-runtime-'+(project.findProperty('internalRunId') ?: 'default')
+loom {
+    forge {
+        mixinConfig 'batclient.mixins.json'
+        mixinConfig 'batclient-forge-hooks.mixins.json'
+    }
+    runs { client { client(); runDir internalRunPath; name 'Bat Client INTERNAL Forge 1.21.1'; vmArg '-Dbatclient.internalSmoke=true'; vmArg '-Dbatclient.test.noPresence=true' } }
+}
+jar {
+    manifest.attributes('MixinConfigs':'batclient.mixins.json,batclient-forge-hooks.mixins.json')
+    from('../../LICENSE') { rename { 'LICENSE_bat-client-mod' } }
+}
+tasks.register('verifyProtectedForgeJar') {
+    dependsOn tasks.named('remapJar')
+    doLast {
+        new java.util.zip.ZipFile(tasks.named('remapJar').get().archiveFile.get().asFile).withCloseable { zip ->
+            def names=zip.entries().collect { it.name }
+            if(names.any { it.endsWith('.java')||it.endsWith('.map')||it.endsWith('mapping.txt') })throw new GradleException('Private source/debug file in Forge artifact')
+            if(names.contains('com/batclient/web/WebAssetManager.class'))throw new GradleException('Forge implementation was not obfuscated')
+            if(names.any { it.startsWith('assets/batclient/web/')&&!it.endsWith('/')&&!it.endsWith('.bin') })throw new GradleException('Readable web assets in Forge artifact')
+            ['META-INF/mods.toml','META-INF/jarjar/metadata.json','batclient.mixins.json','batclient-forge-hooks.mixins.json',
+                'com/batclient/platform/forge/ForgePortEntrypoint.class','assets/batclient/web/app.js.bin',
+                'META-INF/services/com.batclient.platform.ClientHooks','META-INF/services/com.batclient.platform.ClientResources',
+                'META-INF/services/com.batclient.platform.PlatformEnvironment','LICENSE_bat-client-mod'].each { name ->
+                if(zip.getEntry(name)==null)throw new GradleException('Forge artifact entry missing: '+name)
+            }
+            if(names.contains('fabric.mod.json')||names.any { it.startsWith('com/batclient/platform/fabric/') })throw new GradleException('Fabric provider leaked into Forge artifact')
+            logger.lifecycle('PROTECTED_FORGE_ARTIFACT_OK: encrypted UI, obfuscated implementation, Forge providers and JarJar metadata')
+        }
+    }
+}
+tasks.named('build') { dependsOn tasks.named('verifyProtectedForgeJar') }
+tasks.register('release') {
+    doLast { throw new GradleException('INTERNAL UNVERIFIED port: feature compatibility, renderer, protection and packaging must pass before release.') }
+}
+apply from: '../shared-ui.gradle'

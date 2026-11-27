@@ -1,0 +1,1977 @@
+{
+  "modules": {
+    "fps": {
+      "en": true,
+      "set": {
+        "scale": 1.1,
+        "shadow": true,
+        "color": "White",
+        "background": true,
+        "bgColor": "#0000006B"
+      },
+      "scale": 1.1,
+      "x": 0,
+      "y": 0,
+      "fav": true
+    },
+    "coords": {
+      "en": false,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "color": "#FFFFFFFF",
+        "labels": true,
+        "background": true,
+        "bgColor": "#0000006B"
+      },
+      "scale": 1,
+      "x": 0,
+      "y": 14.055376139817628,
+      "fav": true,
+      "locked": true
+    },
+    "direction": {
+      "en": true,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "color": "White",
+        "axis": true
+      },
+      "scale": 1,
+      "x": 2,
+      "y": 26
+    },
+    "speed": {
+      "en": true,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "color": "White",
+        "hideStill": false
+      },
+      "scale": 1,
+      "x": 2,
+      "y": 36
+    },
+    "ping": {
+      "en": true,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "color": "#F6F1F1FF",
+        "background": true,
+        "bgColor": "#0000006B"
+      },
+      "scale": 1,
+      "x": 1.999628,
+      "y": 45.999557,
+      "locked": false
+    },
+    "cps": {
+      "en": true,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "color": "White",
+        "background": true,
+        "bgColor": "#0000006B"
+      },
+      "scale": 1,
+      "x": 0,
+      "y": 55.870376169500375
+    },
+    "keystrokes": {
+      "en": true,
+      "set": {
+        "scale": 0.8,
+        "color": "#FFFFFFFF",
+        "background": true,
+        "border": false,
+        "showCps": true,
+        "pressedColor": "#9A9AA8FF",
+        "bgColor": "#0000006B",
+        "shadow": true
+      },
+      "scale": 0.8,
+      "x": 0,
+      "y": 83.15856377042174,
+      "fav": false,
+      "locked": false
+    },
+    "potions": {
+      "en": true,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "color": "White",
+        "format": "Shorthand",
+        "background": true,
+        "bgColor": "#0000006B",
+        "warningColor": "#FE0C0CFF"
+      },
+      "scale": 1,
+      "x": 51.66666666666667,
+      "y": 22.558099037487338,
+      "fav": false,
+      "locked": false
+    },
+    "armor": {
+      "en": true,
+      "set": {
+        "scale": 0.9,
+        "numbers": true,
+        "color": "White",
+        "background": true,
+        "bgColor": "#0000006B",
+        "shadow": true,
+        "lowWarning": true,
+        "warningColor": "#99C514FF"
+      },
+      "scale": 0.9,
+      "x": 94.25502232142857,
+      "y": 86.88355110578141
+    },
+    "zoom": {
+      "en": true,
+      "set": {
+        "level": 4,
+        "smooth": true,
+        "scale": 1,
+        "key": "V",
+        "speed": 10,
+        "scroll": true,
+        "scrollSpeed": 1,
+        "maxZoom": 26
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "fullbright": {
+      "en": true,
+      "set": {
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10,
+      "fav": false
+    },
+    "togglesprint": {
+      "en": true,
+      "set": {
+        "scale": 1.1,
+        "shadow": true,
+        "background": true,
+        "color": "White",
+        "bgColor": "#0000006B"
+      },
+      "scale": 1.1,
+      "x": 63.74441964285714,
+      "y": 7.286442811728249
+    },
+    "durability": {
+      "en": false,
+      "set": {
+        "scale": 1,
+        "numbers": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#FFFFFFFF",
+        "shadow": true,
+        "lowWarning": true,
+        "warningFlash": true,
+        "warningColor": "#FF5555FF"
+      },
+      "scale": 1,
+      "x": 63.20870535714286,
+      "y": 89.26830040526849
+    },
+    "crosshair": {
+      "en": false,
+      "set": {
+        "scale": 1,
+        "color": "#FFFFFFFF",
+        "style": "Cross + Dot"
+      },
+      "scale": 1,
+      "x": 38.9,
+      "y": 56.2
+    },
+    "target": {
+      "en": false,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#FFFFFFFF",
+        "healthFormat": "Hearts",
+        "portrait": true,
+        "playersOnly": false,
+        "distance": true
+      },
+      "scale": 1,
+      "x": 17.756696428571427,
+      "y": 73.11771783181358,
+      "locked": false
+    },
+    "perspective": {
+      "en": false,
+      "set": {
+        "scale": 1,
+        "key": "key.keyboard.k"
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "lowfire": {
+      "en": false,
+      "set": {
+        "height": 0.2,
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "animations": {
+      "en": false,
+      "set": {
+        "swing": "Spin",
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "entityculling": {
+      "en": false,
+      "set": {
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "particlereduce": {
+      "en": true,
+      "set": {
+        "amount": 100,
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "dynamicfps": {
+      "en": false,
+      "set": {
+        "target": 30,
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "smoothchunks": {
+      "en": true,
+      "set": {
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "hudeeditor": {
+      "en": false,
+      "set": {},
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "scoreboard": {
+      "en": false,
+      "set": {
+        "scale": 0.9,
+        "shadow": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#FFFFFFFF",
+        "showTitle": true,
+        "showScores": false
+      },
+      "scale": 0.9,
+      "x": 89.28571428571429,
+      "y": 41.87563323201621,
+      "locked": false
+    },
+    "bossbar": {
+      "en": false,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#E5484DFF",
+        "showName": true,
+        "maxBars": 5
+      },
+      "scale": 1,
+      "x": 38.452380952380956,
+      "y": 0
+    },
+    "nametags": {
+      "en": true,
+      "set": {
+        "showOwn": true,
+        "logo": true,
+        "share": true,
+        "scale": 1,
+        "shadow": true,
+        "background": true
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "blockindicator": {
+      "en": false,
+      "set": {
+        "scale": 1,
+        "range": 12,
+        "showBreaking": true,
+        "showId": true,
+        "shadow": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#FFFFFFFF",
+        "idColor": "#AAAAAAFF",
+        "border": false,
+        "borderColor": "#FFFFFFFF",
+        "borderThickness": 1
+      },
+      "scale": 1,
+      "x": 61.601562,
+      "y": 31.756586
+    },
+    "clock": {
+      "en": false,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#FFFFFFFF",
+        "source": "Real time",
+        "format": "12-hour",
+        "seconds": true
+      },
+      "scale": 1,
+      "x": 62.54166739327566,
+      "y": 17.295149442755825,
+      "locked": false
+    },
+    "compass": {
+      "en": true,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#FFFFFFFF",
+        "style": "Bar",
+        "degrees": true
+      },
+      "scale": 1,
+      "x": 38.74906994047619,
+      "y": 0,
+      "locked": false
+    },
+    "iteminfo": {
+      "en": false,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#FFFFFFFF",
+        "hand": "Main hand",
+        "count": true,
+        "durability": true,
+        "enchantments": true
+      },
+      "scale": 1,
+      "x": 61.48251488095239,
+      "y": 95.14311043566363
+    },
+    "speedometer": {
+      "en": false,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#FFFFFFFF",
+        "unit": "km/h",
+        "vertical": false,
+        "decimals": 2
+      },
+      "scale": 1,
+      "x": 0,
+      "y": 38.23296605876393
+    },
+    "motionblur": {
+      "en": false,
+      "set": {
+        "strength": 10,
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "resourcepacks": {
+      "en": false,
+      "set": {
+        "scale": 0.9,
+        "shadow": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#FFFFFFFF",
+        "title": true,
+        "builtins": false,
+        "maxPacks": 3,
+        "textWidth": 200,
+        "iconPosition": "Right",
+        "gap": 3,
+        "alignment": "Left",
+        "originalColors": true,
+        "showDescription": true,
+        "showName": true,
+        "showIcon": true
+      },
+      "scale": 0.9,
+      "x": 20.42857215518043,
+      "y": 27.708492259728022
+    },
+    "combo": {
+      "en": true,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#FFFFFFFF",
+        "timeout": 3,
+        "playersOnly": false,
+        "hideInactive": false
+      },
+      "scale": 1,
+      "x": 11.744791666666668,
+      "y": 42.55952380952381
+    },
+    "inventory": {
+      "en": false,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#FFFFFFFF",
+        "hotbar": false,
+        "title": true,
+        "slotBackground": true,
+        "counts": true,
+        "slotGap": 2
+      },
+      "scale": 1,
+      "x": 39.345238095238095,
+      "y": 59.71536220871327
+    },
+    "reach": {
+      "en": false,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#FFFFFFFF",
+        "timeout": 5,
+        "decimals": 2,
+        "playersOnly": false,
+        "hideInactive": false
+      },
+      "scale": 1,
+      "x": 18.173363095238095,
+      "y": 50
+    },
+    "totems": {
+      "en": false,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#FFFFFFFF",
+        "scope": "Inventory",
+        "offhand": true,
+        "icon": true,
+        "label": true,
+        "hideZero": false,
+        "specialArrows": true,
+        "lowWarning": true,
+        "warningCount": 1,
+        "warningFlash": false,
+        "warningColor": "#FF5555FF"
+      },
+      "scale": 1,
+      "x": 28.232886904761905,
+      "y": 95.14311043566363,
+      "locked": false
+    },
+    "arrows": {
+      "en": false,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#FFFFFFFF",
+        "scope": "Inventory",
+        "offhand": true,
+        "icon": true,
+        "label": true,
+        "hideZero": false,
+        "specialArrows": true,
+        "lowWarning": true,
+        "warningCount": 16,
+        "warningFlash": false,
+        "warningColor": "#FF5555FF"
+      },
+      "scale": 1,
+      "x": 35.25669642857142,
+      "y": 59.31009371833839
+    },
+    "chatanimations": {
+      "en": true,
+      "set": {
+        "duration": 200,
+        "slide": 8,
+        "fade": true,
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "chatheads": {
+      "en": true,
+      "set": {
+        "hat": true,
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "chatrepeats": {
+      "en": true,
+      "set": {
+        "window": 10,
+        "showSingle": true,
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "inventoryanimations": {
+      "en": true,
+      "set": {
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "healthindicator": {
+      "en": true,
+      "set": {
+        "players": true,
+        "mobs": true,
+        "showOwn": false,
+        "mobNames": true,
+        "range": 24,
+        "style": "Heart value",
+        "showMax": true,
+        "absorption": true,
+        "scale": 1,
+        "shadow": true,
+        "background": true,
+        "color": "#FFFFFFFF",
+        "lowWarning": true
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "blockoutline": {
+      "en": true,
+      "set": {
+        "color": "#FFFFFFFF",
+        "width": 2,
+        "fill": false,
+        "fillColor": "#FFFFFF33",
+        "scale": 1,
+        "gradient": false,
+        "gradientColor": "#F82700FF"
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "glintcolor": {
+      "en": false,
+      "set": {
+        "color": "#FA0A39FF",
+        "strength": 1,
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "hitboxes": {
+      "en": true,
+      "set": {
+        "players": true,
+        "mobs": true,
+        "projectiles": true,
+        "range": 32,
+        "width": 1.5,
+        "playerColor": "#FFFFFFFF",
+        "mobColor": "#55FF55FF",
+        "projectileColor": "#FFAA00FF",
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "hurtcamera": {
+      "en": true,
+      "set": {
+        "intensity": 0,
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "itemtracker": {
+      "en": false,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#FFFFFFFF",
+        "duration": 4,
+        "rows": 4,
+        "width": 180,
+        "icons": true,
+        "gains": true,
+        "losses": true,
+        "fade": true,
+        "gainColor": "#55FF55FF",
+        "lossColor": "#FF5555FF"
+      },
+      "scale": 1,
+      "x": 49.523809523809526,
+      "y": 73.11771783181358,
+      "locked": false
+    },
+    "itemphysics": {
+      "en": false,
+      "set": {
+        "speed": 1,
+        "water": true,
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "hitcolor": {
+      "en": true,
+      "set": {
+        "color": "#5AD31EFF",
+        "strength": 0.35,
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "bowcharge": {
+      "en": false,
+      "set": {
+        "scale": 1.1,
+        "shadow": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#FFFFFFFF",
+        "chargeColor": "#FFCC55FF",
+        "drawTime": false,
+        "icons": true,
+        "barWidth": 125,
+        "ready": true
+      },
+      "scale": 1.1,
+      "x": 60.952380952380956,
+      "y": 49.43958966565349
+    },
+    "minimap": {
+      "en": false,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#FFFFFFFF",
+        "size": 120,
+        "range": 40,
+        "coords": true,
+        "directions": true,
+        "biomeColors": true,
+        "relief": true,
+        "contours": false,
+        "grid": false,
+        "biome": true,
+        "updates": "Fast"
+      },
+      "scale": 1,
+      "x": 84.285714,
+      "y": 3.820764,
+      "locked": false
+    },
+    "mounthud": {
+      "en": false,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#FFFFFFFF",
+        "health": true,
+        "speed": true,
+        "jump": true
+      },
+      "scale": 1,
+      "x": 20.613839285714285,
+      "y": 15.67565856129686,
+      "locked": false
+    },
+    "tntcountdown": {
+      "en": true,
+      "set": {
+        "range": 32,
+        "scale": 1,
+        "color": "#F30707FF"
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "foodpreview": {
+      "en": false,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#FFFFFFFF",
+        "offhand": true,
+        "saturation": true
+      },
+      "scale": 1,
+      "x": 77.23121279761904,
+      "y": 73.11771783181358
+    },
+    "deathcoords": {
+      "en": false,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#FFFFFFFF",
+        "dimension": true,
+        "waypoint": true
+      },
+      "scale": 1,
+      "x": 2,
+      "y": 65
+    },
+    "skinlayers3d": {
+      "en": false,
+      "set": {
+        "range": 12,
+        "head": true,
+        "body": true,
+        "scale": 1,
+        "thickness": 0.45,
+        "sleeves": true,
+        "pants": true
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "shulkerpreview": {
+      "en": false,
+      "set": {
+        "shift": true,
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "shieldindicator": {
+      "en": false,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#FFFFFFFF",
+        "cooldownRing": true,
+        "readyPulse": true
+      },
+      "scale": 1,
+      "x": 65.05859375,
+      "y": 64.16698328267478,
+      "locked": false
+    },
+    "raincustomizer": {
+      "en": true,
+      "set": {
+        "opacity": 40,
+        "snow": false,
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "elytrahud": {
+      "en": false,
+      "set": {
+        "scale": 1,
+        "shadow": true,
+        "background": true,
+        "bgColor": "#0000006B",
+        "color": "#FFFFFFFF",
+        "equipped": false,
+        "speed": true,
+        "altitude": true,
+        "rockets": true,
+        "warning": 30
+      },
+      "scale": 1,
+      "x": 83.57142857142857,
+      "y": 53.55884432188767,
+      "locked": false
+    },
+    "equipmentcomparison": {
+      "en": false,
+      "set": {
+        "shift": true,
+        "durability": true,
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "waypoints": {
+      "en": true,
+      "set": {
+        "scale": 1,
+        "range": 10000,
+        "markers": 12,
+        "ring": true,
+        "glow": true,
+        "beam": true,
+        "beamHeight": 128,
+        "border": true,
+        "padding": 4,
+        "death": true,
+        "chat": true,
+        "compass": true,
+        "serverMarkers": true,
+        "throughWalls": true,
+        "coordinates": true,
+        "background": true,
+        "shadow": true,
+        "navigation": true,
+        "navigationY": 14,
+        "minimap": true,
+        "arrival": true,
+        "arrivalRadius": 5
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "lootbeams": {
+      "en": false,
+      "set": {
+        "filter": "All",
+        "range": 24,
+        "limit": 32,
+        "minimum": 1,
+        "height": 2,
+        "width": 0.12,
+        "opacity": 65,
+        "rarityColors": true,
+        "color": "#75CFFFFF",
+        "groundGlow": true,
+        "pulse": true,
+        "labels": false,
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "returntrail": {
+      "en": false,
+      "set": {
+        "minutes": 10,
+        "points": 512,
+        "spacing": 1,
+        "range": 48,
+        "width": 2,
+        "color": "#FF0101FF",
+        "opacity": 80,
+        "style": "Both",
+        "groundOnly": false,
+        "clearOnDeath": true,
+        "guide": true,
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    },
+    "freelook": {
+      "en": true,
+      "set": {
+        "mode": "Hold",
+        "sensitivity": 100,
+        "scale": 1
+      },
+      "scale": 1,
+      "x": 4,
+      "y": 10
+    }
+  },
+  "profiles": {
+    "asdasdasdasd": {
+      "modules": {
+        "fps": {
+          "en": true,
+          "set": {
+            "scale": 1.1,
+            "shadow": true,
+            "color": "White",
+            "background": true,
+            "bgColor": "#0000006B"
+          },
+          "scale": 1.1,
+          "x": 0,
+          "y": 0,
+          "fav": true
+        },
+        "coords": {
+          "en": false,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "color": "#FFFFFFFF",
+            "labels": true,
+            "background": true,
+            "bgColor": "#0000006B"
+          },
+          "scale": 1,
+          "x": 0,
+          "y": 14.055376139817628,
+          "fav": true,
+          "locked": true
+        },
+        "direction": {
+          "en": true,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "color": "White",
+            "axis": true
+          },
+          "scale": 1,
+          "x": 2,
+          "y": 26
+        },
+        "speed": {
+          "en": true,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "color": "White",
+            "hideStill": false
+          },
+          "scale": 1,
+          "x": 2,
+          "y": 36
+        },
+        "ping": {
+          "en": true,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "color": "#F6F1F1FF",
+            "background": true,
+            "bgColor": "#0000006B"
+          },
+          "scale": 1,
+          "x": 1.999628,
+          "y": 45.999557,
+          "locked": false
+        },
+        "cps": {
+          "en": true,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "color": "White",
+            "background": true,
+            "bgColor": "#0000006B"
+          },
+          "scale": 1,
+          "x": 0,
+          "y": 55.870376169500375
+        },
+        "keystrokes": {
+          "en": true,
+          "set": {
+            "scale": 0.8,
+            "color": "#FFFFFFFF",
+            "background": true,
+            "border": false,
+            "showCps": true,
+            "pressedColor": "#9A9AA8FF",
+            "bgColor": "#0000006B",
+            "shadow": true
+          },
+          "scale": 0.8,
+          "x": 0,
+          "y": 83.15856377042174,
+          "fav": false,
+          "locked": false
+        },
+        "potions": {
+          "en": true,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "color": "White",
+            "format": "Shorthand",
+            "background": true,
+            "bgColor": "#0000006B",
+            "warningColor": "#FE0C0CFF"
+          },
+          "scale": 1,
+          "x": 51.66666666666667,
+          "y": 22.558099037487338,
+          "fav": false,
+          "locked": false
+        },
+        "armor": {
+          "en": true,
+          "set": {
+            "scale": 0.9,
+            "numbers": true,
+            "color": "White",
+            "background": true,
+            "bgColor": "#0000006B",
+            "shadow": true,
+            "lowWarning": true,
+            "warningColor": "#99C514FF"
+          },
+          "scale": 0.9,
+          "x": 94.25502232142857,
+          "y": 86.88355110578141
+        },
+        "zoom": {
+          "en": true,
+          "set": {
+            "level": 4,
+            "smooth": true,
+            "scale": 1,
+            "key": "V",
+            "speed": 10,
+            "scroll": true,
+            "scrollSpeed": 1,
+            "maxZoom": 26
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "fullbright": {
+          "en": true,
+          "set": {
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10,
+          "fav": false
+        },
+        "togglesprint": {
+          "en": true,
+          "set": {
+            "scale": 1.1,
+            "shadow": true,
+            "background": true,
+            "color": "White",
+            "bgColor": "#0000006B"
+          },
+          "scale": 1.1,
+          "x": 63.74441964285714,
+          "y": 7.286442811728249
+        },
+        "durability": {
+          "en": false,
+          "set": {
+            "scale": 1,
+            "numbers": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#FFFFFFFF",
+            "shadow": true,
+            "lowWarning": true,
+            "warningFlash": true,
+            "warningColor": "#FF5555FF"
+          },
+          "scale": 1,
+          "x": 63.20870535714286,
+          "y": 89.26830040526849
+        },
+        "crosshair": {
+          "en": false,
+          "set": {
+            "scale": 1,
+            "color": "#FFFFFFFF",
+            "style": "Cross + Dot"
+          },
+          "scale": 1,
+          "x": 38.9,
+          "y": 56.2
+        },
+        "target": {
+          "en": false,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#FFFFFFFF",
+            "healthFormat": "Hearts",
+            "portrait": true,
+            "playersOnly": false,
+            "distance": true
+          },
+          "scale": 1,
+          "x": 17.756696428571427,
+          "y": 73.11771783181358,
+          "locked": false
+        },
+        "perspective": {
+          "en": false,
+          "set": {
+            "scale": 1,
+            "key": "key.keyboard.k"
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "lowfire": {
+          "en": false,
+          "set": {
+            "height": 0.2,
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "animations": {
+          "en": false,
+          "set": {
+            "swing": "Spin",
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "entityculling": {
+          "en": false,
+          "set": {
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "particlereduce": {
+          "en": true,
+          "set": {
+            "amount": 100,
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "dynamicfps": {
+          "en": false,
+          "set": {
+            "target": 30,
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "smoothchunks": {
+          "en": true,
+          "set": {
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "hudeeditor": {
+          "en": false,
+          "set": {},
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "scoreboard": {
+          "en": false,
+          "set": {
+            "scale": 0.9,
+            "shadow": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#FFFFFFFF",
+            "showTitle": true,
+            "showScores": false
+          },
+          "scale": 0.9,
+          "x": 89.28571428571429,
+          "y": 41.87563323201621,
+          "locked": false
+        },
+        "bossbar": {
+          "en": false,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#E5484DFF",
+            "showName": true,
+            "maxBars": 5
+          },
+          "scale": 1,
+          "x": 38.452380952380956,
+          "y": 0
+        },
+        "nametags": {
+          "en": true,
+          "set": {
+            "showOwn": true,
+            "logo": true,
+            "share": true,
+            "scale": 1,
+            "shadow": true,
+            "background": true
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "blockindicator": {
+          "en": false,
+          "set": {
+            "scale": 1,
+            "range": 12,
+            "showBreaking": true,
+            "showId": true,
+            "shadow": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#FFFFFFFF",
+            "idColor": "#AAAAAAFF",
+            "border": false,
+            "borderColor": "#FFFFFFFF",
+            "borderThickness": 1
+          },
+          "scale": 1,
+          "x": 61.601562,
+          "y": 31.756586
+        },
+        "clock": {
+          "en": false,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#FFFFFFFF",
+            "source": "Real time",
+            "format": "12-hour",
+            "seconds": true
+          },
+          "scale": 1,
+          "x": 62.54166739327566,
+          "y": 17.295149442755825,
+          "locked": false
+        },
+        "compass": {
+          "en": true,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#FFFFFFFF",
+            "style": "Bar",
+            "degrees": true
+          },
+          "scale": 1,
+          "x": 38.74906994047619,
+          "y": 0,
+          "locked": false
+        },
+        "iteminfo": {
+          "en": false,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#FFFFFFFF",
+            "hand": "Main hand",
+            "count": true,
+            "durability": true,
+            "enchantments": true
+          },
+          "scale": 1,
+          "x": 61.48251488095239,
+          "y": 95.14311043566363
+        },
+        "speedometer": {
+          "en": false,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#FFFFFFFF",
+            "unit": "km/h",
+            "vertical": false,
+            "decimals": 2
+          },
+          "scale": 1,
+          "x": 0,
+          "y": 38.23296605876393
+        },
+        "motionblur": {
+          "en": false,
+          "set": {
+            "strength": 10,
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "resourcepacks": {
+          "en": false,
+          "set": {
+            "scale": 0.9,
+            "shadow": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#FFFFFFFF",
+            "title": true,
+            "builtins": false,
+            "maxPacks": 3,
+            "textWidth": 200,
+            "iconPosition": "Right",
+            "gap": 3,
+            "alignment": "Left",
+            "originalColors": true,
+            "showDescription": true,
+            "showName": true,
+            "showIcon": true
+          },
+          "scale": 0.9,
+          "x": 20.42857215518043,
+          "y": 27.708492259728022
+        },
+        "combo": {
+          "en": true,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#FFFFFFFF",
+            "timeout": 3,
+            "playersOnly": false,
+            "hideInactive": false
+          },
+          "scale": 1,
+          "x": 11.744791666666668,
+          "y": 42.55952380952381
+        },
+        "inventory": {
+          "en": false,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#FFFFFFFF",
+            "hotbar": false,
+            "title": true,
+            "slotBackground": true,
+            "counts": true,
+            "slotGap": 2
+          },
+          "scale": 1,
+          "x": 39.345238095238095,
+          "y": 59.71536220871327
+        },
+        "reach": {
+          "en": false,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#FFFFFFFF",
+            "timeout": 5,
+            "decimals": 2,
+            "playersOnly": false,
+            "hideInactive": false
+          },
+          "scale": 1,
+          "x": 18.173363095238095,
+          "y": 50
+        },
+        "totems": {
+          "en": false,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#FFFFFFFF",
+            "scope": "Inventory",
+            "offhand": true,
+            "icon": true,
+            "label": true,
+            "hideZero": false,
+            "specialArrows": true,
+            "lowWarning": true,
+            "warningCount": 1,
+            "warningFlash": false,
+            "warningColor": "#FF5555FF"
+          },
+          "scale": 1,
+          "x": 28.232886904761905,
+          "y": 95.14311043566363,
+          "locked": false
+        },
+        "arrows": {
+          "en": false,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#FFFFFFFF",
+            "scope": "Inventory",
+            "offhand": true,
+            "icon": true,
+            "label": true,
+            "hideZero": false,
+            "specialArrows": true,
+            "lowWarning": true,
+            "warningCount": 16,
+            "warningFlash": false,
+            "warningColor": "#FF5555FF"
+          },
+          "scale": 1,
+          "x": 35.25669642857142,
+          "y": 59.31009371833839
+        },
+        "chatanimations": {
+          "en": true,
+          "set": {
+            "duration": 200,
+            "slide": 8,
+            "fade": true,
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "chatheads": {
+          "en": true,
+          "set": {
+            "hat": true,
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "chatrepeats": {
+          "en": true,
+          "set": {
+            "window": 10,
+            "showSingle": true,
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "inventoryanimations": {
+          "en": true,
+          "set": {
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "healthindicator": {
+          "en": true,
+          "set": {
+            "players": true,
+            "mobs": true,
+            "showOwn": false,
+            "mobNames": true,
+            "range": 24,
+            "style": "Heart value",
+            "showMax": true,
+            "absorption": true,
+            "scale": 1,
+            "shadow": true,
+            "background": true,
+            "color": "#FFFFFFFF",
+            "lowWarning": true
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "blockoutline": {
+          "en": true,
+          "set": {
+            "color": "#FFFFFFFF",
+            "width": 2,
+            "fill": false,
+            "fillColor": "#FFFFFF33",
+            "scale": 1,
+            "gradient": false,
+            "gradientColor": "#F82700FF"
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "glintcolor": {
+          "en": false,
+          "set": {
+            "color": "#FA0A39FF",
+            "strength": 1,
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "hitboxes": {
+          "en": true,
+          "set": {
+            "players": true,
+            "mobs": true,
+            "projectiles": true,
+            "range": 32,
+            "width": 1.5,
+            "playerColor": "#FFFFFFFF",
+            "mobColor": "#55FF55FF",
+            "projectileColor": "#FFAA00FF",
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "hurtcamera": {
+          "en": true,
+          "set": {
+            "intensity": 0,
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "itemtracker": {
+          "en": false,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#FFFFFFFF",
+            "duration": 4,
+            "rows": 4,
+            "width": 180,
+            "icons": true,
+            "gains": true,
+            "losses": true,
+            "fade": true,
+            "gainColor": "#55FF55FF",
+            "lossColor": "#FF5555FF"
+          },
+          "scale": 1,
+          "x": 49.523809523809526,
+          "y": 73.11771783181358,
+          "locked": false
+        },
+        "itemphysics": {
+          "en": false,
+          "set": {
+            "speed": 1,
+            "water": true,
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "hitcolor": {
+          "en": true,
+          "set": {
+            "color": "#5AD31EFF",
+            "strength": 0.35,
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "bowcharge": {
+          "en": false,
+          "set": {
+            "scale": 1.1,
+            "shadow": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#FFFFFFFF",
+            "chargeColor": "#FFCC55FF",
+            "drawTime": false,
+            "icons": true,
+            "barWidth": 125,
+            "ready": true
+          },
+          "scale": 1.1,
+          "x": 60.952380952380956,
+          "y": 49.43958966565349
+        },
+        "minimap": {
+          "en": false,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#FFFFFFFF",
+            "size": 120,
+            "range": 40,
+            "coords": true,
+            "directions": true,
+            "biomeColors": true,
+            "relief": true,
+            "contours": false,
+            "grid": false,
+            "biome": true,
+            "updates": "Fast"
+          },
+          "scale": 1,
+          "x": 84.285714,
+          "y": 3.820764,
+          "locked": false
+        },
+        "mounthud": {
+          "en": false,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#FFFFFFFF",
+            "health": true,
+            "speed": true,
+            "jump": true
+          },
+          "scale": 1,
+          "x": 20.613839285714285,
+          "y": 15.67565856129686,
+          "locked": false
+        },
+        "tntcountdown": {
+          "en": true,
+          "set": {
+            "range": 32,
+            "scale": 1,
+            "color": "#F30707FF"
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "foodpreview": {
+          "en": false,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#FFFFFFFF",
+            "offhand": true,
+            "saturation": true
+          },
+          "scale": 1,
+          "x": 77.23121279761904,
+          "y": 73.11771783181358
+        },
+        "deathcoords": {
+          "en": false,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#FFFFFFFF",
+            "dimension": true,
+            "waypoint": true
+          },
+          "scale": 1,
+          "x": 2,
+          "y": 65
+        },
+        "skinlayers3d": {
+          "en": false,
+          "set": {
+            "range": 12,
+            "head": true,
+            "body": true,
+            "scale": 1,
+            "thickness": 0.45,
+            "sleeves": true,
+            "pants": true
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "shulkerpreview": {
+          "en": false,
+          "set": {
+            "shift": true,
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "shieldindicator": {
+          "en": false,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#FFFFFFFF",
+            "cooldownRing": true,
+            "readyPulse": true
+          },
+          "scale": 1,
+          "x": 65.05859375,
+          "y": 64.16698328267478,
+          "locked": false
+        },
+        "raincustomizer": {
+          "en": true,
+          "set": {
+            "opacity": 40,
+            "snow": false,
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "elytrahud": {
+          "en": false,
+          "set": {
+            "scale": 1,
+            "shadow": true,
+            "background": true,
+            "bgColor": "#0000006B",
+            "color": "#FFFFFFFF",
+            "equipped": false,
+            "speed": true,
+            "altitude": true,
+            "rockets": true,
+            "warning": 30
+          },
+          "scale": 1,
+          "x": 83.57142857142857,
+          "y": 53.55884432188767,
+          "locked": false
+        },
+        "equipmentcomparison": {
+          "en": false,
+          "set": {
+            "shift": true,
+            "durability": true,
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "waypoints": {
+          "en": true,
+          "set": {
+            "scale": 1,
+            "range": 10000,
+            "markers": 12,
+            "ring": true,
+            "glow": true,
+            "beam": true,
+            "beamHeight": 128,
+            "border": true,
+            "padding": 4,
+            "death": true,
+            "chat": true,
+            "compass": true,
+            "serverMarkers": true,
+            "throughWalls": true,
+            "coordinates": true,
+            "background": true,
+            "shadow": true,
+            "navigation": true,
+            "navigationY": 14,
+            "minimap": true,
+            "arrival": true,
+            "arrivalRadius": 5
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "lootbeams": {
+          "en": false,
+          "set": {
+            "filter": "All",
+            "range": 24,
+            "limit": 32,
+            "minimum": 1,
+            "height": 2,
+            "width": 0.12,
+            "opacity": 65,
+            "rarityColors": true,
+            "color": "#75CFFFFF",
+            "groundGlow": true,
+            "pulse": true,
+            "labels": false,
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "returntrail": {
+          "en": false,
+          "set": {
+            "minutes": 10,
+            "points": 512,
+            "spacing": 1,
+            "range": 48,
+            "width": 2,
+            "color": "#FF0101FF",
+            "opacity": 80,
+            "style": "Both",
+            "groundOnly": false,
+            "clearOnDeath": true,
+            "guide": true,
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        },
+        "freelook": {
+          "en": true,
+          "set": {
+            "mode": "Hold",
+            "sensitivity": 100,
+            "scale": 1
+          },
+          "scale": 1,
+          "x": 4,
+          "y": 10
+        }
+      },
+      "bindings": {
+        "freelook": "key.keyboard.left.control"
+      }
+    }
+  },
+  "activeProfile": "asdasdasdasd",
+  "bindings": {
+    "freelook": "key.keyboard.left.control"
+  }
+}

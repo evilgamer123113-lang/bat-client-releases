@@ -1,0 +1,91 @@
+name: Native launcher packages
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/platform-packages]
+permissions:
+  contents: write
+concurrency:
+  group: platform-packages-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  package:
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: windows-2022
+            platform: win
+            arch: x64
+          - runner: macos-15-intel
+            platform: mac
+            arch: x64
+          - runner: macos-14
+            platform: mac
+            arch: arm64
+          - runner: ubuntu-22.04
+            platform: linux
+            arch: x64
+    runs-on: ${{ matrix.runner }}
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Check platform and archive safety
+        run: node test/platform.test.cjs
+      - name: Check Java and argument regressions
+        run: node --test scripts/java-launch-regression.test.cjs scripts/launch-log-fixes.test.cjs
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Check maintenance and viewer lifecycle regressions
+        run: node --test scripts/launcher-maintenance.test.cjs scripts/optional-renderer.test.cjs scripts/viewer-activity.test.cjs
+      - name: Verify real legacy and immutable Authlib skin profiles
+        run: node scripts/verify-player-profiles.cjs
+      - name: Install native Java 17
+        run: node scripts/download-java.js 17 '${{ runner.temp }}/bat-java-17' '${{ runner.temp }}/bat-java-cache'
+      - name: Verify native Java installation
+        run: node scripts/download-java.js 21 '${{ runner.temp }}/bat-java-21' '${{ runner.temp }}/bat-java-cache'
+      - name: Verify required Java selection and cosmetics startup
+        run: node scripts/verify-java-runtimes.cjs '${{ runner.temp }}/bat-java-17' '${{ runner.temp }}/bat-java-21'
+      - name: Install Linux runtime dependencies
+        if: matrix.platform == 'linux'
+        run: sudo apt-get update && sudo apt-get install -y libfuse2 xvfb libgtk-3-0 libnss3 libasound2
+      - name: Package native application
+        run: npx electron-builder --${{ matrix.platform }} --${{ matrix.arch }} --publish never '-c.mac.target=zip' '-c.linux.target=AppImage'
+      - name: Create Windows portable update
+        if: matrix.platform == 'win'
+        run: node scripts/build-portable.js
+      - name: Check native Windows startup
+        if: matrix.platform == 'win'
+        run: node scripts/smoke-packaged.cjs win x64
+      - name: Check native macOS startup
+        if: matrix.platform == 'mac'
+        run: node scripts/smoke-packaged.cjs mac ${{ matrix.arch }}
+      - name: Check native Linux startup
+        if: matrix.platform == 'linux'
+        run: xvfb-run -a node scripts/smoke-packaged.cjs linux x64
+      - name: Save verified packages to private build release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          version=$(node -p "require('./package.json').version")
+          tag=build-v$version
+          gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || gh release create "$tag" --repo "$GITHUB_REPOSITORY" --draft --target "$GITHUB_SHA" --title "Private native build $version" --notes "Internal export of tested native binaries; not a public release." || gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null
+          files=()
+          for file in dist/BatClient-*; do
+            case "$file" in
+              *.zip|*.exe|*.AppImage) files+=("$file");;
+            esac
+          done
+          test "${#files[@]}" -gt 0
+          node -e 'const fs=require("fs"),c=require("crypto");for(const f of process.argv.slice(1))console.log(c.createHash("sha256").update(fs.readFileSync(f)).digest("hex")+"  "+require("path").basename(f))' "${files[@]}" > "dist/SHA256SUMS-${{ matrix.platform }}-${{ matrix.arch }}.txt"
+          gh release upload "$tag" --repo "$GITHUB_REPOSITORY" "${files[@]}" "dist/SHA256SUMS-${{ matrix.platform }}-${{ matrix.arch }}.txt" --clobber

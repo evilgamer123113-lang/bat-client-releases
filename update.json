@@ -1,0 +1,79 @@
+{
+  "version": "2.2.97",
+  "website": "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/v2.2.97/BatClient-2.2.97-Setup.exe",
+  "download": "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/v2.2.97/BatClient-2.2.97-Portable.zip",
+  "sha256": "4E502722201572891B74CFD2DEDB30312E0E246008B26323767DFE5A30E20D81",
+  "required": true,
+  "changelog": [
+    "Honor Sodium removal inside older Bat mod packages while preserving protected contents and backing up the original",
+    "Respect removal and disable choices even when automatic downloads are already in flight",
+    "Save mod preferences atomically and report failures instead of forgetting choices",
+    "Remove mods without a confirmation dialog; prevent duplicate clicks and preserve colliding files",
+    "Keep Sodium add-ons disabled when Sodium is removed; manual Install and Enable remain available"
+  ],
+  "platforms": {
+    "win32": {
+      "x64": {
+        "download": "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/v2.2.97/BatClient-2.2.97-Portable.zip",
+        "website": "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/v2.2.97/BatClient-2.2.97-Setup.exe",
+        "sha256": "4E502722201572891B74CFD2DEDB30312E0E246008B26323767DFE5A30E20D81"
+      }
+    },
+    "darwin": {
+      "x64": {
+        "download": "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/v2.2.97/BatClient-2.2.97-macOS-x64.zip",
+        "website": "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/v2.2.97/BatClient-2.2.97-macOS-x64.zip",
+        "sha256": "0F601C0DD4B9B31621BF44EE4A236888B3A57CC4F5C41FA204B4C8B10803B1E7"
+      },
+      "arm64": {
+        "download": "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/v2.2.97/BatClient-2.2.97-macOS-arm64.zip",
+        "website": "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/v2.2.97/BatClient-2.2.97-macOS-arm64.zip",
+        "sha256": "E5D6DF6A74FCB3DD18F1E9CA3D3BCAAEDB15CB82327BC8BD7BC8966F42ACBDB5"
+      }
+    },
+    "linux": {
+      "x64": {
+        "download": "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/v2.2.97/BatClient-2.2.97-Linux-x86_64.AppImage",
+        "website": "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/v2.2.97/BatClient-2.2.97-Linux-x86_64.AppImage",
+        "sha256": "CC7A0A0DEFC0160A202F38C3B49BBE6949D23D3DFD8C7254AA528EE9B0A8681D"
+      }
+    }
+  },
+  "rust": {
+    "schema": 1,
+    "product": "bat-client-rust",
+    "enabled": true,
+    "version": "0.1.4",
+    "notes": "Redesigned Wardrobe, reliable saved looks, direct card uploads and automatic Classic/Slim model saving.",
+    "platforms": {
+      "windows-x86_64": {
+        "url": "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/rust-v0.1.4/Bat-Client-0.1.4-windows-x64-setup.exe",
+        "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSRSs2SytYd1NRNXU2SkkrZDFYakt1ZHNsNkg4TU9VUzFnMlVSK2xYeWg3Y0VDQS9FT0dScjlOY1BYN09xQkRmcmk3MUczUWkvcHdXUG1CSXhZTTYyZVFxS01sQ2dNRWdRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk0MTIzMDQyCWZpbGU6QmF0LUNsaWVudC0wLjEuNC13aW5kb3dzLXg2NC1zZXR1cC5leGUJdmVyc2lvbjowLjEuNApDU01TRkZoNmdOZlJtdTdSRVpKSDdNaXlkMUVEdTcweDl5MlNxa1lNczE0K3BqY0kyeG83alZ0KzhmTW82clZMNU9OUzBuWTN4ZVdOdDNuZHBlVGZCUT09Cg==",
+        "sha256": "64a6dc4b6a05bb970226001318e5e1f335fe915e72fda84ca766a8f6c0f70c4d",
+        "size": 10959509,
+        "installer": "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/rust-v0.1.4/Bat-Client-0.1.4-windows-x64-setup.exe"
+      },
+      "darwin-aarch64": {
+        "url": "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/rust-v0.1.4/Bat-Client-0.1.4-macos-apple-silicon.app.tar.gz",
+        "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSRSs2SytYd1NRNW1iTmxwR1lYaXp1UXpDdkpyWnFkTVJqcU1ibUtGUGFXMERPQTlnTTBwUHQ5QWJJNzZhUC9EcXlpM1I1Mmw3UHg1WThmdTJ4aTR6L1dYM2NGaERrYkFnPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk0MTIzMDUyCWZpbGU6QmF0LUNsaWVudC0wLjEuNC1tYWNvcy1hcHBsZS1zaWxpY29uLmFwcC50YXIuZ3oJdmVyc2lvbjowLjEuNApicXFOM0MxYzd4ejBGZ1V5czMwWjZYN0VaV0NudWgwQm5mYWRySy9FenVhVEk1R3FoNGZ4WjRVOW1MMnMvQmV0a2RFNWQxZFNzSDZOb0xJQVhaVmxEUT09Cg==",
+        "sha256": "5617d3e458ef80e884783462a3558bf12eac7e4d155cf58d6edba7e58203e7bc",
+        "size": 13516354,
+        "installer": "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/rust-v0.1.4/Bat-Client-0.1.4-macos-apple-silicon.dmg"
+      },
+      "darwin-x86_64": {
+        "url": "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/rust-v0.1.4/Bat-Client-0.1.4-macos-intel.app.tar.gz",
+        "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSRSs2SytYd1NRNXR2NE5BTlBRd3hyUWE1TjljMHZKY1AxV3Q3N0N2MEtZaHhhd3hvT201S3hTQ0FsclJxYmdoQWNXNDJCZE93TEdmQ1dRYlhCeW1aenJnaER0T0Yra1FrPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk0MTQxODkxCWZpbGU6QmF0LUNsaWVudC0wLjEuNC1tYWNvcy1pbnRlbC5hcHAudGFyLmd6CXZlcnNpb246MC4xLjQKQW1mdS9GMFYzcHRnYUtDZ1NpNEJWZFZjNVZpV0VBbnZBdWIvYStHWjc5ejUvRnF0a0ZNcnFsMXZ0OFRYdGg3TFFSVnJFQStkcFdENnVORG9IdHQyQmc9PQo=",
+        "sha256": "140414be98f70820b14fd03aae4ba2de4b91dc44ec50ca30cdbdd15a3f40a0cc",
+        "size": 13977632,
+        "installer": "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/rust-v0.1.4/Bat-Client-0.1.4-macos-intel.dmg"
+      },
+      "linux-x86_64": {
+        "url": "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/rust-v0.1.4/Bat-Client-0.1.4-linux-x64.AppImage",
+        "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSRSs2SytYd1NRNW93aWtaNVd5cU1PdVo2MzVTUlRoYWg1dXBXcFo5NThyY0MrSHE0Z2drblYwTkJISUlrRzdlZ3F1OGJVdXQ4eXhZUGxVVmZvQkM3RS9xeEJsdFVEcGdjPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk0MTIzNDIwCWZpbGU6QmF0LUNsaWVudC0wLjEuNC1saW51eC14NjQuQXBwSW1hZ2UJdmVyc2lvbjowLjEuNAo3RG1VT0s3OFdBTGRCYlBSTy94ZElxUzZ1NGVGSDliUDRkVE5wR0oxbzhnb2toY0lTVCsySU5lZjdWNmRzSE9Lc3hWWUg4aHMvQWFkcmdjblNlRElEdz09Cg==",
+        "sha256": "cf3f5dc790a197fc7ca0c0380c4e5ba9794c29bb7e65ee6bc38977e27ee63941",
+        "size": 93514232,
+        "installer": "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/rust-v0.1.4/Bat-Client-0.1.4-linux-x64.AppImage"
+      }
+    }
+  }
+}

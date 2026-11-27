@@ -1,0 +1,338 @@
+Starting a Gradle Daemon, 7 busy and 1 incompatible and 2 stopped Daemons could not be reused, use --status for details
+
+> Configure project :
+Fabric Loom: 1.17.21
+
+> Task :compileJava UP-TO-DATE
+> Task :processResources
+> Task :classes
+> Task :generateLog4jConfig UP-TO-DATE
+> Task :generateRemapClasspath UP-TO-DATE
+> Task :generateDLIConfig UP-TO-DATE
+> Task :configureLaunch UP-TO-DATE
+> Task :downloadAssets UP-TO-DATE
+> Task :configureClientLaunch UP-TO-DATE
+
+> Task :runClient
+[16:06:49] [main/INFO] (FabricLoader/GameProvider) Loading Minecraft 1.21.1 with Fabric Loader 0.16.9
+[16:06:50] [main/INFO] (FabricLoader) Loading 55 mods:
+	- batclient 0.1.0
+	- fabric-api 0.102.1+1.21.1
+	- fabric-api-base 0.4.42+6573ed8c6a
+	- fabric-api-lookup-api-v1 1.6.68+b55973446a
+	- fabric-biome-api-v1 13.0.29+5bd9f1bc6a
+	- fabric-block-api-v1 1.0.22+0af3f5a76a
+	- fabric-block-view-api-v2 1.0.10+6573ed8c6a
+	- fabric-blockrenderlayer-v1 1.1.52+0af3f5a76a
+	- fabric-client-tags-api-v1 1.1.15+6573ed8c6a
+	- fabric-command-api-v1 1.2.49+f71b366f6a
+	- fabric-command-api-v2 2.2.28+6ced4dd96a
+	- fabric-commands-v0 0.2.66+df3654b36a
+	- fabric-content-registries-v0 8.0.16+b55973446a
+	- fabric-convention-tags-v1 2.0.20+7f945d5b6a
+	- fabric-convention-tags-v2 2.6.0+605f22ad6a
+	- fabric-crash-report-info-v1 0.2.29+0af3f5a76a
+	- fabric-data-attachment-api-v1 1.1.27+1daea2156a
+	- fabric-data-generation-api-v1 20.2.17+16c4ae256a
+	- fabric-dimensions-v1 4.0.0+6fc22b996a
+	- fabric-entity-events-v1 1.6.12+6fc22b996a
+	- fabric-events-interaction-v0 0.7.12+ba9dae066a
+	- fabric-game-rule-api-v1 1.0.53+6ced4dd96a
+	- fabric-gametest-api-v1 2.0.4+6fc22b996a
+	- fabric-item-api-v1 11.0.0+afdfc9216a
+	- fabric-item-group-api-v1 4.1.4+780172706a
+	- fabric-key-binding-api-v1 1.0.47+0af3f5a76a
+	- fabric-keybindings-v0 0.2.45+df3654b36a
+	- fabric-lifecycle-events-v1 2.3.12+6c1df3606a
+	- fabric-loot-api-v2 3.0.14+3f89f5a56a
+	- fabric-loot-api-v3 1.0.2+3f89f5a56a
+	- fabric-message-api-v1 6.0.13+6573ed8c6a
+	- fabric-model-loading-api-v1 2.0.0+fe474d6b6a
+	- fabric-networking-api-v1 4.2.2+60c3209b6a
+	- fabric-object-builder-api-v1 15.2.0+40875a936a
+	- fabric-particles-v1 4.0.2+6573ed8c6a
+	- fabric-recipe-api-v1 5.0.12+650897126a
+	- fabric-registry-sync-v0 5.1.2+60c3209b6a
+	- fabric-renderer-api-v1 3.4.0+c705a49c6a
+	- fabric-renderer-indigo 1.7.0+c705a49c6a
+	- fabric-renderer-registries-v1 3.2.68+df3654b36a
+	- fabric-rendering-data-attachment-v1 0.3.48+73761d2e6a
+	- fabric-rendering-fluids-v1 3.1.6+1daea2156a
+	- fabric-rendering-v0 1.1.71+df3654b36a
+	- fabric-rendering-v1 5.0.5+df16efd06a
+	- fabric-resource-conditions-api-v1 4.3.0+8dc279b16a
+	- fabric-resource-loader-v0 1.3.0+565991296a
+	- fabric-screen-api-v1 2.0.25+8b68f1c76a
+	- fabric-screen-handler-api-v1 1.3.86+b55973446a
+	- fabric-sound-api-v1 1.0.23+6573ed8c6a
+	- fabric-transfer-api-v1 5.1.17+1db1cc1f6a
+	- fabric-transitive-access-wideners-v1 6.1.0+1daea2156a
+	- fabricloader 0.16.9
+	- java 21
+	- minecraft 1.21.1
+	- mixinextras 0.4.1
+[16:06:51] [main/INFO] (FabricLoader/Mixin) SpongePowered MIXIN Subsystem Version=0.8.7 Source=file:/C:/Users/Noor-ul-Islam/.gradle/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.15.4+mixin.0.8.7/6a12aacc794f1078458433116e9ed42c1cc98096/sponge-mixin-0.15.4+mixin.0.8.7.jar Service=Knot/Fabric Env=CLIENT
+[16:06:52] [main/INFO] (FabricLoader/Mixin) Loaded Fabric development mappings for mixin remapper!
+[16:06:52] [main/INFO] (FabricLoader/Mixin) Compatibility level set to JAVA_17
+[16:06:52] [main/INFO] (FabricLoader/Mixin) Compatibility level set to JAVA_21
+[16:06:53] [main/WARN] (FabricLoader/Mixin) Reference map 'batclient-refmap.json' for batclient.mixins.json could not be read. If this is a development environment you can ignore this message
+[16:06:58] [main/INFO] (FabricLoader/MixinExtras|Service) Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.4.1).
+[16:07:06] [Datafixer Bootstrap/INFO] (Minecraft) 226 Datafixer optimizations took 5550 milliseconds
+[16:07:20] [Render thread/INFO] (Minecraft) Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, name=PROD]
+[16:07:20] [Render thread/INFO] (Minecraft) Setting user: Player647
+[16:07:21] [Render thread/INFO] (Indigo) [Indigo] Registering Indigo renderer!
+[16:07:22] [Render thread/INFO] (batclient) Bat Client mod initializing (Ultralight/WebKit UI engine)
+[16:07:22] [batclient-ultralight-loader/INFO] (batclient-web) Cleaned stale Ultralight natives dir: C:\Users\NOOR-U~1\AppData\Local\Temp\ultralight-internal-natives-344206030338055564
+[16:07:24] [batclient-ultralight-loader/INFO] (batclient-web) Ultralight natives loaded
+[16:07:24] [Render thread/INFO] (Minecraft) Backend library: LWJGL version 3.3.3-snapshot
+[16:07:27] [Render thread/INFO] (Minecraft) Reloading ResourceManager: vanilla, fabric, batclient, fabric-api, fabric-api-base, fabric-api-lookup-api-v1, fabric-biome-api-v1, fabric-block-api-v1, fabric-block-view-api-v2, fabric-blockrenderlayer-v1, fabric-client-tags-api-v1, fabric-command-api-v1, fabric-command-api-v2, fabric-commands-v0, fabric-content-registries-v0, fabric-convention-tags-v1, fabric-convention-tags-v2, fabric-crash-report-info-v1, fabric-data-attachment-api-v1, fabric-data-generation-api-v1, fabric-dimensions-v1, fabric-entity-events-v1, fabric-events-interaction-v0, fabric-game-rule-api-v1, fabric-gametest-api-v1, fabric-item-api-v1, fabric-item-group-api-v1, fabric-key-binding-api-v1, fabric-keybindings-v0, fabric-lifecycle-events-v1, fabric-loot-api-v2, fabric-loot-api-v3, fabric-message-api-v1, fabric-model-loading-api-v1, fabric-networking-api-v1, fabric-object-builder-api-v1, fabric-particles-v1, fabric-recipe-api-v1, fabric-registry-sync-v0, fabric-renderer-api-v1, fabric-renderer-indigo, fabric-renderer-registries-v1, fabric-rendering-data-attachment-v1, fabric-rendering-fluids-v1, fabric-rendering-v0, fabric-rendering-v1, fabric-resource-conditions-api-v1, fabric-resource-loader-v0, fabric-screen-api-v1, fabric-screen-handler-api-v1, fabric-sound-api-v1, fabric-transfer-api-v1, fabric-transitive-access-wideners-v1, fabricloader, file/SodiumTranslations.zip
+[16:07:27] [Worker-Main-1/INFO] (Minecraft) Found unifont_all_no_pua-15.1.05.hex, loading
+[16:07:27] [Render thread/INFO] (batclient-web) Bat Client web UI extracted to C:\Users\Noor-ul-Islam\Desktop\Raven-Client\bat-client-mod\run\batclient-web
+[16:07:27] [Render thread/INFO] (BatClient-Ultralight) [ultralight] Initializing Ultralight v1.4.0 (WebKit 615.1.18.100.1) with the following configuration
+    cache_path: 
+    resource_path_prefix: $builtin/
+    face_winding: CounterClockwise
+    font_hinting: Normal
+    font_gamma: 1.8
+    force_repaint: disabled
+    animation_timer_delay: 8.3 ms
+    scroll_timer_delay: 8.3 ms
+    recycle_delay: 4.0 s
+    memory_cache_size: 64.00 MB
+    page_cache_size: 0 pages
+    override_ram_size: disabled
+    min_large_heap_size: 32.00 MB
+    min_small_heap_size: 1.00 MB
+    num_renderer_threads: 0
+    max_update_time: 5.0 ms
+    bitmap_alignment: 16
+    effect_quality: Medium
+
+[16:07:28] [Render thread/INFO] (BatClient-Ultralight) [ultralight] Creating Session with the following configuration:
+    id: 2
+    is_persistent: 1
+    name: default
+    is_default: 1
+    disk_path: default (you can adjust this location in Config::cache_path)
+[16:07:28] [Render thread/INFO] (batclient-web) Ultralight renderer created
+[16:07:28] [Worker-Main-1/INFO] (Minecraft) Found unifont_jp_patch-15.1.05.hex, loading
+[16:07:33] [Render thread/WARN] (Minecraft) Missing sound for event: minecraft:item.goat_horn.play
+[16:07:33] [Render thread/WARN] (Minecraft) Missing sound for event: minecraft:entity.goat.screaming.horn_break
+[16:07:33] [Render thread/INFO] (Minecraft) OpenAL initialized on device OpenAL Soft on Speakers (USB Audio Device)
+[16:07:33] [Render thread/INFO] (Minecraft) Sound engine started
+[16:07:33] [Render thread/INFO] (Minecraft) Created: 1024x512x4 minecraft:textures/atlas/blocks.png-atlas
+[16:07:33] [Render thread/INFO] (Minecraft) Created: 256x256x4 minecraft:textures/atlas/signs.png-atlas
+[16:07:33] [Render thread/INFO] (Minecraft) Created: 512x512x4 minecraft:textures/atlas/banner_patterns.png-atlas
+[16:07:33] [Render thread/INFO] (Minecraft) Created: 512x512x4 minecraft:textures/atlas/shield_patterns.png-atlas
+[16:07:33] [Render thread/INFO] (Minecraft) Created: 1024x1024x4 minecraft:textures/atlas/armor_trims.png-atlas
+[16:07:33] [Render thread/INFO] (Minecraft) Created: 128x64x4 minecraft:textures/atlas/decorated_pot.png-atlas
+[16:07:33] [Render thread/INFO] (Minecraft) Created: 256x256x4 minecraft:textures/atlas/chest.png-atlas
+[16:07:33] [Render thread/INFO] (Minecraft) Created: 512x256x4 minecraft:textures/atlas/beds.png-atlas
+[16:07:33] [Render thread/INFO] (Minecraft) Created: 512x256x4 minecraft:textures/atlas/shulker_boxes.png-atlas
+[16:07:34] [Render thread/INFO] (Minecraft) Created: 512x256x0 minecraft:textures/atlas/particles.png-atlas
+[16:07:34] [Render thread/INFO] (Minecraft) Created: 512x256x0 minecraft:textures/atlas/paintings.png-atlas
+[16:07:34] [Render thread/INFO] (Minecraft) Created: 256x128x0 minecraft:textures/atlas/mob_effects.png-atlas
+[16:07:34] [Render thread/INFO] (Minecraft) Created: 64x64x0 minecraft:textures/atlas/map_decorations.png-atlas
+[16:07:34] [Render thread/INFO] (Minecraft) Created: 1024x512x0 minecraft:textures/atlas/gui.png-atlas
+[16:07:34] [Render thread/WARN] (Minecraft) Shader rendertype_entity_translucent_emissive could not find sampler named Sampler2 in the specified shader program.
+[16:07:34] [Render thread/INFO] (BatClient-Ultralight) [ultralight] Creating View with the following configuration:
+    width: 854
+    height: 480
+    device scale: 1
+    session id: 2
+    is_accelerated: 0
+[16:07:34] [Render thread/INFO] (batclient-web) Loading file:///C:/Users/Noor-ul-Islam/Desktop/Raven-Client/bat-client-mod/run/batclient-web/index.html
+[16:07:36] [Render thread/INFO] (BatClient-Ultralight) [ultralight] Initializing Thread Pool with the following configuration:
+    physical processors (detected): 4
+    num threads: 3
+[16:07:36] [Render thread/INFO] (batclient) [web:js] Log:1381 [bat] init ok, player=Player647
+[16:07:36] [Render thread/WARN] (batclient-web) upload first-frame: view=854x480 alpha0=255 dirty=(0,0,854,480) rowBytes=3424 loading=false
+[16:07:36] [Render thread/WARN] (batclient-web) bridge probe: function|[object JavaCallback]|function
+[16:07:36] [Render thread/WARN] (batclient-web) upload diag #0: bufData=0x0 subData=0x0 texSub=0x0 unpackRowLength=0 pbo=15 pboSize=1639680 need=1639680
+[16:08:10] [Render thread/WARN] (batclient-web) upload diag #1: bufData=0x0 subData=0x0 texSub=0x0 unpackRowLength=0 pbo=15 pboSize=302560 need=302560
+[16:08:10] [Render thread/WARN] (batclient-web) upload diag #2: bufData=0x0 subData=0x0 texSub=0x0 unpackRowLength=0 pbo=15 pboSize=84160 need=84160
+[16:08:10] [Render thread/WARN] (batclient-web) upload diag #3: bufData=0x0 subData=0x0 texSub=0x0 unpackRowLength=0 pbo=15 pboSize=84800 need=84800
+[16:08:10] [Render thread/WARN] (batclient-web) upload diag #4: bufData=0x0 subData=0x0 texSub=0x0 unpackRowLength=0 pbo=15 pboSize=68272 need=68272
+[16:08:10] [Render thread/INFO] (batclient) [bat] click recv x=74.5 y=93.5 btn=0
+[16:08:11] [Render thread/INFO] (batclient) [bat] click recv x=51.5 y=72.5 btn=0
+[16:08:11] [Render thread/INFO] (batclient) [web:js] Log:27 [bat] click singleplayer
+[16:08:11] [Render thread/INFO] (batclient) [bat] web action: singleplayer
+[16:08:14] [Render thread/INFO] (Minecraft) Loaded 1290 recipes
+[16:08:14] [Render thread/INFO] (Minecraft) Loaded 1399 advancements
+[16:08:16] [Render thread/INFO] (BiomeModificationImpl) Applied 0 biome modifications to 0 of 64 new biomes in 6.672 ms
+[16:08:16] [Server thread/INFO] (Minecraft) Starting integrated minecraft server version 1.21.1
+[16:08:16] [Server thread/INFO] (Minecraft) Generating keypair
+[16:08:22] [Server thread/INFO] (Minecraft) Preparing start region for dimension minecraft:overworld
+[16:08:23] [Render thread/INFO] (Minecraft) Preparing spawn area: 0%
+[16:08:23] [Render thread/INFO] (Minecraft) Preparing spawn area: 0%
+[16:08:23] [Render thread/INFO] (Minecraft) Preparing spawn area: 0%
+[16:08:23] [Render thread/INFO] (Minecraft) Preparing spawn area: 0%
+[16:08:24] [Render thread/INFO] (Minecraft) Time elapsed: 1956 ms
+[16:08:24] [Server thread/INFO] (Minecraft) Changing view distance to 12, from 10
+[16:08:24] [Server thread/INFO] (Minecraft) Changing simulation distance to 12, from 0
+[16:08:27] [Server thread/INFO] (Minecraft) Player647[local:E:562c29e1] logged in with entity id 23 at (-628.0799722296447, 68.0, -482.5218730460579)
+[16:08:27] [Server thread/INFO] (Minecraft) Player647 joined the game
+[16:08:28] [Render thread/INFO] (Minecraft) Loaded 14 advancements
+[16:08:30] [Render thread/INFO] (BatClient-Ultralight) [ultralight] Creating View with the following configuration:
+    width: 854
+    height: 480
+    device scale: 1
+    session id: 2
+    is_accelerated: 0
+[16:08:30] [Render thread/INFO] (batclient-web) Loading file:///C:/Users/Noor-ul-Islam/Desktop/Raven-Client/bat-client-mod/run/batclient-web/overlay.html
+[16:08:30] [Render thread/INFO] (batclient) [hud] overlay HUD window ready
+[16:08:30] [Render thread/INFO] (batclient) [web:js] Log:1387 [bat] init ok, overlay, player=Player647
+[16:08:30] [Render thread/INFO] (batclient) [bat] web action: hudedit:on
+[16:08:30] [Render thread/WARN] (batclient-web) upload first-frame: view=854x480 alpha0=255 dirty=(0,0,854,480) rowBytes=3424 loading=false
+[16:08:30] [Render thread/WARN] (batclient-web) bridge probe: function|[object JavaCallback]|function
+[16:08:30] [Render thread/WARN] (batclient-web) upload diag #0: bufData=0x0 subData=0x0 texSub=0x0 unpackRowLength=0 pbo=150026 pboSize=1639680 need=1639680
+[16:08:30] [Render thread/INFO] (batclient) [hud] overlay HUD first frame drawn
+[16:08:30] [Render thread/WARN] (batclient-web) upload diag #1: bufData=0x0 subData=0x0 texSub=0x0 unpackRowLength=0 pbo=150026 pboSize=1639680 need=1639680
+[16:08:31] [Render thread/WARN] (batclient-web) upload diag #2: bufData=0x0 subData=0x0 texSub=0x0 unpackRowLength=0 pbo=150026 pboSize=11264 need=11264
+[16:08:32] [Render thread/WARN] (batclient-web) upload diag #3: bufData=0x0 subData=0x0 texSub=0x0 unpackRowLength=0 pbo=150026 pboSize=11264 need=11264
+[16:08:32] [Render thread/INFO] (BatClient-Ultralight) [ultralight] Creating View with the following configuration:
+    width: 854
+    height: 480
+    device scale: 1
+    session id: 2
+    is_accelerated: 0
+[16:08:32] [Render thread/INFO] (batclient-web) Loading file:///C:/Users/Noor-ul-Islam/Desktop/Raven-Client/bat-client-mod/run/batclient-web/pause.html
+[16:08:32] [Render thread/INFO] (batclient) [web:js] Log:1383 [bat] init ok, pause, player=Player647
+[16:08:32] [Server thread/INFO] (Minecraft) Saving and pausing game...
+[16:08:32] [Render thread/WARN] (batclient-web) upload first-frame: view=854x480 alpha0=194 dirty=(0,0,854,480) rowBytes=3424 loading=false
+[16:08:32] [Render thread/WARN] (batclient-web) bridge probe: function|[object JavaCallback]|function
+[16:08:32] [Render thread/WARN] (batclient-web) upload diag #0: bufData=0x0 subData=0x0 texSub=0x0 unpackRowLength=0 pbo=150027 pboSize=1639680 need=1639680
+[16:08:32] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:overworld
+[16:08:32] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:the_end
+[16:08:32] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:the_nether
+[16:08:33] [Render thread/WARN] (batclient-web) upload diag #1: bufData=0x0 subData=0x0 texSub=0x0 unpackRowLength=0 pbo=150027 pboSize=6632640 need=6632640
+[16:08:33] [Render thread/WARN] (batclient-web) upload diag #4: bufData=0x0 subData=0x0 texSub=0x0 unpackRowLength=0 pbo=150026 pboSize=11264 need=11264
+[16:08:35] [Render thread/INFO] (batclient) [bat] web action: hudedit:on
+[16:08:37] [Render thread/INFO] (batclient) [bat] click recv x=420.0 y=246.7497467071935 btn=0
+[16:08:37] [Render thread/INFO] (batclient) [web:js] Log:27 [bat] click client-settings
+[16:08:46] [Render thread/INFO] (batclient) [bat] click recv x=81.0 y=247.2502532928065 btn=0
+[16:08:47] [Render thread/INFO] (batclient) [bat] click recv x=676.0 y=185.18743667679837 btn=0
+[16:08:48] [Render thread/INFO] (batclient) [bat] click recv x=556.0 y=323.8277608915907 btn=0
+[16:08:51] [Render thread/INFO] (batclient) [bat] click recv x=701.5 y=122.62411347517731 btn=0
+[16:08:52] [Render thread/INFO] (batclient) [bat] click recv x=700.0 y=122.12360688956434 btn=0
+[16:08:53] [Render thread/INFO] (batclient) [bat] click recv x=682.5 y=177.67983789260384 btn=0
+[16:08:54] [Render thread/INFO] (batclient) [bat] click recv x=586.5 y=187.18946301925024 btn=0
+[16:08:54] [Render thread/INFO] (batclient) [bat] click recv x=588.5 y=196.19858156028369 btn=0
+[16:08:56] [Render thread/INFO] (batclient) [bat] click recv x=424.5 y=241.74468085106383 btn=0
+[16:08:57] [Render thread/INFO] (batclient) [bat] click recv x=387.0 y=255.25835866261397 btn=0
+[16:08:58] [Render thread/INFO] (batclient) [bat] click recv x=627.0 y=207.209726443769 btn=0
+[16:08:59] [Render thread/INFO] (batclient) [bat] click recv x=590.5 y=269.7730496453901 btn=0
+[16:09:01] [Render thread/INFO] (batclient) [bat] click recv x=427.0 y=217.21985815602838 btn=0
+[16:09:02] [Render thread/INFO] (batclient) [bat] click recv x=299.0 y=304.8085106382979 btn=0
+[16:09:02] [Render thread/INFO] (batclient) [bat] click recv x=301.0 y=304.8085106382979 btn=0
+[16:09:03] [Render thread/INFO] (batclient) [bat] click recv x=245.5 y=290.29381965552176 btn=0
+[16:09:06] [Render thread/INFO] (batclient) [bat] click recv x=640.5 y=115.11651469098278 btn=0
+[16:09:06] [Render thread/INFO] (batclient) [bat] web action: hudedit:on
+[16:09:07] [Render thread/INFO] (batclient) [bat] click recv x=121.0 y=261.7649442755826 btn=0
+[16:09:08] [Render thread/INFO] (batclient) [bat] web action: hudedit:off
+[16:09:13] [Render thread/INFO] (batclient) [bat] web action: hudedit:on
+[16:09:15] [Render thread/INFO] (batclient) [bat] click recv x=142.5 y=111.612968591692 btn=0
+[16:09:15] [Render thread/INFO] (batclient) [bat] click recv x=138.0 y=109.61094224924013 btn=0
+[16:09:17] [Render thread/INFO] (batclient) [bat] web action: hudedit:off
+[16:09:28] [Server thread/INFO] (Minecraft) Saving and pausing game...
+[16:09:28] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:overworld
+[16:09:28] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:the_end
+[16:09:28] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:the_nether
+[16:09:28] [Render thread/WARN] (batclient-web) upload diag #2: bufData=0x0 subData=0x0 texSub=0x0 unpackRowLength=0 pbo=150027 pboSize=64872 need=64872
+[16:09:29] [Render thread/WARN] (batclient-web) upload diag #3: bufData=0x0 subData=0x0 texSub=0x0 unpackRowLength=0 pbo=150027 pboSize=124608 need=124608
+[16:09:29] [Render thread/WARN] (batclient-web) upload diag #4: bufData=0x0 subData=0x0 texSub=0x0 unpackRowLength=0 pbo=150027 pboSize=193440 need=193440
+[16:09:32] [Server thread/INFO] (Minecraft) Player647 has made the advancement [Monster Hunter]
+[16:09:32] [Render thread/INFO] (Minecraft) [System] [CHAT] Player647 has made the advancement [Monster Hunter]
+[16:09:32] [Render thread/INFO] (Minecraft) Loaded 53 advancements
+[16:09:43] [Server thread/INFO] (Minecraft) Saving and pausing game...
+[16:09:43] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:overworld
+[16:09:43] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:the_end
+[16:09:43] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:the_nether
+[16:09:43] [Render thread/INFO] (batclient) [bat] click recv x=419.5 y=262.2654508611955 btn=0
+[16:09:45] [Render thread/INFO] (batclient) [bat] web action: hudedit:on
+[16:09:45] [Render thread/INFO] (batclient) [bat] click recv x=453.0 y=268.2715298885512 btn=0
+[16:09:45] [Render thread/INFO] (batclient) [web:js] Log:27 [bat] click website
+[16:09:45] [Render thread/INFO] (batclient) [bat] web action: website
+[16:09:48] [Render thread/INFO] (batclient) [bat] click recv x=447.5 y=244.24721377912869 btn=0
+[16:09:48] [Render thread/INFO] (batclient) [web:js] Log:27 [bat] click client-settings
+[16:09:49] [Render thread/INFO] (batclient) [bat] click recv x=664.5 y=95.09625126646404 btn=0
+[16:09:52] [Render thread/INFO] (batclient) [bat] click recv x=161.5 y=387.89260385005065 btn=0
+[16:09:52] [Render thread/INFO] (batclient) [bat] click recv x=167.5 y=294.29787234042556 btn=0
+[16:09:53] [Render thread/INFO] (batclient) [bat] click recv x=73.0 y=297.8014184397163 btn=0
+[16:09:55] [Render thread/INFO] (batclient) [bat] click recv x=525.0 y=173.6757852077001 btn=0
+[16:09:55] [Render thread/INFO] (batclient) [bat] click recv x=573.0 y=172.67477203647417 btn=0
+[16:09:56] [Render thread/INFO] (batclient) [bat] click recv x=601.0 y=172.67477203647417 btn=0
+[16:09:58] [Render thread/INFO] (batclient) [bat] click recv x=596.5 y=223.72644376899697 btn=0
+[16:09:59] [Render thread/INFO] (batclient) [bat] click recv x=331.5 y=201.70415400202634 btn=0
+[16:10:00] [Render thread/INFO] (batclient) [bat] click recv x=295.0 y=172.67477203647417 btn=0
+[16:10:01] [Render thread/INFO] (batclient) [bat] click recv x=427.0 y=177.67983789260384 btn=0
+[16:10:02] [Render thread/INFO] (batclient) [bat] click recv x=422.5 y=174.17629179331308 btn=0
+[16:10:02] [Render thread/INFO] (batclient) [bat] click recv x=392.5 y=185.18743667679837 btn=0
+[16:10:03] [Render thread/INFO] (batclient) [bat] click recv x=425.0 y=172.17426545086118 btn=0
+[16:10:04] [Render thread/INFO] (batclient) [bat] click recv x=424.0 y=169.17122593718338 btn=0
+[16:10:04] [Render thread/INFO] (batclient) [bat] click recv x=407.5 y=179.6818642350557 btn=0
+[16:10:05] [Render thread/INFO] (batclient) [bat] click recv x=640.0 y=149.15096251266465 btn=0
+[16:10:07] [Render thread/INFO] (batclient) [bat] click recv x=542.5 y=170.6727456940223 btn=0
+[16:10:08] [Render thread/INFO] (batclient) [bat] click recv x=811.5 y=51.0516717325228 btn=0
+[16:10:08] [Render thread/INFO] (batclient) [web:js] Log:27 [bat] click back
+[16:10:09] [Render thread/INFO] (batclient) [bat] web action: hudedit:off
+[16:10:09] [Render thread/INFO] (batclient) [bat] click recv x=517.5 y=99.60081053698075 btn=0
+[16:10:14] [Server thread/INFO] (Minecraft) Saving and pausing game...
+[16:10:14] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:overworld
+[16:10:14] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:the_end
+[16:10:14] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:the_nether
+[16:13:29] [Render thread/INFO] (Minecraft) Loaded 53 advancements
+[16:13:33] [Server thread/INFO] (Minecraft) Saving and pausing game...
+[16:13:33] [Render thread/INFO] (batclient) [bat] click recv x=418.5 y=247.2502532928065 btn=0
+[16:13:33] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:overworld
+[16:13:33] [Render thread/INFO] (batclient) [web:js] Log:27 [bat] click website
+[16:13:33] [Render thread/INFO] (batclient) [bat] web action: website
+[16:13:33] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:the_end
+[16:13:33] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:the_nether
+[16:13:34] [Render thread/INFO] (batclient) [bat] click recv x=438.5 y=352.85714285714283 btn=0
+[16:13:34] [Render thread/INFO] (batclient) [bat] click recv x=446.5 y=323.3272543059777 btn=0
+[16:13:35] [Render thread/INFO] (batclient) [bat] click recv x=447.0 y=319.82370820668694 btn=0
+[16:13:35] [Render thread/INFO] (batclient) [web:js] Log:27 [bat] click savequit
+[16:13:35] [Render thread/INFO] (batclient) [bat] web action: savequit
+[16:13:35] [Server thread/INFO] (Minecraft) Player647 lost connection: Disconnected
+[16:13:35] [Server thread/INFO] (Minecraft) Player647 left the game
+[16:13:35] [Server thread/INFO] (Minecraft) Stopping singleplayer server as player logged out
+[16:13:35] [Server thread/INFO] (Minecraft) Stopping server
+[16:13:35] [Server thread/INFO] (Minecraft) Saving players
+[16:13:35] [Server thread/INFO] (Minecraft) Saving worlds
+[16:13:36] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:overworld
+[16:13:36] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:the_end
+[16:13:36] [Server thread/INFO] (Minecraft) Saving chunks for level 'ServerLevel[New World]'/minecraft:the_nether
+[16:13:36] [Server thread/INFO] (Minecraft) ThreadedAnvilChunkStorage (New World (2)): All chunks are saved
+[16:13:36] [Server thread/INFO] (Minecraft) ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+[16:13:36] [Server thread/INFO] (Minecraft) ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+[16:13:36] [Server thread/INFO] (Minecraft) ThreadedAnvilChunkStorage: All dimensions are saved
+[16:13:36] [Render thread/INFO] (BatClient-Ultralight) [ultralight] Creating View with the following configuration:
+    width: 1680
+    height: 987
+    device scale: 1
+    session id: 2
+    is_accelerated: 0
+[16:13:36] [Render thread/INFO] (batclient-web) Loading file:///C:/Users/Noor-ul-Islam/Desktop/Raven-Client/bat-client-mod/run/batclient-web/index.html
+[16:13:36] [Render thread/INFO] (batclient) [web:js] Log:1381 [bat] init ok, player=Player647
+[16:13:37] [Render thread/WARN] (batclient-web) upload first-frame: view=1680x987 alpha0=255 dirty=(0,0,1680,987) rowBytes=6720 loading=false
+[16:13:37] [Render thread/WARN] (batclient-web) bridge probe: function|[object JavaCallback]|function
+[16:13:37] [Render thread/WARN] (batclient-web) upload diag #0: bufData=0x0 subData=0x0 texSub=0x0 unpackRowLength=0 pbo=21 pboSize=6632640 need=6632640
+[16:46:23] [Render thread/INFO] (Minecraft) Stopping!
+
+> Task :runClient FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':runClient' (registered by plugin 'fabric-loom').
+> Process 'command 'C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot\bin\java.exe'' finished with non-zero exit value -1073740791 (NTSTATUS 0xC0000409)
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 40m 11s
+7 actionable tasks: 2 executed, 5 up-to-date

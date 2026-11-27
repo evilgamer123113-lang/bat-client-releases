@@ -1,0 +1,17 @@
+[Unit]
+Description=Bat Client hosted skin API (Yggdrasil-compatible)
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/skin-api
+Environment=NODE_ENV=production
+EnvironmentFile=-/var/www/skin-api/.env
+ExecStart=/usr/bin/node /var/www/skin-api/server.js
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

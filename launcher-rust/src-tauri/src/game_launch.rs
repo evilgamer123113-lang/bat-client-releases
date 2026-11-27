@@ -8,7 +8,7 @@ use std::{
     path::Path,
     process::{Command, Stdio},
     sync::{
-        atomic::{AtomicBool, Ordering},
+        atomic::{AtomicBool, AtomicU32, Ordering},
         Mutex,
     },
     thread,
@@ -18,6 +18,8 @@ use tauri::{Emitter, Manager};
 
 static LOG_PATH: Mutex<Option<std::path::PathBuf>> = Mutex::new(None);
 static ACTIVE: AtomicBool = AtomicBool::new(false);
+static CANCEL_LAUNCH: AtomicBool = AtomicBool::new(false);
+static ACTIVE_PID: AtomicU32 = AtomicU32::new(0);
 static STATUS: Mutex<Status> = Mutex::new(Status {
     stage: String::new(),
     message: String::new(),
@@ -482,6 +484,8 @@ pub async fn launch_installed_game(
     {
         return Err("Minecraft is already starting or running".into());
     }
+    CANCEL_LAUNCH.store(false, Ordering::SeqCst);
+    ACTIVE_PID.store(0, Ordering::SeqCst);
     status(
         "preparing",
         "Checking the selected session and installed Minecraft…",
@@ -544,9 +548,15 @@ pub async fn launch_installed_game(
         if let Ok(mut current)=LOG_PATH.lock(){*current=Some(log_path.clone());}
         let log=fs::OpenOptions::new().create_new(true).write(true).open(&log_path).map_err(|_|"Cannot create game log")?;
         plan.command.stdout(log.try_clone().map_err(|_|"Cannot attach game output")?).stderr(log);
+        if CANCEL_LAUNCH.load(Ordering::SeqCst) {
+            return Err("Launch stopped by user.".into());
+        }
         let settings=lib::config(&root)?;
         let mut child=plan.command.spawn().map_err(|_|"Java could not start Minecraft. Check the selected Java installation and JVM arguments.")?;
-        let pid=child.id();let _=crate::tools::record(&root,&profile_id,pid,server.as_deref());let _=app.emit("bat-game-event",serde_json::json!({"kind":"started","pid":pid}));status("starting","Java started. Opening Minecraft…",Some(pid));
+        let pid=child.id();ACTIVE_PID.store(pid,Ordering::SeqCst);let _=crate::tools::record(&root,&profile_id,pid,server.as_deref());let _=app.emit("bat-game-event",serde_json::json!({"kind":"started","pid":pid}));status("starting","Java started. Opening Minecraft…",Some(pid));
+        if CANCEL_LAUNCH.load(Ordering::SeqCst) {
+            let _ = kill_pid(pid);
+        }
         if let Some(window)=app.get_webview_window("main"){
             if settings["appSettings"]["showConsole"]==true{let _=window.show();}
             else if settings["appSettings"]["hideOnLaunch"]==true{let _=window.hide();}
@@ -557,29 +567,89 @@ pub async fn launch_installed_game(
             let mut opened=false;let started=std::time::Instant::now();let mut slow=false;let mut title_check=started;
             let exit=loop{
                 match child.try_wait(){Ok(Some(exit))=>break Ok(exit),Err(error)=>break Err(error),Ok(None)=>{}}
+                if CANCEL_LAUNCH.load(Ordering::SeqCst) {
+                    let _ = child.kill();
+                }
                 if !opened&&renderer_initialized(&log_path){opened=true;status("running","Minecraft is open with Bat’s Java agent.",Some(pid));}
                 if opened&&title_check.elapsed()>=std::time::Duration::from_secs(2){if let Some(title)=settings["appSettings"]["gameWindowTitle"].as_str(){crate::window_title::apply(pid,title);}title_check=std::time::Instant::now();}
                 if !opened&&!slow&&started.elapsed()>std::time::Duration::from_secs(60){slow=true;status("starting","Minecraft is taking longer to open. View the launch log for progress.",Some(pid));}
                 thread::sleep(std::time::Duration::from_millis(500));
             };
-            let exit_code=exit.as_ref().ok().and_then(|s|s.code());let ok=exit.as_ref().is_ok_and(|s|s.success())&&opened;
-            if ok{status("ready","Minecraft closed.",None);}else{failed(if opened{"Minecraft exited with an error."}else{"Minecraft closed before startup completed."},Some(&log_path),exit_code);}
+            ACTIVE_PID.store(0, Ordering::SeqCst);
+            let cancelled = CANCEL_LAUNCH.swap(false, Ordering::SeqCst);
+            let exit_code=exit.as_ref().ok().and_then(|s|s.code());let ok=(exit.as_ref().is_ok_and(|s|s.success())&&opened)||cancelled;
+            if cancelled{status("ready","Minecraft stopped.",None);}else if ok{status("ready","Minecraft closed.",None);}else{failed(if opened{"Minecraft exited with an error."}else{"Minecraft closed before startup completed."},Some(&log_path),exit_code);}
             drop(plan);drop(game_lock);ACTIVE.store(false,Ordering::SeqCst);
-            crate::runtime::notification(&app,if ok{"Minecraft closed"}else{"Minecraft could not launch"},if ok{"Your game session finished."}else{"The launcher has details and recovery options."});
+            if !cancelled {
+                crate::runtime::notification(&app,if ok{"Minecraft closed"}else{"Minecraft could not launch"},if ok{"Your game session finished."}else{"The launcher has details and recovery options."});
+            }
             let _=app.emit("bat-game-event",serde_json::json!({"kind":"closed","success":ok}));
-            if ok&&settings["appSettings"]["autoCloseOnGameExit"]==true{app.exit(0);}else if let Some(window)=app.get_webview_window("main"){let _=window.show();let _=window.unminimize();if !ok{let _=window.set_focus();}}
+            if ok&&!cancelled&&settings["appSettings"]["autoCloseOnGameExit"]==true{app.exit(0);}else if let Some(window)=app.get_webview_window("main"){let _=window.show();let _=window.unminimize();if !ok{let _=window.set_focus();}}
 
         });
         Ok(Status{stage:"starting".into(),message:"Java started. Opening Minecraft…".into(),pid:Some(pid),progress:None,failure:None})
     }).await.map_err(|_|"Native launch preparation failed".to_owned())?;
     if let Err(error) = &result {
+        ACTIVE_PID.store(0, Ordering::SeqCst);
+        let cancelled = CANCEL_LAUNCH.swap(false, Ordering::SeqCst);
         ACTIVE.store(false, Ordering::SeqCst);
-        failed(error, None, None);
+        if cancelled {
+            status("ready", "Minecraft launch stopped.", None);
+        } else {
+            failed(error, None, None);
+        }
         if let Some(window) = restore_window.get_webview_window("main") {
             let _ = window.show();
         }
     }
     result
+}
+
+fn kill_pid(pid: u32) -> Result<(), String> {
+    if pid == 0 {
+        return Ok(());
+    }
+    #[cfg(target_os = "windows")]
+    {
+        use std::os::windows::process::CommandExt;
+        Command::new("taskkill")
+            .args(["/F", "/T", "/PID", &pid.to_string()])
+            .creation_flags(0x0800_0000)
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .status()
+            .map_err(|_| "Cannot stop Minecraft process")?;
+    }
+    #[cfg(not(target_os = "windows"))]
+    {
+        Command::new("kill")
+            .args(["-9", &pid.to_string()])
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .status()
+            .map_err(|_| "Cannot stop Minecraft process")?;
+    }
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn stop_running_game() -> Result<Status, String> {
+    CANCEL_LAUNCH.store(true, Ordering::SeqCst);
+    let pid = ACTIVE_PID.swap(0, Ordering::SeqCst);
+    if pid != 0 {
+        let _ = kill_pid(pid);
+    }
+    status("ready", "Stopping Minecraft…", None);
+    Ok(STATUS
+        .lock()
+        .map(|s| s.clone())
+        .unwrap_or_else(|_| Status {
+            stage: "ready".into(),
+            message: "Stopping Minecraft…".into(),
+            pid: None,
+            progress: None,
+            failure: None,
+        }))
 }
 
 #[cfg(test)]

@@ -1,0 +1,13 @@
+name: BatClientWaypoints
+version: 1.0.0
+main: com.batclient.api.waypoints.BatWaypointsPlugin
+api-version: '1.21'
+description: Per-player Bat Client waypoints API. Personal markers remain client-owned.
+commands:
+  batwaypoint:
+    description: Create a Bat Client test waypoint or clear this player's server markers
+    usage: /batwaypoint <create name|clear>
+    permission: batclient.waypoints.admin
+permissions:
+  batclient.waypoints.admin:
+    default: op

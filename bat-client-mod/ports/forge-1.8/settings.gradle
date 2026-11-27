@@ -1,0 +1,14 @@
+pluginManagement {
+    repositories {
+        maven { url 'https://repo.essential.gg/repository/maven-public' }
+        maven { url 'https://maven.architectury.dev/' }
+        maven { url 'https://maven.minecraftforge.net/' }
+        maven { url 'https://maven.fabricmc.net/' }
+        maven { url 'https://repo.legacyfabric.net/repository/legacyfabric/' }
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+rootProject.name = 'bat-client-forge-1.8-internal'
+include 'web-runtime'
+project(':web-runtime').projectDir = file('../forge-web-runtime')

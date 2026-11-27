@@ -1,0 +1,7 @@
+# Forge 1.21.4 — protected production smoke and 69-screen visual parity pass
+
+Genuine full-source port, protected remapped package and actual Windows native production runtime passed on 2026-11-08 with Rust cosmetics agent and custom SerialGC. Main menu/shader, world/HUD/waypoint menu and natural exit 0; 63 world frames. SHA256 `b2f2e020fc7e913679a99815524ca01d5baf448270cfca044acf02807504d0b0`. Forge additionally checks same-module JNI/released-view guards.
+
+2026-11-12 (`r2`/`a2`): Rebuilt protected artifact (`SHA256: 82ee89ec53b120c1e3b5a054fc9d9395bf7b7f4705aa2c08284c23ae3b381c7b`, log `D:/BatClientBuildCache/mod-ports-20261108/forge-1214-r2.log`) with the 400 ms overlay settling wait and disabled tutorial toast, and ran native 69-screen visual parity (`D:/BatClientBuildCache/mod-native/forge-1.21.4-20261112-a2/visual-parity`, log `D:/BatClientBuildCache/mod-ports-20261108/forge-1214-native-a2.log`) with `bat-cosmetics.jar`, `-XX:+UseSerialGC`, and `bat-client-next.exe`. Exited `0` with `BAT_VISUAL_PARITY_CAPTURE_OK`. All six requested screens (`main-menu.png`, `game-overlay.png`, `mod-manager.png`, `pause-menu.png`, `hud-editor.png`, `world-hud.png`) reviewed; `game-overlay.png` now displays the full painted web controls.
+
+Evidence: D:/BatClientBuildCache/mod-ports-20261108. This is limited flat-world smoke/visual evidence, not full module/animated-cosmetic visual, terrain/FPS, other OS or public release certification. Stable release gate remains closed. See canonical BAT-CLIENT-MOD-AGENT.md.

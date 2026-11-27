@@ -1,0 +1,22 @@
+# Fabric 1.19.2 Port Status
+
+- **Minecraft / Loader / API:** `1.19.2` / Fabric Loader `0.20.1` / Fabric API `0.77.0+1.19.2` / Yarn `1.19.2+build.28:v2`
+- **Build (`r15`):** `gradlew.bat build --rerun-tasks` (production, after `WebWindow.drawRegion` `RenderSystem` fix)
+  - **Artifact:** `ports/fabric-1.19.2/build/libs/bat-client-fabric-1.19.2-INTERNAL-UNVERIFIED-0.1.0-fabric-internal.jar`
+  - **SHA-256:** `37A544952459E973CE0AACC6003F200D2B7B5CDF98A41E031CF0C9EE263E9774` (`22393152` bytes)
+  - **Build log:** `D:/BatClientBuildCache/mod-ports-20261108/fabric-1192-r14-build.log`
+- **Audits (`r14`):**
+  - `audit-port-mixins.py`: `ACTUAL_GAME_MIXIN_MEMBER_AUDIT: 47 targets; 0 issues`
+  - `audit-constructor-callbacks.py`: `COMPILED_CONSTRUCTOR_CALLBACK_AUDIT: 0 callbacks; 0 issues`
+- **Native Visual-Parity Smoke (`a7`):**
+  - **Command:** `python scripts/run-fabric-production-smoke.py --minecraft 1.19.2 --runtime D:\BatClientBuildCache\mod-native\fabric-1.19.2-20261113-a7 --mod ports\fabric-1.19.2\build\libs\bat-client-fabric-1.19.2-INTERNAL-UNVERIFIED-0.1.0-fabric-internal.jar --agent ..\bat-client-agent\build\libs\bat-cosmetics.jar --java "D:\BatClientBuildCache\mod-ports-20261108\launcher-parent-fixture\bat-client-next.exe" --visual-parity`
+  - **Result:** Exit `0`, `BAT_VISUAL_PARITY_CAPTURE_OK`, `69` PNGs under `D:/BatClientBuildCache/mod-native/fabric-1.19.2-20261113-a7/visual-parity`
+  - **Smoke log:** `D:/BatClientBuildCache/mod-ports-20261108/fabric-1192-a7.log`
+  - **6-screen review (`D:/BatClientBuildCache/mod-native/fabric-1.19.2-visual/visual-parity`):** `main-menu.png`, `game-overlay.png`, `mod-manager.png`, `pause-menu.png`, `hud-editor.png`, and `world-hud.png` all render cleanly (`BAT_VISUAL_PARITY_CAPTURE_OK`; white `main-menu.png` fixed via `adapter_1192.py` explicit `RenderSystem` state in `WebWindow.drawRegion`).
+- **Key 1.19.2 API Adaptations (`scripts/adapter_1192.py` + `ports/mc1.19.2/src/`):**
+  - `Registry` / `FluidTags` / `Shader` / `net.minecraft.util.math.{Matrix4f, Matrix3f, Vec3f, Vector4f, Quaternion}` + `Vec3f.*.getDegreesQuaternion`
+  - `TextRenderer.TextLayerType` -> `boolean seeThrough` (`NativeNametags`, `OwnNametagMixin`, `NativeNametagStyleMixin`)
+  - `VisualLayers` reflection lookup of `RenderLayer.of(...)` by parameter types (Yarn/Intermediary/SRG safe)
+  - `HurtCameraMixin` (`bobViewWhenHurt` + `Vec3f;getDegreesQuaternion`), `LowFireMixin` (`MatrixStack;translate(DDD)V`), `ItemPhysicsMixin` (`translate(DDD)V` + `multiply(Quaternion;)V`)
+  - `InventoryNametagMixin` (`drawEntity(IIIFFLivingEntity)V` + `method_29977` `runAsFancy` lambda), `MultiplayerExtrasMixin` (`drawCenteredText`, `setSuggestion`), `ChatHudMixin` (`getMessageIndex(D)I`, `render(MatrixStack, int)`), `ChatSenderMixin` (`signedHeader().sender()`), `ClientAccountMixin` (`new ProfileKeys(...)`, `@Shadow currentFps`), `OriginalPauseScreen` (`new ButtonWidget(...)`), `WebScreen` (`addResourcePackProfilesToManager`), `ReturnTrail` (`Vec3f.dot`/getters)
+- **Remaining:** Forge `1.19.2` build + native visual-parity smoke, and wider feature/performance certification.

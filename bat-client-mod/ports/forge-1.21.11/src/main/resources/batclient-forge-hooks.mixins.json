@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.batclient.platform.forge.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "ForgeMinecraftLifecycleMixin",
+    "ForgeHudMixin",
+    "ForgeWorldRenderMixin",
+    "ForgeTooltipComponentMixin",
+    "ForgeWorldStageMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

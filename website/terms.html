@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://ads.halalspark.co.uk">
+    <link rel="dns-prefetch" href="https://ads.halalspark.co.uk">
+    <title>Terms of Service | Bat Client</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --bg-soft: #0b0b0c;
+            --ink: #f4f4f2;
+            --ink-dim: #9c9c98;
+            --ink-faint: #6b6b68;
+            --line: #1a1a1d;
+            --font-head: 'DM Sans', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+            --nav-h: 72px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--ink); font-family: var(--font-body); line-height: 1.7; padding-top: var(--nav-h); -webkit-font-smoothing: antialiased; }
+        a { color: inherit; }
+
+        .nav {
+            position: fixed; top: 0; left: 0; width: 100%; height: var(--nav-h);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 clamp(1.25rem, 4vw, 3rem);
+            background: rgba(10,10,10,0.82); backdrop-filter: blur(14px);
+            z-index: 1000; border-bottom: 1px solid var(--line);
+        }
+        .nav-brand { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; }
+        .nav-brand img { height: 34px; width: auto; display: block; }
+        .nav-brand b { font-family: var(--font-head); font-weight: 700; font-size: 1.2rem; letter-spacing: 0.3px; }
+        .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+        .nav-links a { color: var(--ink-dim); text-decoration: none; font-size: 0.92rem; font-weight: 500; transition: color 0.2s ease; }
+        .nav-links a:hover { color: var(--ink); }
+        .nav-cta { color: var(--bg) !important; background: var(--ink); border-radius: 6px; padding: 0.5rem 1.1rem; font-weight: 700 !important; }
+        .nav-cta:hover { color: var(--bg) !important; background: #ffffff; }
+
+        .content { max-width: 900px; margin: 0 auto; padding: 4.5rem clamp(1.25rem, 4vw, 3rem) 5rem; }
+        .page-head { margin-bottom: 3rem; }
+        .page-head h1 { font-family: var(--font-head); font-size: clamp(2.2rem, 5vw, 3.2rem); letter-spacing: -0.02em; line-height: 1.05; margin-bottom: 0.6rem; }
+        .page-head .meta { color: var(--ink-faint); font-size: 0.85rem; }
+        .section h2 { font-family: var(--font-head); font-size: 1.35rem; font-weight: 700; color: var(--ink); margin: 3rem 0 1rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+        .section h2:first-of-type { border-top: none; padding-top: 0; }
+        .section p, .section li, .section .txt { color: var(--ink-dim); margin-bottom: 1rem; font-size: 0.97rem; line-height: 1.75; }
+        .section ul { padding-left: 1.4rem; margin-bottom: 1rem; }
+        .section li { margin-bottom: 0.5rem; }
+        .section strong { color: var(--ink); font-weight: 600; }
+        .section a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+
+        footer { border-top: 1px solid var(--line); background: var(--bg); }
+        .footer-inner { max-width: 1280px; margin: 0 auto; padding: 3.5rem clamp(1.25rem,4vw,3rem) 2rem; }
+        .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; padding-bottom: 3rem; }
+        .footer-brand img { height: 30px; width: auto; margin-bottom: 1rem; }
+        .footer-brand p { color: var(--ink-dim); font-size: 0.88rem; max-width: 22rem; }
+        .footer-col h3 { font-family: var(--font-head); font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 1rem; }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+        .footer-col a { color: var(--ink-dim); text-decoration: none; font-size: 0.92rem; transition: color 0.2s; }
+        .footer-col a:hover { color: var(--ink); }
+        .footer-bottom { border-top: 1px solid var(--line); padding-top: 1.6rem; color: var(--ink-faint); font-size: 0.82rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+        .footer-disclaimer { margin-top: 1.4rem; padding-top: 1.2rem; border-top: 1px solid var(--line); color: var(--ink-faint); font-size: 0.75rem; line-height: 1.6; max-width: 60rem; }
+        .footer-disclaimer a { color: var(--ink-dim); text-decoration: underline; text-underline-offset: 3px; }
+
+        /* ---------- intro card ---------- */
+        .intro-card {
+            background: var(--bg-soft); border: 1px solid var(--line); border-radius: 10px;
+            padding: 1.8rem 2rem; margin: 2rem 0 3rem;
+        }
+        .intro-card p { margin-bottom: 0; }
+
+        /* ---------- table of contents ---------- */
+        .toc { border: 1px solid var(--line); border-radius: 10px; padding: 1.4rem 1.6rem; margin-bottom: 2.5rem; background: transparent; }
+        .toc .toc-title { font-family: var(--font-head); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.9rem; }
+        .toc ol { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem 1.5rem; }
+        .toc a { color: var(--ink-dim); text-decoration: none; font-size: 0.9rem; border-bottom: 1px solid transparent; transition: border-color 0.2s, color 0.2s; }
+        .toc a:hover { color: var(--ink); border-color: var(--line); }
+        @media (max-width: 620px) { .toc ol { grid-template-columns: 1fr; } }
+        .updated { color: var(--ink-faint); font-size: 0.85rem; }
+
+        @media (max-width: 900px) {
+            .nav-links { display: none; }
+            .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
+            .footer-brand { grid-column: span 2; }
+        }
+        @media (max-width: 620px) {
+            .footer-top { grid-template-columns: 1fr; }
+            .footer-brand { grid-column: span 1; }
+        }
+    </style>
+
+    <meta name="description" content="The terms for using Bat Client — a free Minecraft performance client from an independent team. Read before you download.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://batclient.xyz/terms.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Bat Client">
+    <meta property="og:title" content="Terms of Service | Bat Client">
+    <meta property="og:description" content="The terms of use for Bat Client — an independent Minecraft performance client.">
+    <meta property="og:url" content="https://batclient.xyz/terms.html">
+    <meta property="og:image" content="https://batclient.xyz/bat-logo.png">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Terms of Service | Bat Client">
+    <meta name="twitter:description" content="Terms of use for Bat Client, an independent Minecraft performance client.">
+    <meta name="twitter:image" content="https://batclient.xyz/bat-logo.png">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Terms of Service | Bat Client",
+      "url": "https://batclient.xyz/terms.html",
+      "isPartOf": {"@type": "WebSite", "name": "Bat Client", "url": "https://batclient.xyz/"}
+    }
+    </script>
+</head>
+<body>
+    <nav class="nav">
+        <a href="index.html" class="nav-brand">
+            <img src="bat-logo.png" alt="Bat Client Logo">
+            <b>Bat Client</b>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html#features">Features</a></li>
+            <li><a href="index.html#compare">Compare</a></li>
+            <li><a href="index.html#faq">FAQ</a></li>
+            <li><a href="changelog.html">Changelog</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <a href="download.html" class="nav-cta">Download</a>
+    </nav>
+
+    <div class="content">
+        <div class="page-head">
+            <h1>Terms of Service</h1>
+            <div class="meta">Last updated: September 2026</div>
+        </div>
+
+        <div class="section">
+            <div class="intro-card">
+                <p>These terms cover your use of Bat Client, this website, the launcher, and related services. By downloading, installing, or running Bat Client, you agree to them. If you don't agree, please don't use the software.</p>
+            </div>
+
+            <div class="toc">
+                <div class="toc-title">On this page</div>
+                <ol>
+                    <li><a href="#who">Who can use it</a></li>
+                    <li><a href="#allowed">What you're allowed to do</a></li>
+                    <li><a href="#not-allowed">What you can't do</a></li>
+                    <li><a href="#servers">Third-party servers</a></li>
+                    <li><a href="#ownership">Ownership</a></li>
+                    <li><a href="#updates">Downloads &amp; updates</a></li>
+                    <li><a href="#privacy">Privacy</a></li>
+                    <li><a href="#end-access">We can end access</a></li>
+                    <li><a href="#liability">Limitation of liability</a></li>
+                    <li><a href="#changes">Changes to these terms</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ol>
+            </div>
+
+            <h2 id="who">1. Who can use it</h2>
+            <p>You must be old enough to agree to a contract in your country, or have a parent or guardian agree on your behalf. You're responsible for making sure your setup meets the requirements to run the client.</p>
+
+            <h2 id="allowed">2. What you're allowed to do</h2>
+            <p>We give you a limited, personal, non-commercial license to download and run Bat Client for as long as you follow these terms. This means you may install it on your own devices and use it for normal, personal gameplay — on your own servers and on any server that permits performance mods.</p>
+            <div class="txt">This doesn't transfer ownership of anything. The client, its code, and its parts stay ours. You're allowed to use the cosmetic and configuration features to make the client yours, but the underlying software remains Bat Client's.</div>
+
+            <h2 id="not-allowed">3. What you can't do</h2>
+            <ul>
+                <li><strong>Reverse engineering.</strong> Don't decompile, disassemble, or try to extract the launcher's source.</li>
+                <li><strong>Unauthorized mirroring.</strong> Don't re-upload or host Bat Client elsewhere without our written okay.</li>
+                <li><strong>Malicious use.</strong> Don't use modded variants to attack networks (DDoS, scraping, server exploits).</li>
+                <li><strong>Cheating.</strong> Bat Client is a performance tool, not a cheat client. Don't use it — or any modded variant of it — to gain unfair in-game advantages on servers that forbid them.</li>
+                <li><strong>Selling it.</strong> Don't sell access, or rent or lease anything built on Bat Client.</li>
+            </ul>
+
+            <h2 id="servers">4. Third-party servers</h2>
+            <p>Bat Client is a performance tool. Individual servers decide their own mod policies, and we can't override or answer for account bans or penalties those servers hand out. When you use utility mods in competitive modes, you take on that risk yourself.</p>
+
+            <h2 id="ownership">5. Ownership</h2>
+            <p>Bat Client is an independent project. Its design, branding, and code belong to the Bat Client team. "Minecraft" is a trademark of Mojang Synergies AB / Microsoft. Bat Client isn't affiliated with, endorsed by, or partnered with Mojang or Microsoft.</p>
+
+            <h2 id="updates">6. Downloads &amp; updates</h2>
+            <p>You should only download Bat Client from this website (<a href="https://batclient.xyz">batclient.xyz</a>) or the official download page. We can't vouch for copies hosted anywhere else.</p>
+            <div class="txt">When you run the launcher it checks for updates automatically. Updates may change features, fix bugs, or adjust system requirements, and they're covered by these same terms. By keeping the client installed, you agree to accept these updates.</div>
+
+            <h2 id="privacy">7. Privacy</h2>
+            <p>The short version of our <a href="privacy.html">Privacy Policy</a>: Bat Client doesn't collect your personal data. Crash logs, settings, and HUD layouts stay on your machine. The only data that touches our servers is routine hosting logs from the website and update checks. Read the full policy on the <a href="privacy.html">Privacy Policy page</a>.</p>
+
+            <h2 id="end-access">8. We can end access</h2>
+            <p>We may suspend or stop access to downloads, the launcher, or parts of the service if you break these terms — for example, by redistributing the client, using it to cheat on a large scale, or misusing it to attack other players.</p>
+
+            <h2 id="liability">9. Limitation of liability</h2>
+            <p>To the fullest extent the law allows, Bat Client isn't liable for damages from using the software. It's provided "as is", without warranties of any kind. In particular, we're not responsible for bans, penalties, or actions other servers take against accounts that use the client, and we're not responsible for anything you lose if the software misbehaves on your own system.</p>
+
+            <h2 id="changes">10. Changes to these terms</h2>
+            <p>We can update these terms from time to time. Changes take effect when posted here, and continuing to use the client after that means you accept them. Significant changes will be reflected in the "Last updated" date above.</p>
+
+            <h2 id="contact">11. Contact</h2>
+            <p>Questions about these terms? Email <a href="mailto:batsupport@batclient.xyz">batsupport@batclient.xyz</a> or reach us on <a href="https://batclient.xyz/discord" target="_blank" rel="noopener noreferrer">Discord</a>.</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <img src="bat-logo.png" alt="Bat Client Logo">
+                    <p>A Minecraft performance client focused on one thing: making the game run better on the hardware you've already got.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Client</h3>
+                    <ul>
+                        <li><a href="index.html#features">Features</a></li>
+                        <li><a href="index.html#compare">Compare</a></li>
+                        <li><a href="index.html#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Community</h3>
+                    <ul>
+                        <li><a href="https://batclient.xyz/discord" target="_blank">Discord</a></li>
+                        <li><a href="https://www.youtube.com/@ravenplayzzdev" target="_blank">YouTube</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="terms.html">Terms</a></li>
+                        <li><a href="privacy.html">Privacy</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="javascript:void(0)" onclick="BatConsent.show()">Ad Consent</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 Bat Client. All rights reserved.</span>
+                <span>Bat Client by Raven — made for players, not dashboards.</span>
+            </div>
+            <p class="footer-disclaimer">Bat Client is not the same as, and is not affiliated with, <a href="https://batmod.com/" target="_blank" rel="noopener noreferrer">Bat Mod (batmod.com)</a> or BatMUD. Three separate projects, three different teams.</p>
+        </div>
+    </footer>
+
+    <script src="consent-manager.js"></script>
+    <script src="ads-loader.js"></script>
+    <script>
+        window.BatAds && window.BatAds.refresh();
+    </script>
+</body>
+</html>

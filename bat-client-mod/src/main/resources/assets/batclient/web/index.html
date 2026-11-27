@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Bat Client</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="menu-page">
+    <div class="bg-sky"></div>
+
+    <!-- ============ MAIN MENU (layered over the scene) ============ -->
+    <header class="brand" id="main-brand">
+        <img class="brand-logo" src="bat-logo.png" alt="Bat Client logo">
+        <span class="brand-text">BAT CLIENT</span>
+    </header>
+
+    <nav class="main-menu">
+        <button class="menu-item" data-action="singleplayer">SINGLEPLAYER</button>
+        <button class="menu-item" data-action="multiplayer">MULTIPLAYER</button>
+        <button class="menu-item" data-action="cosmetics">COSMETICS</button>
+        <button class="menu-item" data-action="settings">SETTINGS</button>
+        <button class="menu-item" data-action="quit">QUIT GAME</button>
+    </nav>
+
+    <div class="user-pill">
+        <button class="account-trigger" id="account-open" aria-label="Change account" aria-haspopup="dialog" aria-expanded="false" aria-controls="account-panel" title="Change account">
+            <canvas id="user-avatar" class="user-avatar" width="8" height="8"></canvas>
+            <span class="user-name" id="user-name">Player</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
+        </button>
+        <button class="pill-btn" data-action="cosmetics" id="pill-cosmetics">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#fff" d="M8 18 C12 10 20 8 27 12 C30 18 24 22 24 22 C24 22 18 16 14 18 C10 20 10 24 12 27 C15 31 20 30 23 28 C23 32 22 36 20 40 C18 38 14 38 12 40 C16 46 22 48 28 47 C28 52 27 56 26 60 L20 58 L18 63 L32 63 L44 60 L42 63 L36 58 L30 61 C30 52 30 44 32 40 C34 44 36 47 40 49 C44 50 48 48 50 44 C50 42 48 40 46 40 C46 40 44 40 42 40 C44 36 45 32 45 28 C50 30 57 31 60 27 C62 24 62 20 58 18 C54 16 48 22 48 22 C48 22 42 18 45 12 C52 8 60 10 64 18 C60 22 58 24 56 26 C54 28 52 30 52 34 C52 36 52 38 52 40 C56 40 58 42 58 44 C58 48 54 50 52 50 C46 48 40 42 38 36 C38 38 38 42 38 46 C38 50 36 54 32 56 C28 54 26 50 26 46 C26 42 26 38 26 36 C24 42 18 48 12 50 C10 50 6 48 6 44 C6 42 8 40 12 40 C12 38 12 36 12 34 C12 30 10 28 8 26 C6 24 6 20 8 18 Z"/></svg>
+        </button>
+        <button class="pill-btn" data-action="settings" id="pill-settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+        </button>
+    </div>
+
+    <div id="account-layer" class="account-layer hidden">
+        <section id="account-panel" class="account-panel hidden" role="dialog" aria-modal="true" aria-labelledby="account-title">
+            <div class="account-heading"><div class="account-heading-title"><img src="bat-logo.png" alt=""><div><span class="account-eyebrow">BAT CLIENT</span><h2 id="account-title">Accounts</h2></div></div><button type="button" id="account-close" class="account-icon" aria-label="Close accounts"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg></button></div>
+            <div class="account-columns">
+                <div class="account-saved"><div class="account-section-heading"><div><h3>Your accounts</h3><p>Select the account you want to use.</p></div><span id="account-count">1 ACCOUNT</span></div><div id="account-list" class="account-list"></div></div>
+                <div class="account-new"><button type="button" id="account-back" class="account-back">← Your accounts</button><h3>Add an account</h3>
+                    <div class="account-tabs" role="tablist" aria-label="Account type"><button type="button" id="account-tab-microsoft" role="tab" aria-selected="true" aria-controls="account-ms-pane" data-account-tab="microsoft">Microsoft</button><button type="button" id="account-tab-offline" role="tab" aria-selected="false" aria-controls="account-offline-pane" data-account-tab="offline" tabindex="-1">Offline</button></div>
+                    <div id="account-ms-pane" role="tabpanel" aria-labelledby="account-tab-microsoft"><div class="account-login-art"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 2h9v9H2zm11 0h9v9h-9zM2 13h9v9H2zm11 0h9v9h-9z"/></svg></div><h4>Your world. Your account.</h4><p class="account-description">Sign in with your Minecraft Java account and pick up where you left off.</p><button id="account-microsoft" type="button" class="account-microsoft">Continue with Microsoft <span aria-hidden="true">↗</span></button><p class="account-note">Opens Microsoft sign-in in your browser.</p>
+                        <form id="account-finish" class="account-add hidden"><label for="account-redirect">Paste the final Microsoft browser address</label><input id="account-redirect" type="password" autocomplete="off" placeholder="Paste sign-in address" maxlength="8192" required><div><button type="submit">Finish sign-in</button><button id="account-cancel" type="button">Cancel</button></div></form>
+                    </div>
+                    <div id="account-offline-pane" class="hidden" role="tabpanel" aria-labelledby="account-tab-offline"><div class="account-login-art account-offline-art"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><rect x="8" y="6" width="32" height="36" rx="4"/><path d="M16 19h4m8 0h4M19 31h10"/></svg></div><h4>Choose your name.</h4><p class="account-description">Create an offline identity for singleplayer and offline servers.</p><form id="account-offline" class="account-add"><label for="account-name">Minecraft username</label><input id="account-name" name="username" placeholder="Your username" minlength="3" maxlength="16" pattern="[A-Za-z0-9_]{3,16}" autocomplete="off" required><button type="submit" class="account-primary">Add offline account <span aria-hidden="true">+</span></button></form><p class="account-note">3–16 letters, numbers or underscores.</p></div>
+                </div>
+            </div>
+            <div class="account-footer"><p id="account-message" class="account-message" role="status" aria-live="polite">Select an account to switch.</p><span>ACCOUNT MANAGER</span></div>
+        </section>
+    </div>
+    <div class="version" id="version">Bat Client 0.1.0</div>
+
+    <!-- ============ SETTINGS / COSMETICS PANEL (overlay) ============ -->
+    <div class="panel-layer hidden" id="panel-layer">
+        <aside class="sidebar">
+            <div class="brand">
+                <span class="brand-dot"></span>
+                <span class="brand-name">Bat Client</span>
+            </div>
+            <nav>
+                <a class="nav-item active" data-view="settings">Settings</a>
+                <a class="nav-item" data-view="cosmetics">Cosmetics</a>
+                <a class="nav-item" data-view="mods">Mods</a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="back-btn" data-action="back">&#8592; Back</button>
+            </div>
+        </aside>
+
+        <main class="content">
+            <header class="content-head">
+                <h1 id="headline">Settings</h1>
+                <p class="subtitle">Powered by the embedded Ultralight engine</p>
+            </header>
+
+            <section class="card" id="view-settings">
+                <div class="card-row">
+                    <div class="card-row-text">
+                        <div class="card-row-title">FPS Counter</div>
+                        <div class="card-row-desc">Show FPS in the top-left corner</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="fps-counter" checked><span></span></label>
+                </div>
+                <div class="card-row">
+                    <div class="card-row-text">
+                        <div class="card-row-title">Coordinates</div>
+                        <div class="card-row-desc">Show XYZ in the debug overlay</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="coords"><span></span></label>
+                </div>
+                <div class="card-row">
+                    <div class="card-row-text">
+                        <div class="card-row-title">RGB</div>
+                        <div class="card-row-desc">Cycle through rainbow colors (client)</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="rgb"><span></span></label>
+                </div>
+            </section>
+
+            <section class="card hidden" id="view-cosmetics">
+                <div class="card-row">
+                    <div class="card-row-text">
+                        <div class="card-row-title">Animated Cape</div>
+                        <div class="card-row-desc">Wavey animated cape from Bat Cosmetics</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="cape" checked><span></span></label>
+                </div>
+            </section>
+
+            <section class="card hidden" id="view-mods">
+                <div class="card-row">
+                    <div class="card-row-text">
+                        <div class="card-row-title">Sodium</div>
+                        <div class="card-row-desc">Modern rendering engine</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="sodium" checked><span></span></label>
+                </div>
+                <div class="card-row">
+                    <div class="card-row-text">
+                        <div class="card-row-title">Lithium</div>
+                        <div class="card-row-desc">Game logic optimizations</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="lithium" checked><span></span></label>
+                </div>
+            </section>
+
+            <div class="status" id="status">Engine ready</div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="client-tools.js"></script>
+</body>
+</html>

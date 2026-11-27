@@ -1,0 +1,99 @@
+plugins { id 'fabric-loom' version '1.17.21' }
+group='com.batclient.internal'
+version='0.1.0-fabric-internal'
+base { archivesName='bat-client-fabric-1.16.5-INTERNAL-UNVERIFIED' }
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.repsy.io/nilsen84/maven' }
+}
+dependencies {
+    minecraft 'com.mojang:minecraft:1.16.5'
+    mappings 'net.fabricmc:yarn:1.16.5+build.10:v2'
+    modImplementation 'net.fabricmc:fabric-loader:0.20.1'
+    implementation 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT'
+    include 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT'
+    runtimeOnly 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:windows-x64'
+    include 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:windows-x64'
+    runtimeOnly 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:linux-x64'
+    include 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:linux-x64'
+    runtimeOnly 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:mac-x64'
+    include 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:mac-x64'
+    runtimeOnly 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:mac-arm64'
+    include 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:mac-arm64'
+    include('org.jetbrains.kotlin:kotlin-stdlib:2.3.10') { transitive=false }
+}
+java { toolchain.languageVersion=JavaLanguageVersion.of(21) }
+tasks.withType(JavaCompile).configureEach { options.release=8 }
+sourceSets.main.java.srcDir '../../src/main/java'
+sourceSets.main.resources.srcDir '../../src/main/resources'
+def smokeEntrypoint = providers.gradleProperty('visualParitySmoke').orNull == 'true' ? 'com.batclient.platform.fabric.VisualParitySmoke' : 'com.batclient.platform.fabric.Fabric1165Smoke'
+processResources {
+    inputs.property 'version',project.version
+    inputs.property 'internalNativeFixture',true
+    inputs.property 'smokeEntrypoint',smokeEntrypoint
+    filesMatching('batclient.mixins.json') { filter { line -> line.replace('JAVA_21','JAVA_8') } }
+    filesMatching('batclient.nofapi.mixins.json') { filter { line -> line.replace('JAVA_21','JAVA_8') } }
+    filesMatching('fabric.mod.json') {
+        expand 'version':project.version
+        filter { line ->
+            if (line.contains('"fabric-')) return ''
+            line.replace('"1.21.1"','"1.16.5"')
+                .replace('">=21",','">=8"')
+                .replace('"batclient.mixins.json"','"batclient.mixins.json", "batclient.nofapi.mixins.json"')
+                .replace('"com.batclient.platform.fabric.BatFabricEntrypoint"','"com.batclient.platform.fabric.BatFabricEntrypoint", "' + smokeEntrypoint + '"')
+        }
+    }
+}
+apply from: '../shared-ui.gradle'
+apply from: '../mc1.20.1.gradle'
+def lowerJava8=tasks.register('lowerToJava8') {
+    dependsOn tasks.named('adaptMinecraft1201')
+    def vsDir = layout.buildDirectory.dir('version-sources')
+    def cpFile = layout.buildDirectory.file('vr-cp.txt')
+    def vrClassDir = file('../../scripts/build-vr')
+    def vrJava = file('../../scripts/VarResolver.java')
+    def scriptsDir = file('../../scripts')
+    doLast {
+        def vs = vsDir.get().asFile
+        vrClassDir.mkdirs()
+        def runCmd = { List<?> cmd ->
+            def p = new ProcessBuilder(cmd.collect { it.toString() }).inheritIO().start()
+            if (p.waitFor() != 0) throw new GradleException('Command failed: ' + cmd)
+        }
+        if (!new File(vrClassDir, 'VarResolver.class').isFile()) {
+            runCmd(['javac', '--release', '21', '-d', vrClassDir.absolutePath, vrJava.absolutePath])
+        }
+        def cf = cpFile.get().asFile
+        cf.parentFile.mkdirs()
+        cf.setText(configurations.compileClasspath.asPath, 'UTF-8')
+        runCmd(['java', '-cp', vrClassDir.absolutePath, 'VarResolver', vs.absolutePath, '@' + cf.absolutePath])
+        runCmd(['python', '-c', "import sys, pathlib; sys.path.insert(0, r'${scriptsDir.absolutePath}'); from java8_compat import lower_to_java8\nfor p in pathlib.Path(r'${vs.absolutePath}').rglob('*.java'):\n    if p.name == 'J8.java': continue\n    p.write_text(lower_to_java8(p.read_text(encoding='utf-8')), encoding='utf-8')"])
+    }
+}
+tasks.named('compileJava') { dependsOn lowerJava8 }
+ext.portSmokeClass=smokeEntrypoint
+ext.portMinecraftVersion='1.16.5'
+apply from: '../fabric-protection.gradle'
+def internalRunPath='build/internal-runtime-'+(project.findProperty('internalRunId') ?: 'default')
+loom { runs { client { client(); runDir internalRunPath; vmArg '-Dbatclient.test.noPresence=true'; vmArg '-Dbatclient.internalSmoke=true' } } }
+tasks.named('runClient') {
+    timeout=java.time.Duration.ofMinutes(4)
+    doFirst { java.nio.file.Files.deleteIfExists(file(internalRunPath+'/result.txt').toPath()) }
+    doLast {
+        def result=file(internalRunPath+'/result.txt')
+        if(!result.isFile()||!result.text.startsWith('BAT_FABRIC_1165_INTERNAL_WORLD_OK:'))
+            throw new GradleException('Internal Fabric native world/menu assertions did not pass')
+    }
+}
+if(providers.gradleProperty('compatAgent').isPresent()){
+    tasks.named('runClient') {
+        def agent=file('../../../bat-client-agent/build/libs/bat-cosmetics.jar')
+        if(!agent.isFile())throw new GradleException('Actual cosmetics agent is required for this compatibility test')
+        classpath+=files(agent)
+        jvmArgs '-XX:+UseSerialGC','-Dbatclient.compatAgent=true',
+            '-javaagent:'+agent.absolutePath+'=1.16.5,named,http://127.0.0.1:9'
+    }
+}
+tasks.register('release') {
+    doLast { throw new GradleException('INTERNAL UNVERIFIED port: actual game adapters/protection/runtime checks must pass before release.') }
+}

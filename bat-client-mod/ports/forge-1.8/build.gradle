@@ -1,0 +1,287 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.architectury.dev/' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'dev.architectury:architectury-pack200:0.1.3'
+    }
+}
+
+plugins {
+    id 'gg.essential.loom' version '1.15.52'
+}
+group = 'com.batclient.internal'
+version = '0.1.0-forge-internal'
+base { archivesName = 'bat-client-forge-1.8-INTERNAL-UNVERIFIED' }
+ext.portMinecraftVersion = '1.8'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://maven.fabricmc.net/' }
+    maven { url 'https://repo.legacyfabric.net/repository/legacyfabric/' }
+    maven { url 'https://maven.minecraftforge.net/' }
+    maven { url 'https://repo.essential.gg/repository/maven-public' }
+    maven { url 'https://repo.spongepowered.org/repository/maven-public/' }
+    maven { url 'https://repo.repsy.io/nilsen84/maven' }
+}
+
+configurations { webBinding; webNatives; bundledRuntime; obfuscator }
+configurations.configureEach {
+    exclude group: 'tv.twitch', module: 'twitch-platform'
+    exclude group: 'tv.twitch', module: 'twitch-external-platform'
+}
+evaluationDependsOn(':web-runtime')
+def combinedWebLibrary = project(':web-runtime').tasks.named('jar')
+
+def verifyWebLibrary = tasks.register('verifyWebLibrary') {
+    dependsOn combinedWebLibrary
+    inputs.file combinedWebLibrary.flatMap { it.archiveFile }
+    doLast {
+        new java.util.zip.ZipFile(combinedWebLibrary.get().archiveFile.get().asFile).withCloseable { merged ->
+            if (merged.getEntry('io/github/nilsen84/ultralight/UltralightLoader.class') == null)
+                throw new GradleException('Forge web runtime is missing its loader class')
+            new java.util.zip.ZipFile(configurations.webNatives.singleFile).withCloseable { original ->
+                ['Sph0.dll', 'Sph1.dll', 'Sph2.dll', 'Sph3.dll', 'ultralight-jni.dll'].each { name ->
+                    def path = 'io/github/nilsen84/ultralight/natives/windows-x64/' + name
+                    if (merged.getEntry(path) == null || original.getEntry(path) == null)
+                        throw new GradleException('Missing native in Forge web module: ' + name)
+                    def digest = { zip -> zip.getInputStream(zip.getEntry(path)).withCloseable { stream -> java.security.MessageDigest.getInstance('SHA-256').digest(stream.readAllBytes()) } }
+                    if (!java.util.Arrays.equals(digest(merged), digest(original)))
+                        throw new GradleException('Forge native bytes changed: ' + name)
+                }
+            }
+        }
+        logger.lifecycle('FORGE_WEB_MODULE_OK: loader and all five byte-identical native libraries share one module')
+    }
+}
+
+loom {
+    forge {
+        pack200Provider = new dev.architectury.pack200.java.Pack200Adapter()
+    }
+    mixin {
+        useLegacyMixinAp = true
+        defaultRefmapName = 'batclient-refmap.json'
+    }
+}
+
+dependencies {
+    minecraft 'com.mojang:minecraft:1.8'
+    mappings 'de.oceanlabs.mcp:mcp_stable:18-1.8'
+    forge 'net.minecraftforge:forge:1.8-11.14.4.1563'
+
+    implementation('org.spongepowered:mixin:0.7.11-SNAPSHOT') { transitive = false }
+    annotationProcessor('org.spongepowered:mixin:0.8.5:processor') { transitive = false }
+
+    webBinding('io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT') { transitive = false }
+    webNatives('io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:windows-x64') { transitive = false }
+    implementation files(combinedWebLibrary.flatMap { it.archiveFile })
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.3.10'
+
+    bundledRuntime files(combinedWebLibrary.flatMap { it.archiveFile })
+    bundledRuntime('org.jetbrains.kotlin:kotlin-stdlib:2.3.10') { transitive = false }
+    bundledRuntime('org.spongepowered:mixin:0.7.11-SNAPSHOT') { transitive = false }
+
+    obfuscator 'com.guardsquare:proguard-base:7.6.1'
+}
+
+def forgeRules = tasks.register('prepareForgeProtection') {
+    inputs.file '../../proguard.pro'
+    outputs.file layout.buildDirectory.file('private-obfuscation/forge.pro')
+    doLast {
+        def rules = layout.buildDirectory.file('private-obfuscation/forge.pro').get().asFile
+        rules.parentFile.mkdirs()
+        rules.setText(file('../../proguard.pro').getText('UTF-8') +
+            '\n-keep class com.batclient.platform.forge.** { *; }\n' +
+            '-keep class com.batclient.platform.mc1194.** { *; }\n' +
+            '-keep class com.batclient.platform.mc1171.** { *; }\n' +
+            '-keep class com.batclient.platform.mc189.** { *; }\n' +
+            '-keep class com.batclient.platform.java8.** { *; }\n', 'UTF-8')
+    }
+}
+
+def obfuscate = tasks.register('obfuscateJava', JavaExec) {
+    dependsOn tasks.named('jar'), forgeRules
+    classpath = configurations.obfuscator
+    mainClass = 'proguard.ProGuard'
+    maxHeapSize = '2G'
+    inputs.file tasks.named('jar').flatMap { it.archiveFile }
+    inputs.file layout.buildDirectory.file('private-obfuscation/forge.pro')
+    outputs.file layout.buildDirectory.file('protected/bat-client-forge.jar')
+    outputs.file layout.buildDirectory.file('private-obfuscation/mapping.txt')
+    doFirst {
+        def protectedJar = layout.buildDirectory.file('protected/bat-client-forge.jar').get().asFile
+        protectedJar.parentFile.mkdirs()
+        def arguments = ['@' + layout.buildDirectory.file('private-obfuscation/forge.pro').get().asFile.absolutePath,
+            '-injars', tasks.named('jar').get().archiveFile.get().asFile.absolutePath,
+            '-outjars', protectedJar.absolutePath,
+            '-printmapping', layout.buildDirectory.file('private-obfuscation/mapping.txt').get().asFile.absolutePath]
+        configurations.compileClasspath.files.each { arguments.addAll(['-libraryjars', it.absolutePath]) }
+        ['java.base', 'java.datatransfer', 'java.desktop', 'java.net.http', 'java.logging', 'java.management', 'jdk.unsupported'].each { module ->
+            arguments.addAll(['-libraryjars', new File(System.getProperty('java.home'), 'jmods/' + module + '.jmod').absolutePath + '(!**.jar;!module-info.class)'])
+        }
+        setArgs(arguments)
+    }
+}
+
+tasks.named('remapJar') {
+    dependsOn obfuscate, verifyWebLibrary
+    inputFile.set(layout.buildDirectory.file('protected/bat-client-forge.jar'))
+    readMixinConfigsFromManifest.set(false)
+    doLast {
+        def out = archiveFile.get().asFile
+        def tmp = new File(out.parentFile, out.name + '.tmp')
+        def seen = new HashSet<String>()
+        new java.util.zip.ZipOutputStream(new java.io.FileOutputStream(tmp)).withCloseable { zos ->
+            new java.util.zip.ZipFile(out).withCloseable { zf ->
+                zf.entries().each { e ->
+                    if (seen.add(e.name)) {
+                        zos.putNextEntry(new java.util.zip.ZipEntry(e.name))
+                        if (!e.isDirectory()) zos.write(zf.getInputStream(e).readAllBytes())
+                        zos.closeEntry()
+                    }
+                }
+            }
+            configurations.bundledRuntime.files.each { dep ->
+                new java.util.zip.ZipFile(dep).withCloseable { zf ->
+                    zf.entries().each { e ->
+                        if (e.name == 'module-info.class' || e.name.startsWith('META-INF/versions/') || e.name.endsWith('.SF') || e.name.endsWith('.DSA') || e.name.endsWith('.RSA') || e.name == 'META-INF/MANIFEST.MF') return
+                        if (seen.add(e.name)) {
+                            zos.putNextEntry(new java.util.zip.ZipEntry(e.name))
+                            if (!e.isDirectory()) zos.write(zf.getInputStream(e).readAllBytes())
+                            zos.closeEntry()
+                        }
+                    }
+                }
+            }
+        }
+        java.nio.file.Files.move(tmp.toPath(), out.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+    }
+}
+
+java { toolchain.languageVersion = JavaLanguageVersion.of(21) }
+tasks.named('compileJava') { dependsOn verifyWebLibrary }
+tasks.withType(JavaCompile).configureEach { options.release = 8 }
+
+sourceSets.main.resources {
+    srcDir '../../src/main/resources'
+    exclude 'fabric.mod.json'
+    exclude 'META-INF/services/**'
+    exclude 'assets/batclient/web/**'
+}
+
+processResources {
+    inputs.property('upstreamMixinCompatibility', 'JAVA_8')
+    inputs.property('mixinMinVersion', '0.7')
+    filesMatching('*.mixins.json') {
+        filter { line -> line.replace('JAVA_21', 'JAVA_8').replace('"minVersion": "0.8"', '"minVersion": "0.7"') }
+    }
+    from('src/loader-services') { into 'META-INF/services' }
+    filesMatching('batclient.mixins.json') {
+        filter { line -> line.replace('com.batclient.performance.PerformanceMixinPlugin', 'com.batclient.platform.forge.ForgePerformanceMixinPlugin') }
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+jar {
+    manifest.attributes(
+        'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+        'TweakOrder': '0',
+        'MixinConfigs': 'batclient.mixins.json,batclient.nofapi.mixins.json',
+        'ForceLoadAsMod': 'true'
+    )
+    from('../../LICENSE') { rename { 'LICENSE_bat-client-mod' } }
+}
+
+tasks.named('build') { dependsOn tasks.named('remapJar') }
+
+apply from: '../shared-ui.gradle'
+apply from: '../mc1.20.1.gradle'
+
+tasks.named('adaptMinecraft1201').configure {
+    doFirst {
+        copy {
+            from 'src/yarn-smoke'
+            into layout.buildDirectory.dir('version-sources')
+        }
+    }
+}
+
+def yarnToMcp = tasks.register('yarnToMcp') {
+    dependsOn tasks.named('adaptMinecraft1201')
+    def vsDir = layout.buildDirectory.dir('version-sources')
+    def mcpDir = layout.buildDirectory.dir('mcp-sources')
+    def script = file('../../scripts/yarn_to_mcp.py')
+    def fabricSrc = file('../fabric-1.8.9/src/main/java')
+    inputs.file script
+    inputs.dir vsDir
+    outputs.dir mcpDir
+    doLast {
+        def vs = vsDir.get().asFile
+        // Remove 1.20+ Forge platform files copied by adaptMinecraft1201; keep ForgeFullSmoke + VisualParitySmoke
+        delete fileTree(new File(vs, 'com/batclient/platform/forge')) {
+            exclude 'ForgeFullSmoke.java'
+            exclude 'VisualParitySmoke.java'
+        }
+        copy {
+            from(fabricSrc) {
+                include 'com/batclient/mixin/Nofapi*.java'
+                exclude 'com/batclient/mixin/NofapiBatResourcePackMixin.java'
+                include 'com/batclient/platform/fabric/FabricClientHooks.java'
+                include 'com/batclient/platform/fabric/FabricClientResources.java'
+                include 'com/batclient/platform/mc1171/GsonCompat.java'
+            }
+            into vs
+        }
+        def gHome = System.getenv('GRADLE_USER_HOME') ?: (System.getProperty('user.home') + '/.gradle')
+        def yarnTiny = file("${gHome}/caches/fabric-loom/1.8/net.legacyfabric.yarn.1_8.1.8+build.604-v2/mappings.tiny")
+        def mcpTiny = file("${gHome}/caches/essential-loom/1.8/de.oceanlabs.mcp.mcp_stable.1_8.18-1.8-forge-1.8-11.14.4.1563/mappings.tiny")
+        def p = new ProcessBuilder(
+            'python', script.absolutePath,
+            '--yarn-tiny', yarnTiny.absolutePath,
+            '--mcp-tiny', mcpTiny.absolutePath,
+            '--src', vs.absolutePath,
+            '--dst', mcpDir.get().asFile.absolutePath,
+            '--forge-pkg'
+        ).inheritIO().start()
+        if (p.waitFor() != 0) throw new GradleException('yarn_to_mcp failed')
+        def fabDir = new File(mcpDir.get().asFile, 'com/batclient/platform/fabric')
+        def frgDir = new File(mcpDir.get().asFile, 'com/batclient/platform/forge')
+        if (fabDir.isDirectory()) {
+            frgDir.mkdirs()
+            fabDir.listFiles().each { f ->
+                java.nio.file.Files.move(f.toPath(), new File(frgDir, f.name).toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+            }
+            fabDir.deleteDir()
+        }
+    }
+}
+
+def lowerJava8 = tasks.register('lowerToJava8') {
+    dependsOn yarnToMcp
+    def mcpDir = layout.buildDirectory.dir('mcp-sources')
+    def cpFile = layout.buildDirectory.file('vr-cp.txt')
+    def vrClassDir = file('../../scripts/build-vr')
+    def vrJava = file('../../scripts/VarResolver.java')
+    def scriptsDir = file('../../scripts')
+    doLast {
+        def mcp = mcpDir.get().asFile
+        vrClassDir.mkdirs()
+        def runCmd = { List<?> cmd ->
+            def p = new ProcessBuilder(cmd.collect { it.toString() }).inheritIO().start()
+            if (p.waitFor() != 0) throw new GradleException('Command failed: ' + cmd)
+        }
+        if (!new File(vrClassDir, 'VarResolver.class').isFile()) {
+            runCmd(['javac', '--release', '21', '-d', vrClassDir.absolutePath, vrJava.absolutePath])
+        }
+        def cf = cpFile.get().asFile
+        cf.parentFile.mkdirs()
+        cf.setText(configurations.compileClasspath.asPath, 'UTF-8')
+        runCmd(['java', '-cp', vrClassDir.absolutePath, 'VarResolver', mcp.absolutePath, '@' + cf.absolutePath])
+        runCmd(['python', '-c', "import sys, pathlib; sys.path.insert(0, r'${scriptsDir.absolutePath}'); from java8_compat import lower_to_java8\nfor p in pathlib.Path(r'${mcp.absolutePath}').rglob('*.java'):\n    if p.name == 'J8.java': continue\n    p.write_text(lower_to_java8(p.read_text(encoding='utf-8')), encoding='utf-8')"])
+    }
+}
+
+sourceSets.main.java.setSrcDirs(['src/main/java', layout.buildDirectory.dir('mcp-sources').get().asFile, layout.buildDirectory.dir('generated/protected-ui').get().asFile])
+tasks.named('compileJava') { dependsOn lowerJava8 }

@@ -1,0 +1,352 @@
+{
+  "schema": 1,
+  "checkedAt": "2026-10-26T13:20:29.598Z",
+  "note": "Upstream loader availability only. Does not certify Bat Client compatibility. Existing 1.21.1 dependency pins stay unchanged.",
+  "targets": {
+    "fabric-1.8": {
+      "distribution": "legacy-fabric",
+      "loader": {
+        "version": "0.20.1",
+        "maven": "net.fabricmc:fabric-loader:0.20.1"
+      },
+      "intermediary": "net.legacyfabric:intermediary:1.8",
+      "mappings": {
+        "version": "1.8+build.604",
+        "maven": "net.legacyfabric:yarn:1.8+build.604"
+      },
+      "fabricApi": null,
+      "source": "https://meta.legacyfabric.net/v2/versions/loader/1.8"
+    },
+    "forge-1.8": {
+      "distribution": "forge",
+      "loader": {
+        "version": "1.8-11.14.4.1563",
+        "maven": "net.minecraftforge:forge:1.8-11.14.4.1563"
+      },
+      "source": "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+      "download": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.8-11.14.4.1563/forge-1.8-11.14.4.1563-installer.jar"
+    },
+    "fabric-1.8.9": {
+      "distribution": "legacy-fabric",
+      "loader": {
+        "version": "0.20.1",
+        "maven": "net.fabricmc:fabric-loader:0.20.1"
+      },
+      "intermediary": "net.legacyfabric:intermediary:1.8.9",
+      "mappings": {
+        "version": "1.8.9+build.604",
+        "maven": "net.legacyfabric:yarn:1.8.9+build.604"
+      },
+      "fabricApi": null,
+      "source": "https://meta.legacyfabric.net/v2/versions/loader/1.8.9"
+    },
+    "forge-1.8.9": {
+      "distribution": "forge",
+      "loader": {
+        "version": "1.8.9-11.15.1.2318-1.8.9",
+        "maven": "net.minecraftforge:forge:1.8.9-11.15.1.2318-1.8.9"
+      },
+      "source": "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+      "download": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.8.9-11.15.1.2318-1.8.9/forge-1.8.9-11.15.1.2318-1.8.9-installer.jar"
+    },
+    "fabric-1.16.5": {
+      "distribution": "fabric",
+      "loader": {
+        "version": "0.20.1",
+        "maven": "net.fabricmc:fabric-loader:0.20.1"
+      },
+      "intermediary": "net.fabricmc:intermediary:1.16.5",
+      "mappings": {
+        "version": "1.16.5+build.10",
+        "maven": "net.fabricmc:yarn:1.16.5+build.10"
+      },
+      "fabricApi": null,
+      "source": "https://meta.fabricmc.net/v2/versions/loader/1.16.5"
+    },
+    "forge-1.16.5": {
+      "distribution": "forge",
+      "loader": {
+        "version": "1.16.5-36.2.34",
+        "maven": "net.minecraftforge:forge:1.16.5-36.2.34"
+      },
+      "source": "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+      "download": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.16.5-36.2.34/forge-1.16.5-36.2.34-installer.jar"
+    },
+    "fabric-1.17.1": {
+      "distribution": "fabric",
+      "loader": {
+        "version": "0.20.1",
+        "maven": "net.fabricmc:fabric-loader:0.20.1"
+      },
+      "intermediary": "net.fabricmc:intermediary:1.17.1",
+      "mappings": {
+        "version": "1.17.1+build.65",
+        "maven": "net.fabricmc:yarn:1.17.1+build.65"
+      },
+      "fabricApi": null,
+      "source": "https://meta.fabricmc.net/v2/versions/loader/1.17.1"
+    },
+    "forge-1.17.1": {
+      "distribution": "forge",
+      "loader": {
+        "version": "1.17.1-37.1.1",
+        "maven": "net.minecraftforge:forge:1.17.1-37.1.1"
+      },
+      "source": "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+      "download": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.17.1-37.1.1/forge-1.17.1-37.1.1-installer.jar"
+    },
+    "fabric-1.18.2": {
+      "distribution": "fabric",
+      "loader": {
+        "version": "0.20.1",
+        "maven": "net.fabricmc:fabric-loader:0.20.1"
+      },
+      "intermediary": "net.fabricmc:intermediary:1.18.2",
+      "mappings": {
+        "version": "1.18.2+build.4",
+        "maven": "net.fabricmc:yarn:1.18.2+build.4"
+      },
+      "fabricApi": "0.77.0+1.18.2",
+      "source": "https://meta.fabricmc.net/v2/versions/loader/1.18.2"
+    },
+    "forge-1.18.2": {
+      "distribution": "forge",
+      "loader": {
+        "version": "1.18.2-40.3.0",
+        "maven": "net.minecraftforge:forge:1.18.2-40.3.0"
+      },
+      "source": "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+      "download": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.18.2-40.3.0/forge-1.18.2-40.3.0-installer.jar"
+    },
+    "fabric-1.19.2": {
+      "distribution": "fabric",
+      "loader": {
+        "version": "0.20.1",
+        "maven": "net.fabricmc:fabric-loader:0.20.1"
+      },
+      "intermediary": "net.fabricmc:intermediary:1.19.2",
+      "mappings": {
+        "version": "1.19.2+build.28",
+        "maven": "net.fabricmc:yarn:1.19.2+build.28"
+      },
+      "fabricApi": "0.77.0+1.19.2",
+      "source": "https://meta.fabricmc.net/v2/versions/loader/1.19.2"
+    },
+    "forge-1.19.2": {
+      "distribution": "forge",
+      "loader": {
+        "version": "1.19.2-43.5.0",
+        "maven": "net.minecraftforge:forge:1.19.2-43.5.0"
+      },
+      "source": "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+      "download": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.19.2-43.5.0/forge-1.19.2-43.5.0-installer.jar"
+    },
+    "fabric-1.19.4": {
+      "distribution": "fabric",
+      "loader": {
+        "version": "0.20.1",
+        "maven": "net.fabricmc:fabric-loader:0.20.1"
+      },
+      "intermediary": "net.fabricmc:intermediary:1.19.4",
+      "mappings": {
+        "version": "1.19.4+build.2",
+        "maven": "net.fabricmc:yarn:1.19.4+build.2"
+      },
+      "fabricApi": "0.87.2+1.19.4",
+      "source": "https://meta.fabricmc.net/v2/versions/loader/1.19.4"
+    },
+    "forge-1.19.4": {
+      "distribution": "forge",
+      "loader": {
+        "version": "1.19.4-45.4.0",
+        "maven": "net.minecraftforge:forge:1.19.4-45.4.0"
+      },
+      "source": "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+      "download": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.19.4-45.4.0/forge-1.19.4-45.4.0-installer.jar"
+    },
+    "fabric-1.20.1": {
+      "distribution": "fabric",
+      "loader": {
+        "version": "0.20.1",
+        "maven": "net.fabricmc:fabric-loader:0.20.1"
+      },
+      "intermediary": "net.fabricmc:intermediary:1.20.1",
+      "mappings": {
+        "version": "1.20.1+build.10",
+        "maven": "net.fabricmc:yarn:1.20.1+build.10"
+      },
+      "fabricApi": "0.92.12+1.20.1",
+      "source": "https://meta.fabricmc.net/v2/versions/loader/1.20.1"
+    },
+    "forge-1.20.1": {
+      "distribution": "forge",
+      "loader": {
+        "version": "1.20.1-47.4.28",
+        "maven": "net.minecraftforge:forge:1.20.1-47.4.28"
+      },
+      "source": "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+      "download": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.20.1-47.4.28/forge-1.20.1-47.4.28-installer.jar"
+    },
+    "fabric-1.20.4": {
+      "distribution": "fabric",
+      "loader": {
+        "version": "0.20.1",
+        "maven": "net.fabricmc:fabric-loader:0.20.1"
+      },
+      "intermediary": "net.fabricmc:intermediary:1.20.4",
+      "mappings": {
+        "version": "1.20.4+build.3",
+        "maven": "net.fabricmc:yarn:1.20.4+build.3"
+      },
+      "fabricApi": "0.97.3+1.20.4",
+      "source": "https://meta.fabricmc.net/v2/versions/loader/1.20.4"
+    },
+    "forge-1.20.4": {
+      "distribution": "forge",
+      "loader": {
+        "version": "1.20.4-49.2.13",
+        "maven": "net.minecraftforge:forge:1.20.4-49.2.13"
+      },
+      "source": "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+      "download": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.20.4-49.2.13/forge-1.20.4-49.2.13-installer.jar"
+    },
+    "fabric-1.20.6": {
+      "distribution": "fabric",
+      "loader": {
+        "version": "0.20.1",
+        "maven": "net.fabricmc:fabric-loader:0.20.1"
+      },
+      "intermediary": "net.fabricmc:intermediary:1.20.6",
+      "mappings": {
+        "version": "1.20.6+build.3",
+        "maven": "net.fabricmc:yarn:1.20.6+build.3"
+      },
+      "fabricApi": "0.100.8+1.20.6",
+      "source": "https://meta.fabricmc.net/v2/versions/loader/1.20.6"
+    },
+    "forge-1.20.6": {
+      "distribution": "forge",
+      "loader": {
+        "version": "1.20.6-50.2.14",
+        "maven": "net.minecraftforge:forge:1.20.6-50.2.14"
+      },
+      "source": "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+      "download": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.20.6-50.2.14/forge-1.20.6-50.2.14-installer.jar"
+    },
+    "fabric-1.21.1": {
+      "distribution": "fabric",
+      "loader": {
+        "version": "0.20.1",
+        "maven": "net.fabricmc:fabric-loader:0.20.1"
+      },
+      "intermediary": "net.fabricmc:intermediary:1.21.1",
+      "mappings": {
+        "version": "1.21.1+build.3",
+        "maven": "net.fabricmc:yarn:1.21.1+build.3"
+      },
+      "fabricApi": "0.116.17+1.21.1",
+      "source": "https://meta.fabricmc.net/v2/versions/loader/1.21.1"
+    },
+    "forge-1.21.1": {
+      "distribution": "forge",
+      "loader": {
+        "version": "1.21.1-52.1.20",
+        "maven": "net.minecraftforge:forge:1.21.1-52.1.20"
+      },
+      "source": "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+      "download": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.21.1-52.1.20/forge-1.21.1-52.1.20-installer.jar"
+    },
+    "fabric-1.21.4": {
+      "distribution": "fabric",
+      "loader": {
+        "version": "0.20.1",
+        "maven": "net.fabricmc:fabric-loader:0.20.1"
+      },
+      "intermediary": "net.fabricmc:intermediary:1.21.4",
+      "mappings": {
+        "version": "1.21.4+build.8",
+        "maven": "net.fabricmc:yarn:1.21.4+build.8"
+      },
+      "fabricApi": "0.119.4+1.21.4",
+      "source": "https://meta.fabricmc.net/v2/versions/loader/1.21.4"
+    },
+    "forge-1.21.4": {
+      "distribution": "forge",
+      "loader": {
+        "version": "1.21.4-54.1.22",
+        "maven": "net.minecraftforge:forge:1.21.4-54.1.22"
+      },
+      "source": "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+      "download": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.21.4-54.1.22/forge-1.21.4-54.1.22-installer.jar"
+    },
+    "fabric-1.21.5": {
+      "distribution": "fabric",
+      "loader": {
+        "version": "0.20.1",
+        "maven": "net.fabricmc:fabric-loader:0.20.1"
+      },
+      "intermediary": "net.fabricmc:intermediary:1.21.5",
+      "mappings": {
+        "version": "1.21.5+build.1",
+        "maven": "net.fabricmc:yarn:1.21.5+build.1"
+      },
+      "fabricApi": "0.128.2+1.21.5",
+      "source": "https://meta.fabricmc.net/v2/versions/loader/1.21.5"
+    },
+    "forge-1.21.5": {
+      "distribution": "forge",
+      "loader": {
+        "version": "1.21.5-55.1.18",
+        "maven": "net.minecraftforge:forge:1.21.5-55.1.18"
+      },
+      "source": "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+      "download": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.21.5-55.1.18/forge-1.21.5-55.1.18-installer.jar"
+    },
+    "fabric-1.21.8": {
+      "distribution": "fabric",
+      "loader": {
+        "version": "0.20.1",
+        "maven": "net.fabricmc:fabric-loader:0.20.1"
+      },
+      "intermediary": "net.fabricmc:intermediary:1.21.8",
+      "mappings": {
+        "version": "1.21.8+build.1",
+        "maven": "net.fabricmc:yarn:1.21.8+build.1"
+      },
+      "fabricApi": "0.136.1+1.21.8",
+      "source": "https://meta.fabricmc.net/v2/versions/loader/1.21.8"
+    },
+    "forge-1.21.8": {
+      "distribution": "forge",
+      "loader": {
+        "version": "1.21.8-58.1.26",
+        "maven": "net.minecraftforge:forge:1.21.8-58.1.26"
+      },
+      "source": "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+      "download": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.21.8-58.1.26/forge-1.21.8-58.1.26-installer.jar"
+    },
+    "fabric-1.21.11": {
+      "distribution": "fabric",
+      "loader": {
+        "version": "0.20.1",
+        "maven": "net.fabricmc:fabric-loader:0.20.1"
+      },
+      "intermediary": "net.fabricmc:intermediary:1.21.11",
+      "mappings": {
+        "version": "1.21.11+build.6",
+        "maven": "net.fabricmc:yarn:1.21.11+build.6"
+      },
+      "fabricApi": "0.141.6+1.21.11",
+      "source": "https://meta.fabricmc.net/v2/versions/loader/1.21.11"
+    },
+    "forge-1.21.11": {
+      "distribution": "forge",
+      "loader": {
+        "version": "1.21.11-61.2.4",
+        "maven": "net.minecraftforge:forge:1.21.11-61.2.4"
+      },
+      "source": "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+      "download": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.21.11-61.2.4/forge-1.21.11-61.2.4-installer.jar"
+    }
+  }
+}
