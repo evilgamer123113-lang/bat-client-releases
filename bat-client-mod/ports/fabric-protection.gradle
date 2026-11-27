@@ -1,0 +1,93 @@
+// Protection for internal full-source Fabric ports; never a stable-release gate.
+configurations { obfuscator }
+dependencies { obfuscator 'com.guardsquare:proguard-base:7.6.1' }
+def protectionRoot=file('../..')
+def portSmokeClass=project.findProperty('portSmokeClass') ?: 'com.batclient.platform.fabric.Fabric1206Smoke'
+def portMinecraftVersion=project.findProperty('portMinecraftVersion') ?: '1.20.6'
+def rules=tasks.register('preparePortProtection') {
+    inputs.file new File(protectionRoot,'proguard.pro')
+    inputs.property 'portSmokeClass',portSmokeClass
+    outputs.file layout.buildDirectory.file('private-obfuscation/port.pro')
+    doLast {
+        def output=layout.buildDirectory.file('private-obfuscation/port.pro').get().asFile
+        output.parentFile.mkdirs()
+        output.setText(new File(protectionRoot,'proguard.pro').getText('UTF-8')+'\n-keep class '+portSmokeClass+' { *; }\n','UTF-8')
+    }
+}
+def obfuscate=tasks.register('obfuscateJava',JavaExec) {
+    dependsOn tasks.named('jar'),rules
+    classpath=configurations.obfuscator
+    mainClass='proguard.ProGuard'
+    maxHeapSize='2G'
+    inputs.file tasks.named('jar').flatMap { it.archiveFile }
+    inputs.file layout.buildDirectory.file('private-obfuscation/port.pro')
+    outputs.file layout.buildDirectory.file('protected/bat-client-fabric.jar')
+    outputs.file layout.buildDirectory.file('private-obfuscation/mapping.txt')
+    doFirst {
+        def output=layout.buildDirectory.file('protected/bat-client-fabric.jar').get().asFile
+        output.parentFile.mkdirs()
+        def arguments=['@'+layout.buildDirectory.file('private-obfuscation/port.pro').get().asFile.absolutePath,
+            '-injars',tasks.named('jar').get().archiveFile.get().asFile.absolutePath,
+            '-outjars',output.absolutePath,'-printmapping',layout.buildDirectory.file('private-obfuscation/mapping.txt').get().asFile.absolutePath]
+        configurations.compileClasspath.files.each { arguments.addAll(['-libraryjars',it.absolutePath]) }
+        ['java.base','java.datatransfer','java.desktop','java.net.http','java.logging','java.management','jdk.unsupported'].each { module ->
+            arguments.addAll(['-libraryjars',new File(System.getProperty('java.home'),'jmods/'+module+'.jmod').absolutePath+'(!**.jar;!module-info.class)'])
+        }
+        setArgs(arguments)
+    }
+}
+tasks.named('remapJar') {
+    dependsOn obfuscate
+    inputFile.set(layout.buildDirectory.file('protected/bat-client-fabric.jar'))
+}
+jar { from(new File(protectionRoot,'LICENSE')) { rename { 'LICENSE_bat-client-mod' } } }
+def verify=tasks.register('verifyProtectedJar') {
+    dependsOn tasks.named('remapJar')
+    doLast {
+        new java.util.zip.ZipFile(tasks.named('remapJar').get().archiveFile.get().asFile).withCloseable { zip ->
+            def names=zip.entries().collect { it.name }
+            if(names.any { it.endsWith('.java')||it.endsWith('.map')||it.endsWith('mapping.txt') })throw new GradleException('Private source/debug artifact in Fabric port')
+            if(names.contains('com/batclient/web/WebAssetManager.class'))throw new GradleException('Readable implementation was not obfuscated')
+            if(names.any { it.startsWith('assets/batclient/web/')&&!it.endsWith('/')&&!it.endsWith('.bin') })throw new GradleException('Readable UI in Fabric port')
+            ['fabric.mod.json','batclient.mixins.json','assets/batclient/web/app.js.bin','LICENSE_bat-client-mod'].each { name ->
+                if(zip.getEntry(name)==null)throw new GradleException('Required port entry missing: '+name)
+            }
+            def metadata=new groovy.json.JsonSlurper().parseText(zip.getInputStream(zip.getEntry('fabric.mod.json')).getText('UTF-8'))
+            if(metadata.depends.minecraft!=portMinecraftVersion)throw new GradleException('Wrong Minecraft dependency in Fabric '+portMinecraftVersion+' port')
+            def dependencyEntries=[] as Set
+            (metadata.jars?:[]).each { nested ->
+                def entry=zip.getEntry(nested.file)
+                if(entry==null)throw new GradleException('Missing declared Fabric nested dependency')
+                new java.util.zip.ZipInputStream(zip.getInputStream(entry)).withCloseable { stream ->
+                    for(def item=stream.nextEntry;item!=null;item=stream.nextEntry)dependencyEntries.add(item.name)
+                }
+            }
+            ['io/github/nilsen84/ultralight/Ultralight.class','kotlin/jvm/internal/Intrinsics.class',
+                'io/github/nilsen84/ultralight/natives/windows-x64/ultralight-jni.dll',
+                'io/github/nilsen84/ultralight/natives/linux-x64/libultralight-jni.so',
+                'io/github/nilsen84/ultralight/natives/mac-x64/libultralight-jni.dylib',
+                'io/github/nilsen84/ultralight/natives/mac-arm64/libultralight-jni.dylib'].each { name ->
+                if(!dependencyEntries.contains(name))throw new GradleException('Fabric port nested runtime missing '+name)
+            }
+            logger.lifecycle('PROTECTED_FABRIC_PORT_OK: actual nested JNI/Kotlin, encrypted UI, obfuscated Java and exact game metadata')
+        }
+    }
+}
+tasks.named('build') { dependsOn verify }
+if(providers.gradleProperty('protectedClient').isPresent()){
+    def runtimeJar=layout.buildDirectory.file('protected-runs/'+UUID.randomUUID()+'/bat-client-fabric.jar')
+    def stage=tasks.register('stageProtectedClient',Jar) {
+        dependsOn verify
+        archiveFileName=runtimeJar.get().asFile.name
+        destinationDirectory=runtimeJar.get().asFile.parentFile
+        duplicatesStrategy=DuplicatesStrategy.EXCLUDE
+        from({ zipTree(layout.buildDirectory.file('protected/bat-client-fabric.jar')) }) { exclude 'fabric.mod.json' }
+        from({ zipTree(tasks.named('remapJar').get().archiveFile.get().asFile) }) { include 'META-INF/jars/**','fabric.mod.json' }
+    }
+    tasks.named('runClient') {
+        dependsOn stage
+        def readable=sourceSets.main.output.files.collect { it.canonicalFile } as Set
+        classpath=files(classpath.files.findAll { file -> !readable.contains(file.canonicalFile)&&!file.name.startsWith('ultralight-bindings-')&&!file.name.startsWith('kotlin-stdlib-') },runtimeJar)
+        jvmArgs '-Dfabric.classPathGroups='+runtimeJar.get().asFile.absolutePath,'-Dbatclient.protectedSmoke=true'
+    }
+}

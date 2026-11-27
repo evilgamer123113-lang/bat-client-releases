@@ -1,0 +1,39 @@
+plugins { id 'java-library' }
+group='com.batclient.thirdparty'
+version='1.0.0'
+base { archivesName='ultralight-bat-forge-runtime' }
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.repsy.io/nilsen84/maven' }
+}
+configurations { webBinding; webNatives }
+dependencies {
+    webBinding('io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT') { transitive=false }
+    webNatives('io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:windows-x64') { transitive=false }
+    webNatives('io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:linux-x64') { transitive=false }
+    webNatives('io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:mac-x64') { transitive=false }
+    webNatives('io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:mac-arm64') { transitive=false }
+}
+def verifyOriginal=tasks.register('verifyOriginalBindings') {
+    inputs.file 'bindings.lock.json'
+    inputs.files configurations.webBinding,configurations.webNatives
+    doLast {
+        def lock=new groovy.json.JsonSlurper().parse(file('bindings.lock.json'))
+        (configurations.webBinding.files+configurations.webNatives.files).each { artifact ->
+            def expected=lock.artifacts[artifact.name]?.sha512
+            def actual=HexFormat.of().formatHex(java.security.MessageDigest.getInstance('SHA-512').digest(artifact.bytes))
+            if(!expected||actual!=expected)throw new GradleException('Native binding artifact changed; revalidate before updating lock: '+artifact.name)
+        }
+        logger.lifecycle('FORGE_BINDINGS_LOCK_OK: exact tested JNI/binding artifacts')
+    }
+}
+// A real Gradle component supplies the identity/version required by Forge JarJar.
+// Its unchanged binding classes and native resources must share one Java module.
+jar {
+    dependsOn verifyOriginal
+    from { configurations.webBinding.collect { zipTree(it) } }
+    from { configurations.webNatives.collect { zipTree(it) } }
+    exclude 'META-INF/MANIFEST.MF','META-INF/*.SF','META-INF/*.RSA','META-INF/*.DSA'
+    duplicatesStrategy=DuplicatesStrategy.EXCLUDE
+    manifest.attributes('Automatic-Module-Name':'batclient.ultralight.runtime','Implementation-Version':project.version)
+}

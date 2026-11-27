@@ -1,0 +1,72 @@
+allprojects {
+    if (gradle.startParameter.projectProperties.containsKey('smokeSodium')) {
+        plugins.withId('fabric-loom') {
+            // Loom must remap intermediary external mods into the named dev runtime.
+            dependencies.add('modLocalRuntime',files('build/performance-dependencies/sodium-test.jar'))
+        }
+    }
+    afterEvaluate {
+        def runPath = project.hasProperty('smokeBundled') ? 'build/builtin-performance-native-bundled' : project.hasProperty('smokeSodium') ? 'build/builtin-performance-native-sodium' : 'build/builtin-performance-native'
+        def runRoot = file(runPath)
+        loom.runs.named('client') { runDir runPath }
+        def compileSmoke = tasks.register('compileBuiltinPerformanceSmoke', JavaCompile) {
+            source file('scripts/BuiltinPerformanceRuntimeSmoke.java')
+            classpath = sourceSets.main.compileClasspath
+            destinationDirectory = layout.buildDirectory.dir('builtin-performance-smoke-classes')
+            options.release = 21
+        }
+        def metadata = tasks.register('builtinPerformanceSmokeMetadata') {
+            def directory = layout.buildDirectory.dir('builtin-performance-smoke-metadata')
+            outputs.dir directory
+            doLast {
+                def target = directory.get().file('fabric.mod.json').asFile
+                target.parentFile.mkdirs()
+                target.setText('{"schemaVersion":1,"id":"bat_performance_smoke","version":"1.0.0","environment":"client","entrypoints":{"client":["BuiltinPerformanceRuntimeSmoke"]}}','UTF-8')
+            }
+        }
+        def smokeJar = tasks.register('jarBuiltinPerformanceSmoke', Jar) {
+            dependsOn compileSmoke, metadata
+            archiveFileName = 'builtin-performance-smoke.jar'
+            destinationDirectory = new File(runRoot,'mods')
+            from compileSmoke.flatMap { it.destinationDirectory }
+            from layout.buildDirectory.dir('builtin-performance-smoke-metadata')
+        }
+        tasks.named('runClient') {
+            dependsOn smokeJar
+            if(project.hasProperty('protectedClient')){
+                    // Require dependencies nested in the protected player JAR to work.
+                    // A developer's loose runtime JARs must not mask packaging omissions.
+                    classpath=files(classpath.files.findAll { file ->
+                        !file.name.startsWith('kotlin-stdlib-')&&!file.name.startsWith('ultralight-bindings-')
+                    })
+            }
+            if (project.hasProperty('smokeBundled')) {
+                doFirst {
+                    def destination=new File(runRoot,'mods');destination.mkdirs()
+                    fileTree('run/mods') { include '*.jar' }.files.each { original ->
+                        java.nio.file.Files.copy(original.toPath(),new File(destination,original.name).toPath(),java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+                    }
+                }
+            }
+            environment 'ALSOFT_DRIVERS','null'
+            jvmArgs '-Dbatclient.test.noPresence=true'
+            // Loom's isolated named test must expose the premain helper to Knot too.
+            // Production launcher classpaths are unchanged.
+            def agent = file('../bat-client-agent/build/libs/bat-cosmetics.jar')
+            classpath += files(agent)
+            def groupArg = jvmArgs.find { it.startsWith('-Dfabric.classPathGroups=') }
+            if (groupArg != null) {
+                setJvmArgs(jvmArgs.findAll { !it.startsWith('-Dfabric.classPathGroups=') })
+                jvmArgs groupArg + File.pathSeparator + agent.absolutePath
+            }
+            // Isolated fixture only: exercise an explicit custom collector and the real cosmetic agent.
+            jvmArgs '-XX:+UseSerialGC'
+            jvmArgs '-Dbat.smoke.mapping=' + file('build/private-obfuscation/mapping.txt').absolutePath
+            jvmArgs '-javaagent:' + file('../bat-client-agent/build/libs/bat-cosmetics.jar').absolutePath + '=1.21.1,named,http://127.0.0.1:9'
+            doFirst {
+                def result = new File(runRoot,'result.txt')
+                if (result.exists() && !result.delete()) throw new GradleException('Cannot clear stale isolated test result')
+            }
+        }
+    }
+}

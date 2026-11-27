@@ -1,0 +1,6 @@
+# Forge 1.20.4 — protected production visual-parity smoke PASS (r2 / a1)
+
+- **Protected build (`r2`)**: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/gradle-secondary-cache.ps1 -p ports/forge-1.20.4 build --no-daemon --console=plain` -> `BUILD SUCCESSFUL`, `FORGE_49_MIXIN_BYTECODE_OK`, `PROTECTED_FORGE_ARTIFACT_OK`, `SHA256=23F1917F353F7FB955EC4739BCB194F804226E81BD359BCF9A6CA65F999F2FCD`, size `22401665`, log `D:/BatClientBuildCache/mod-ports-20261108/forge-1204-parity-r2-build.log`.
+- **Audits**: `audit-port-mixins.py` -> `47 targets; 0 issues`; `audit-constructor-callbacks.py` -> `0 callbacks; 0 issues`.
+- **Visual-parity smoke (`a1`)**: `prepare-forge-production-smoke.py` (`49.2.13`) + `run-forge-production-smoke.py --runtime D:/BatClientBuildCache/mod-native/forge-1.20.4-20261113-a1 --version 1.20.4-forge-49.2.13 ... --visual-parity` -> `BAT_VISUAL_PARITY_CAPTURE_OK`, 69 PNGs, log `D:/BatClientBuildCache/mod-ports-20261108/forge-1204-parity-a1.log`.
+- **Visual review**: All 6 screens (`main-menu.png`, `game-overlay.png`, `mod-manager.png`, `pause-menu.png`, `hud-editor.png`, `world-hud.png`) crisp. See `../../../../BAT-CLIENT-MOD-AGENT.md` and `../VISUAL-PARITY.md`.

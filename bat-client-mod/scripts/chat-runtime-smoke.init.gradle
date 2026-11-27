@@ -1,0 +1,38 @@
+// Test-only runner. Never uses run/ or packages the smoke entrypoint in Bat Client.
+allprojects {
+    afterEvaluate {
+        def smokePath = project.findProperty('smokeRunDir') ?: 'build/chat-runtime-smoke'
+        def smokeRoot = file(smokePath)
+        loom.runs.named('client') { runDir smokePath }
+        def compileSmoke = tasks.register('compileChatSmoke', JavaCompile) {
+            source file('scripts/ChatRuntimeSmoke.java')
+            source file('scripts/WorldPerformanceSmoke.java')
+            source file('scripts/WaypointRuntimeSmoke.java')
+            source file('scripts/NewVisualRuntimeSmoke.java')
+            classpath = sourceSets.main.compileClasspath
+            destinationDirectory = layout.buildDirectory.dir('chat-smoke-classes')
+            options.release = 21
+        }
+        def smokeJar = tasks.register('jarChatSmoke', Jar) {
+            dependsOn compileSmoke
+            archiveFileName = 'chat-runtime-smoke.jar'
+            destinationDirectory = new File(smokeRoot,'mods')
+            from compileSmoke.flatMap { it.destinationDirectory }
+            from('build/chat-smoke-metadata')
+        }
+        tasks.named('runClient') {
+            dependsOn smokeJar
+            workingDir smokeRoot
+            // Graphics/chat tests do not need a physical audio device.
+            environment 'ALSOFT_DRIVERS', 'null'
+            jvmArgs '-Dbat.chat.smoke.out=' + new File(smokeRoot,'result.txt').absolutePath
+            jvmArgs '-Dbat.smoke.mapping=' + file('build/private-obfuscation/mapping.txt').absolutePath
+            if (project.hasProperty('adventureSmokeOnly')) jvmArgs '-Dbat.adventure.only=true'
+            if (project.hasProperty('waypointSmokeOnly')) jvmArgs '-Dbat.waypoint.only=true'
+            if (project.hasProperty('waypointVisualDemo')) jvmArgs '-Dbat.waypoint.visualDemo=true'
+            if (project.hasProperty('visualSmokeOnly')) jvmArgs '-Dbat.visual.only=true'
+            if (project.hasProperty('trailSmokeOnly')) jvmArgs '-Dbat.trail.only=true'
+            if (project.hasProperty('performanceSmokeOnly')) jvmArgs '-Dbat.performance.only=true'
+        }
+    }
+}

@@ -1,0 +1,13 @@
+{
+  "key.batclient.openSettings": "Bat Client Settings",
+  "key.batclient.zoom": "Zoom (hold to zoom)",
+  "key.batclient.perspective": "Perspective Toggle",
+  "key.batclient.hudeditor": "HUD Editor",
+  "batclient.hud.editor": "HUD Editor",
+  "category.batclient.title": "Bat Client",
+  "key.category.batclient.controls": "Bat Client",
+  "key.batclient.waypoint_add": "Create waypoint",
+  "key.batclient.waypoint_manager": "Waypoint manager",
+  "key.batclient.freelook": "Freelook (hold Left Alt)",
+  "key.batclient.trail_retrace": "Return Trail: Retrace / Resume"
+}

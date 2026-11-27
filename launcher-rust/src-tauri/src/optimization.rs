@@ -102,7 +102,13 @@ fn transform(original: &str, version: &str, settings: &Value) -> String {
     ] {
         set(key, value, false);
     }
-    set("maxFps", if modern { "260" } else { "999" }, true);
+    let existing_max_fps = original
+        .lines()
+        .find_map(|l| l.strip_prefix("maxFps:"))
+        .and_then(|v| v.trim().parse::<u32>().ok());
+    if existing_max_fps.is_none() || (modern && existing_max_fps.is_some_and(|v| v > 260)) {
+        set("maxFps", if modern { "260" } else { "999" }, true);
+    }
     set("enableVsync", "false", true);
     if modern {
         set("ao", "false", true);
@@ -199,6 +205,10 @@ mod tests {
         let v26 = transform("maxFps:999\n", "26.3", &json!({}));
         assert!(v26.contains("maxFps:260"));
         assert!(!v26.contains("maxFps:999"));
+        // Valid user-chosen maxFps values must be preserved across restarts.
+        let v26_custom = transform("maxFps:144\n", "26.3", &json!({}));
+        assert!(v26_custom.contains("maxFps:144"));
+        assert!(!v26_custom.contains("maxFps:260"));
     }
     #[test]
     fn disabled_does_not_create_or_change_options() {

@@ -1,0 +1,26 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "com.batclient.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"refmap": "batclient-refmap.json",
+	"client": [
+		"NofapiMinecraftHooksMixin",
+		"NofapiScreenInitMixin",
+		"NofapiInGameHudMixin",
+		"NofapiWorldRendererMixin",
+		"NofapiItemTooltipMixin",
+		"NofapiTooltipComponentMixin",
+		"NofapiKeyBindingAccessor",
+		"NofapiGameOptionsAccessor",
+		"NofapiPlayerRendererMixin",
+		"NofapiGameRendererShadersMixin",
+		"NofapiResourceReloadMixin",
+		"NofapiBatResourcePackMixin",
+		"NofapiNetworkPayloadMixin",
+		"NofapiCustomPayloadAccessor"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

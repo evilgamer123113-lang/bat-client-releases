@@ -1,0 +1,3215 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+body {
+    background: rgba(0, 0, 0, 0.95);
+    color: #e7e7ec;
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    font-size: 14px;
+}
+
+.sidebar {
+    width: 220px;
+    background: rgba(0, 0, 0, 0.96);
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 14px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.3px;
+}
+
+.brand-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 4px;
+    background: #ffffff;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+}
+
+nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.nav-item {
+    padding: 9px 12px;
+    border-radius: 8px;
+    color: #a9a9b8;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #e7e7ec;
+}
+
+.nav-item.active {
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+}
+
+.sidebar-footer {
+    padding: 8px 12px;
+    color: #5a5a68;
+    font-size: 12px;
+}
+
+.content {
+    flex: 1;
+    padding: 28px 36px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-head h1 {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.subtitle {
+    color: #79798a;
+    margin-top: 4px;
+    margin-bottom: 24px;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.card-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.card-row:last-child {
+    border-bottom: none;
+}
+
+.card-row-title {
+    font-weight: 600;
+}
+
+.card-row-desc {
+    color: #89899a;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+/* toggle switch */
+.switch {
+    position: relative;
+    width: 40px;
+    height: 22px;
+    flex-shrink: 0;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.switch span {
+    position: absolute;
+    inset: 0;
+    background: #3a3a48;
+    border-radius: 22px;
+    transition: background 0.2s ease;
+    cursor: pointer;
+}
+
+.switch span::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+}
+
+.switch input:checked + span {
+    background: #ffffff;
+}
+
+.switch input:checked + span::after {
+    transform: translateX(18px);
+    background: #0a0a0a;
+}
+
+.status {
+    margin-top: auto;
+    padding-top: 20px;
+    color: #5fd08a;
+    font-size: 12px;
+}
+
+.hidden {
+    /* !important: later rules like .panel-layer { display:flex } share the
+       same specificity and would otherwise win, leaving the overlay open. */
+    display: none !important;
+}
+
+/* ================= Main menu (Feather-style) ================= */
+
+body.menu-page {
+    display: block;
+    position: relative;
+    background: #05070d;
+}
+
+.bg-sky {
+    position: fixed;
+    inset: 0;
+    background: #05070d url("bg.png") center center / cover no-repeat;
+    z-index: 0;
+}
+
+.bg-sky::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 32% 42%, rgba(5, 7, 13, 0.15) 0%, rgba(5, 7, 13, 0.78) 100%),
+        linear-gradient(180deg, rgba(5, 7, 13, 0.55) 0%, rgba(5, 7, 13, 0.15) 45%, rgba(5, 7, 13, 0.7) 100%);
+}
+
+body.menu-page .brand {
+    position: fixed;
+    left: 18px;
+    /* menu singleplayer top = 50% - 105px; keep ~59px above it */
+    top: calc(50% - 252px);
+    margin: 0;
+    gap: 18px;
+    align-items: center;
+    z-index: 3;
+}
+
+.brand-logo {
+    width: 84px;
+    height: 84px;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 22px rgba(0, 0, 0, 0.65));
+}
+
+.brand-text {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: 5px;
+    color: #ffffff;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.75);
+}
+
+.main-menu {
+    position: fixed;
+    left: 58px;
+    top: 50%;
+    transform: translateY(-38%);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 3;
+}
+
+.menu-item {
+    background: none;
+    border: none;
+    outline: none;
+    text-align: left;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 25px;
+    font-weight: 700;
+    letter-spacing: 3.5px;
+    padding: 11px 0;
+    cursor: pointer;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+    transition: color 0.16s ease, transform 0.16s ease, text-shadow 0.16s ease;
+}
+
+.menu-item:hover,
+.menu-item.active {
+    color: #ffffff;
+    transform: translateX(10px);
+    text-shadow: 0 0 26px rgba(255, 255, 255, 0.4);
+}
+
+.account-trigger { display:flex;align-items:center;gap:10px;padding:0;border:0;background:transparent;color:#fff;cursor:pointer;font:inherit; }
+.account-trigger>svg { width:16px;height:16px;opacity:.65;transition:transform .16s ease; }
+.account-trigger[aria-expanded="true"]>svg { transform:rotate(180deg); }
+.account-trigger:focus-visible,.account-panel button:focus-visible { outline:2px solid #fff;outline-offset:3px; }
+.account-layer {position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(0,0,0,.76);}
+.account-panel {width:490px;max-width:100%;max-height:calc(100vh - 48px);overflow:auto;box-sizing:border-box;background:#050505;border:1px solid #303030;border-radius:16px;color:#fff;box-shadow:0 30px 100px #000b;animation:account-enter .18s ease-out;}
+@keyframes account-enter {from {opacity:0;transform:translateY(10px) scale(.985);}to {opacity:1;transform:translateY(0) scale(1);}}
+.account-heading {display:flex;align-items:center;justify-content:space-between;padding:20px 24px 18px;border-bottom:1px solid #202020;}
+.account-heading-title {display:flex;align-items:center;gap:16px;}
+.account-heading-title img {width:30px;height:26px;object-fit:contain;}
+.account-eyebrow {font-size:9px;letter-spacing:2.5px;color:#888;font-weight:700;}
+.account-heading h2 {font-size:21px;margin:4px 0 0;font-weight:800;letter-spacing:-.5px;}
+.account-panel button {font:inherit;cursor:pointer;border:1px solid #333;border-radius:8px;background:#101010;color:#fff;transition:background .15s ease,border-color .15s ease;}
+.account-panel button:hover {background:#202020;border-color:#666;}
+.account-panel button:disabled {opacity:.4;cursor:default;}
+.account-panel .account-icon {display:grid;place-items:center;width:32px;height:32px;background:transparent;border-color:transparent;}
+.account-icon svg {width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;}
+.account-columns {display:block;}
+.account-saved {padding:20px 24px;}
+.account-section-heading {display:flex;align-items:center;justify-content:space-between;margin-bottom:17px;}
+.account-panel h3 {font-size:13px;font-weight:700;margin:0;}
+.account-section-heading>span {font-size:8px;color:#777;letter-spacing:1px;}
+.account-section-heading p {font-size:10px;color:#777;margin:6px 0 0;}
+.account-list {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-height:300px;overflow:auto;padding:1px 3px 1px 1px;}
+.account-row {position:relative;display:flex;flex-direction:column;align-items:center;min-height:202px;padding:0;border:1px solid #242424;border-radius:11px;transition:border-color .16s ease,background .16s ease,transform .16s ease;animation:account-card-in .2s ease-out var(--account-delay,0ms) backwards;}
+.account-row:hover {border-color:#555;}
+.account-row.available {cursor:pointer;}
+.account-row.available:hover {transform:translateY(-3px);border-color:#888;background:#101010;}
+.account-row.available:active {transform:translateY(-1px) scale(.985);}
+.account-panel .account-pick {display:flex;flex-direction:column;align-items:center;gap:12px;flex:1;width:100%;padding:20px 12px 12px;background:transparent;border:0;border-radius:10px;cursor:inherit;}
+.account-panel .account-pick:hover {background:transparent;border:0;}
+.account-panel .account-pick:disabled {opacity:1;cursor:default;}
+.account-panel .account-pick:disabled[aria-pressed="false"] {opacity:.5;}
+.account-card-status {font-size:9px;color:#777;transition:color .16s ease;}
+.account-row.available:hover .account-card-status,.account-row.active .account-card-status {color:#fff;}
+@keyframes account-card-in {from{opacity:0;transform:translateY(7px);}to{opacity:1;transform:translateY(0);}}
+@keyframes account-step-in {from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+.account-saved,.account-adding .account-new {animation:account-step-in .16s ease-out;}
+.account-row.active {border-color:#555;background:#111;}
+.account-row.active:before {content:'';position:absolute;left:24px;right:24px;top:-1px;height:2px;border-radius:2px;background:#fff;}
+.account-face {flex-shrink:0;border-radius:6px;image-rendering:pixelated;box-shadow:0 2px 12px #0008;transition:transform .18s ease;}
+.account-row.available:hover .account-face {transform:translateY(-1px);}
+.account-person {flex:1;min-width:0;width:100%;text-align:center;}
+.account-person strong {display:block;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.account-person small {display:block;font-size:10px;color:#888;margin-top:6px;}
+.account-row button {padding:7px 10px;font-size:10px;width:100%;}
+.account-row button.account-selected {background:transparent;color:#fff;opacity:1;border:0;padding:0;font-size:9px;}
+.account-row button.account-selected:before {content:'✓';margin-right:4px;}
+.account-row .account-remove {position:static;display:flex;align-items:center;justify-content:center;gap:5px;width:100%;border:0;border-top:1px solid #222;border-radius:0 0 10px 10px;background:transparent;padding:8px;color:#888;font-size:9px;}
+.account-row .account-remove:hover {background:#181818;color:#fff;}
+.account-remove svg {display:block;width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+.account-saved-note {display:flex;gap:6px;align-items:center;color:#666;font-size:9px;margin-top:auto;padding-top:16px;line-height:1.5;}
+.account-saved-note svg {width:12px;height:12px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.8;}
+.account-new {display:none;padding:22px 24px 24px;}
+.account-adding .account-saved {display:none;}
+.account-adding .account-new {display:block;}
+.account-panel .account-back {border:0;padding:0;background:transparent;color:#888;font-size:10px;margin-bottom:20px;}
+.account-new>h3 {font-size:18px;}
+.account-panel .account-add-tile {grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:9px;padding:12px;background:#fff;color:#000;border-color:#fff;}
+.account-add-tile>span {font-size:20px;font-weight:400;line-height:1;}
+.account-add-tile strong {font-size:11px;}
+.account-add-tile small {display:none;}
+.account-panel .account-add-tile:hover {background:#ddd;}
+.account-tabs {display:flex;margin-top:16px;border:1px solid #2b2b2b;border-radius:8px;padding:3px;gap:3px;}
+.account-tabs button {flex:1;padding:8px;font-size:11px;border:0;background:transparent;color:#888;}
+.account-tabs button[aria-selected="true"] {background:#fff;color:#000;font-weight:700;}
+.account-login-art {display:grid;place-items:center;width:48px;height:48px;margin:24px 0 15px;background:#161616;border:1px solid #303030;border-radius:12px;}
+.account-login-art svg {width:24px;height:24px;fill:currentColor;}
+.account-offline-art svg {width:31px;height:31px;fill:none;stroke:currentColor;stroke-width:2.2;}
+.account-new h4 {font-size:17px;font-weight:750;letter-spacing:-.4px;margin:0 0 9px;}
+.account-description {color:#888;font-size:11px;line-height:1.7;max-width:260px;}
+.account-add {margin-top:17px;}
+.account-add label {display:block;color:#aaa;font-size:10px;margin-bottom:8px;}
+.account-add>div {display:flex;gap:7px;}
+.account-add input {box-sizing:border-box;width:100%;min-width:0;background:#050505;border:1px solid #333;border-radius:8px;color:#fff;font:inherit;font-size:12px;padding:11px;outline:none;}
+.account-add input:focus {border-color:#aaa;}
+.account-add button {padding:10px 13px;font-size:11px;}
+.account-add>input {margin-bottom:9px;}
+.account-panel .account-microsoft,.account-panel .account-primary {margin-top:18px;width:100%;display:flex;align-items:center;justify-content:space-between;gap:9px;padding:12px;background:#fff;color:#000;font-size:11px;font-weight:700;border-color:#fff;}
+.account-panel .account-primary {margin-top:3px;}
+.account-panel .account-microsoft:hover,.account-panel .account-primary:hover {background:#ddd;}
+.account-note {font-size:9px;line-height:1.6;color:#666;margin:10px 0 0;}
+.account-footer {display:flex;gap:16px;align-items:center;justify-content:space-between;padding:12px 24px;border-top:1px solid #202020;}
+.account-message {font-size:10px;line-height:1.5;color:#aaa;margin:0;}
+.account-footer>span {display:none;}
+@media(max-width:420px){.account-layer{padding:12px;}.account-panel{max-height:calc(100vh - 24px);}.account-saved,.account-new{padding:16px;}.account-heading{padding:16px;}.account-row{padding:14px 10px;}.account-list{max-height:260px;}.account-section-heading>span{display:none;}}
+@media(prefers-reduced-motion:reduce){.account-panel,.account-row,.account-saved,.account-adding .account-new{animation:none;}.account-row,.account-face,.account-card-status{transition:none;}}
+
+.user-pill {
+    position: fixed;
+    right: 26px;
+    top: 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px 6px 6px;
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 14px;
+    backdrop-filter: blur(10px);
+    z-index: 4;
+}
+
+.user-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: #000000;
+    image-rendering: pixelated;
+}
+
+.user-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #e9ecf5;
+    padding-right: 4px;
+}
+
+.pill-btn {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.pill-btn:hover {
+    background: rgba(255, 255, 255, 0.17);
+}
+
+.pill-btn svg {
+    width: 17px;
+    height: 17px;
+}
+
+.version {
+    position: fixed;
+    left: 26px;
+    bottom: 18px;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 13px;
+    letter-spacing: 0.6px;
+    z-index: 3;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
+}
+
+/* ================= Settings / cosmetics / mods panel (overlay) ================= */
+
+.panel-layer {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    background: rgba(0, 0, 0, 0.97);
+    z-index: 5;
+}
+
+.back-btn {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    color: #c6c6d4;
+    font-size: 13px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+}
+
+/* ============ In-game overlay (Right Shift) — Bat theme, Feather-style ============ */
+/* body.overlay-page must stay transparent: the Minecraft world renders behind
+   this screen and shows through every unpainted pixel (verified: Ultralight
+   emits alpha=0 where the page draws nothing). */
+
+body.overlay-page {
+    display: block;
+    position: relative;
+    background: transparent;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+.overlay-dim {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    }
+
+/* Pause: much darker than the overlay — the world behind used to show
+   through a bluish cast (user: "too bluish"). Feather reads near-black. */
+.pause-page .overlay-dim {
+    background: rgba(0, 0, 0, 0.76);
+}
+
+/* Resource browser: lighter than the pause dim — Feather shows the blurred
+   world fairly bright around the panel. */
+.respacks-page .overlay-dim {
+    background: rgba(0, 0, 0, 0.40);
+}
+
+.overlay-center {
+    position: fixed;
+    left: 50%;
+    top: 46%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    z-index: 2;
+}
+
+.overlay-logo {
+    width: 76px;
+    height: 76px;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.7));
+}
+
+.overlay-brand {
+    color: #ffffff;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.75);
+}
+
+.overlay-primary {
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    padding: 13px 30px;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.55);
+    transition: transform 0.14s ease, background 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+}
+
+.overlay-primary:hover {
+    background: #000000;
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55), 0 0 18px rgba(255, 255, 255, 0.22);
+    transform: translateY(-1px);
+}
+
+/* quick-action row, sits under the main button inside the center column */
+.overlay-dock {
+    display: flex;
+    gap: 10px;
+}
+
+.overlay-dock-btn {
+    width: 46px;
+    height: 46px;
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.14s ease, background 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+}
+
+.overlay-dock-btn:hover {
+    background: #000000;
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 16px rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.overlay-dock-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* ============ ESC pause screen (pause.html) — Feather-style, Bat theme ============ */
+
+.pause-watermark {
+    position: fixed;
+    left: -5%;
+    top: 6%;
+    height: 82vh;
+    opacity: 0.05;
+    z-index: 1;
+    pointer-events: none;
+    filter: drop-shadow(0 0 40px rgba(0, 0, 0, 0.6));
+}
+
+/* ---- top-right icon rail ---- */
+.pause-rail {
+    position: fixed;
+    top: 18px;
+    right: 24px;
+    display: flex;
+    gap: 10px;
+    z-index: 3;
+}
+
+.pause-tool {
+    position: relative;
+    width: 46px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+}
+
+.pause-tool:hover {
+    background: #000000;
+    border-color: rgba(255, 255, 255, 0.28);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+}
+
+.pause-tool svg {
+    width: 19px;
+    height: 19px;
+}
+
+/* tooltip chip — right-aligned under the rail, exactly like Feather */
+.pause-tool::after {
+    content: attr(data-tip);
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    padding: 7px 11px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(-3px);
+    transition: opacity 0.14s ease, transform 0.14s ease;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.pause-tool:hover::after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ---- center brand + button stack ---- */
+.pause-center {
+    position: fixed;
+    left: 50%;
+    top: 47%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 26px;
+    z-index: 2;
+}
+
+.pause-brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.pause-logo {
+    height: 58px;
+    filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.7));
+}
+
+.pause-name {
+    color: #ffffff;
+    font-size: 23px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.75);
+}
+
+.pause-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pause-btn {
+    width: 315px;
+    height: 47px;
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    color: #e9eaee;
+    font-family: inherit;
+    font-size: 14.5px;
+    font-weight: 600;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background 0.14s ease, border-color 0.14s ease, transform 0.14s ease, box-shadow 0.14s ease;
+}
+
+.pause-btn:hover {
+    background: #000000;
+    border-color: rgba(255, 255, 255, 0.30);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
+}
+
+.pause-btn-ico {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.pause-btn-ico-img {
+    object-fit: contain;
+}
+
+.pause-btn-store {
+    background: linear-gradient(135deg, #ffffff, #e6e7ea);
+    border-color: rgba(0, 0, 0, 0.35);
+    color: #000000;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+}
+
+.pause-btn-store:hover {
+    background: linear-gradient(135deg, #ffffff, #e6e7ea);
+    border-color: rgba(0, 0, 0, 0.55);
+    filter: brightness(0.92);
+    box-shadow: 0 10px 26px rgba(255, 255, 255, 0.22);
+}
+
+/* ---- bottom-right mini actions ---- */
+.pause-foot {
+    position: fixed;
+    bottom: 16px;
+    right: 24px;
+    display: flex;
+    gap: 8px;
+    z-index: 3;
+}
+
+.pause-mini {
+    padding: 8px 13px;
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.72);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+
+.pause-mini:hover {
+    background: #000000;
+    border-color: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+}
+
+/* ============ Screenshots browser layer (pause page) ============ */
+
+.shots-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 7vh;
+}
+
+.shots-head {
+    width: min(1080px, 92vw);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 13px;
+}
+
+.shots-title {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    color: #ffffff;
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+.shots-title img {
+    height: 40px;
+    filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.7));
+}
+
+.time-pill {
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    color: #dfe1e6;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    padding: 7px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+}
+
+.shots-x {
+    width: 42px;
+    height: 42px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 9px;
+    color: #ffffff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.14s ease, border-color 0.14s ease;
+}
+
+.shots-x:hover {
+    background: rgba(255, 255, 255, 0.20);
+    border-color: #ffffff;
+}
+
+.shots-panel {
+    width: min(1080px, 92vw);
+    height: 56vh;
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    display: flex;
+    padding: 16px;
+    overflow: auto;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.55);
+}
+
+.shots-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(235px, 1fr));
+    gap: 14px;
+    align-content: start;
+}
+
+.shots-empty {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.shot {
+    position: relative;
+    padding-top: 56.25%;
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 9px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.14s ease, transform 0.14s ease;
+}
+
+.shot:hover {
+    border-color: rgba(255, 255, 255, 0.45);
+    transform: translateY(-2px);
+}
+
+.shot img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.shots-foot {
+    width: min(1080px, 92vw);
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 11px;
+}
+
+/* ---- in-page screenshot viewer (lightbox over the shots grid) ---- */
+.shot-viewer {
+    position: fixed;
+    inset: 0;
+    z-index: 6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: rgba(0, 0, 0, 0.88);
+}
+
+.shot-viewer-x {
+    position: absolute;
+    top: 18px;
+    right: 22px;
+    z-index: 2;
+}
+
+.shot-nav {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #ffffff;
+    font-size: 30px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.14s ease, border-color 0.14s ease;
+}
+
+.shot-nav:hover {
+    background: rgba(255, 255, 255, 0.20);
+    border-color: #ffffff;
+}
+
+.shot-viewer-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    max-width: 82vw;
+    max-height: 86vh;
+}
+
+.shot-viewer-stage img {
+    max-width: 82vw;
+    max-height: 74vh;
+    object-fit: contain;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 10px;
+    background: #000000;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
+    display: block;
+}
+
+.shot-viewer-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 13px;
+    font-weight: 600;
+    max-width: 82vw;
+}
+
+#shot-viewer-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#shot-viewer-count {
+    color: rgba(255, 255, 255, 0.45);
+    white-space: nowrap;
+}
+
+/* ============ Resource packs browser (respacks.html) — Feather-style ============ */
+
+/* Header sits ABOVE the floating panel, aligned with the panel's left/right
+   edges (Feather: logo+title at panel left, clock pill after, X at panel
+   right) — not flush to the window corners. */
+.rp-head {
+    position: fixed;
+    top: 0;
+    left: 15.7%;
+    right: 15.7%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14vh 10px 0;
+    z-index: 3;
+}
+
+.rp-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: #ffffff;
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+}
+
+.rp-title img {
+    height: 44px;
+    filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.7));
+}
+
+/* Floating panel with margins all around (Feather: ~21% top / 16% bottom /
+   16% sides), not full-height edge-to-edge. */
+.rp-panel {
+    position: fixed;
+    top: 21vh;
+    bottom: 16vh;
+    left: 15.7%;
+    right: 15.7%;
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 16px;
+    display: flex;
+    overflow: hidden;
+    box-shadow: 0 34px 70px rgba(0, 0, 0, 0.6);
+    z-index: 2;
+}
+
+.rp-side {
+    width: 250px;
+    flex-shrink: 0;
+    padding: 18px 16px;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(0, 0, 0, 0.25);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.rp-red {
+    width: 100%;
+    padding: 11px;
+    background: linear-gradient(135deg, #ffffff, #e6e7ea);
+    border: 1px solid rgba(0, 0, 0, 0.35);
+    border-radius: 8px;
+    color: #000000;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: filter 0.14s ease, transform 0.14s ease;
+}
+
+.rp-red:hover {
+    filter: brightness(0.92);
+    transform: translateY(-1px);
+}
+
+.rp-group {
+    margin-top: 4px;
+}
+
+.rp-group-head {
+    font-size: 12.5px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: #cfd3da;
+    padding: 12px 2px 7px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.rp-group-head.collapsed + .rp-group-body {
+    display: none;
+}
+
+.rp-group-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-left: 2px;
+}
+
+.rp-side-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 9px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: #9aa0aa;
+    font-family: inherit;
+    font-size: 13.2px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease;
+}
+
+.rp-side-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+}
+
+.rp-side-item.active {
+    background: rgba(255, 255, 255, 0.10);
+    color: #ffffff;
+}
+
+.rp-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 18px;
+    overflow: hidden;
+}
+
+.rp-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.rp-search {
+    flex: 1;
+    min-width: 0;
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 9px;
+    padding: 11px 14px;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 13.5px;
+    outline: none;
+    transition: border-color 0.14s ease;
+}
+
+.rp-search:focus {
+    border-color: rgba(255, 255, 255, 0.30);
+}
+
+.rp-search::placeholder {
+    color: #6b7078;
+}
+
+.rp-sort {
+    position: relative;
+    width: 190px;
+    flex-shrink: 0;
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 9px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #9aa0aa;
+    font-size: 13.2px;
+    font-weight: 600;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.rp-sort svg {
+    width: 14px;
+    height: 14px;
+}
+
+.rp-sort-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 9px;
+    overflow: hidden;
+    z-index: 6;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5);
+}
+
+.rp-sort-opt {
+    padding: 10px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #c7cad1;
+    cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease;
+}
+
+.rp-sort-opt:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: #ffffff;
+}
+
+/* Wrapper is the scroller (grid must never have overflow itself — this
+   WebKit clamps auto grid rows to ~56px when it does). */
+.rp-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.rp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+    align-content: start;
+    padding-bottom: 6px;
+}
+
+.rp-status {
+    color: #8b909a;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    padding: 44px 10px;
+}
+
+.rp-card {
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.rp-card:hover {
+    border-color: rgba(255, 255, 255, 0.22);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
+}
+
+.rp-card-media {
+    position: relative;
+    width: 100%;
+    padding-top: 50%;
+    background: #000000;
+}
+
+.rp-card-media img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.rp-card-install {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.78);
+    padding: 9px;
+    text-align: center;
+    transform: translateY(100%);
+    transition: transform 0.16s ease;
+}
+
+.rp-card-install span {
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+}
+
+.rp-card:hover .rp-card-install {
+    transform: translateY(0);
+}
+
+.rp-card-body {
+    padding: 13px 14px 15px;
+}
+
+.rp-card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.rp-card-name {
+    color: #ffffff;
+    font-size: 14.3px;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.rp-by {
+    color: #868b95;
+    font-size: 12.3px;
+    font-weight: 500;
+}
+
+.rp-card-dl {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #868b95;
+    font-size: 12.3px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.rp-card-desc {
+    margin-top: 7px;
+    color: #7d838d;
+    font-size: 12.8px;
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.rp-card-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+    max-height: 26px;
+    overflow: hidden;
+}
+
+.rp-chip {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    color: #9aa0aa;
+    font-size: 10.8px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    padding: 3px 7px;
+    border-radius: 5px;
+    text-transform: capitalize;
+    white-space: nowrap;
+}
+
+.rp-toast {
+    position: fixed;
+    bottom: 26px;
+    left: 50%;
+    transform: translate(-50%, 12px);
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: #e9eaee;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 11px 17px;
+    border-radius: 9px;
+    z-index: 9;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
+    max-width: 76vw;
+    text-align: center;
+}
+
+.rp-toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+.rp-toast-err {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.6);
+    color: #000000;
+}
+
+/* ============ thin scrollbars (Ultralight) ============ */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.14);
+    border-radius: 6px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.28);
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* ============ MOD MENU layer (Feather-style, Bat white/black) ============ */
+
+.mm-layer {
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.96);
+}
+
+.mm-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 16px 26px 13px;
+    background: transparent;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mm-title {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    min-width: 0;
+}
+
+.mm-title img {
+    height: 32px;
+    flex: none;
+    filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.6));
+}
+
+.mm-title h1 {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mm-title .time-pill {
+    flex: none;
+    margin-left: 4px;
+}
+
+.mm-tools {
+    display: flex;
+    gap: 10px;
+    flex: none;
+}
+
+.mm-tabs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 26px 0;
+}
+
+/* Feather-style row: white "MOD MENU" pill + icon-only tabs + X */
+.mm-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #b9b9c6;
+}
+
+.mm-tab svg {
+    width: 15px;
+    height: 15px;
+    flex: none;
+}
+
+.mm-tab:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+}
+
+.mm-tab.active {
+    background: #ffffff;
+    color: #0a0a0c;
+    font-weight: 800;
+}
+
+.mm-tab-i {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 10px;
+}
+
+.mm-tab-i svg {
+    width: 17px;
+    height: 17px;
+}
+
+.mm-x {
+    margin-left: auto;
+    width: 36px;
+    height: 36px;
+    font-size: 13px;
+}
+
+.mm-body {
+    flex: 1;
+    min-height: 0;
+    padding: 14px 24px 22px;
+    overflow-y: auto;
+}
+
+/* Feather-style inner panel card that fills the menu */
+.mm-panel {
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 16px;
+    padding: 20px 22px;
+    min-height: calc(100vh - 168px);
+}
+
+/* ---- sub tabs (All / HUD / Client) + search ---- */
+.mm-sub {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.mm-subtab {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    color: #b9b9c6;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 7px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+
+.mm-subtab:hover {
+    background: rgba(255, 255, 255, 0.13);
+    color: #ffffff;
+}
+
+.mm-subtab.active {
+    background: #ffffff;
+    border-color: #ffffff;
+    color: #0a0a0c;
+}
+
+.mm-search {
+    margin-left: auto;
+    width: 210px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    font-size: 13px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    outline: none;
+}
+
+.mm-search::placeholder {
+    color: #7d7d8c;
+}
+
+.mm-search:focus {
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* ---- module cards ---- */
+.mod-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+@media (max-width: 1200px) {
+    .mod-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 860px) {
+    .mod-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.mod-card {
+    background: #0a0a0a;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 172px;
+    contain: layout style paint;
+}
+
+.mod-card:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.mod-card-name {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.03em;
+}
+
+.mod-card-icon {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    min-height: 56px;
+}
+
+.mod-card-icon svg {
+    width: 46px;
+    height: 46px;
+    flex: none;
+    overflow: visible;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.mod-png-icon {
+    display: inline-block;
+    width: 52px;
+    height: 52px;
+    flex: none;
+    background-image: url("mod-icons.png");
+    background-repeat: no-repeat;
+    background-size: 800% 800%;
+    opacity: 0.72;
+}
+
+.mod-card-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.mod-gear {
+    width: 34px;
+    height: 34px;
+    flex: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: #c9c9d4;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.14s ease, color 0.14s ease;
+}
+
+.mod-gear svg {
+    width: 16px;
+    height: 16px;
+}
+
+.mod-gear:hover {
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+}
+
+.mod-toggle {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: #9a9aa8;
+    cursor: pointer;
+    transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+
+.mod-toggle:hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+}
+
+.mod-toggle.on {
+    background: #2fd06f;
+    border-color: #2fd06f;
+    color: #062413;
+}
+
+/* "Open Editor" push button (Draggable HUD Editor card) */
+.mod-toggle.act {
+    background: #ffffff;
+    border-color: #ffffff;
+    color: #0a0a0c;
+}
+
+.mod-toggle.act:hover {
+    background: #d8d8e0;
+    border-color: #d8d8e0;
+    color: #0a0a0c;
+}
+
+/* ---- per-module settings page ---- */
+.mod-settings {
+    display: flex;
+    flex-direction: column;
+}
+
+.ms-back {
+    align-self: flex-start;
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: #ffffff;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    margin-bottom: 14px;
+    transition: background 0.14s ease;
+}
+
+.ms-back:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.ms-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.ms-desc {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #9a9aa8;
+    font-size: 13px;
+    min-width: 0;
+}
+
+.ms-desc svg {
+    width: 17px;
+    height: 17px;
+    flex: none;
+}
+
+.ms-cols {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 16px;
+    align-items: start;
+}
+
+.ms-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+}
+
+.ms-sec {
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.ms-sec-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: #8f8fa0;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.ms-chev {
+    font-size: 9px;
+}
+
+.ms-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 13px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ms-row:last-child {
+    border-bottom: none;
+}
+
+.ms-label {
+    color: #e4e4ec;
+    font-size: 13.5px;
+}
+
+.ms-ctl {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: none;
+}
+
+.ms-num {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    min-width: 40px;
+    text-align: center;
+    padding: 4px 6px;
+    border-radius: 6px;
+}
+
+.ms-ctl input[type="range"] {
+    width: 150px;
+    accent-color: #ffffff;
+}
+
+.seg {
+    display: flex;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 4px;
+    border-radius: 8px;
+}
+
+.seg button {
+    background: transparent;
+    border: none;
+    color: #a9a9b8;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 6px 11px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease;
+}
+
+.seg button:hover {
+    color: #ffffff;
+}
+
+.seg button.on {
+    background: #ffffff;
+    color: #0a0a0c;
+}
+
+.ms-preview-wrap {
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 14px;
+}
+
+.ms-preview-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: #8f8fa0;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.ms-preview {
+    min-height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px dashed rgba(255, 255, 255, 0.16);
+    border-radius: 9px;
+    padding: 16px;
+    overflow: hidden;
+}
+
+.hud-mock {
+    transform-origin: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hud-mock.client-mock {
+    flex-direction: column;
+    gap: 12px;
+    color: #ffffff;
+}
+
+.hud-mock.client-mock svg {
+    width: 44px;
+    height: 44px;
+}
+
+.hud-mock.client-mock span {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+
+@media (max-width: 900px) {
+    .ms-cols {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ---- HUD module preview bits (shared: editor widgets + Mod Preview) ---- */
+.hp {
+    display: inline-block;
+    color: var(--hpc, #ffffff);
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.hp-cross {
+    font-size: 26px;
+    line-height: 1;
+    font-weight: 400;
+}
+
+.hp-armor,
+.hp-potions {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.hp-armor u,
+.hp-potions u {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    text-decoration: none;
+    color: #ffffff;
+}
+
+.hp-potions i {
+    font-style: normal;
+    color: #9a9aa8;
+    margin-left: 12px;
+}
+
+.keys {
+    display: grid;
+    grid-template-columns: repeat(3, 26px);
+    grid-template-rows: repeat(2, 26px) auto;
+    gap: 3px;
+}
+
+.keys b,
+.keys i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 4px;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
+    font-style: normal;
+}
+
+.keys b {
+    grid-area: 1 / 2 / 2 / 3;
+}
+
+.keys i:nth-child(2) {
+    grid-area: 2 / 1 / 3 / 2;
+}
+
+.keys i:nth-child(3) {
+    grid-area: 2 / 2 / 3 / 3;
+}
+
+.keys i:nth-child(4) {
+    grid-area: 2 / 3 / 3 / 4;
+}
+
+.keys em {
+    grid-area: 3 / 1 / 4 / 4;
+    color: #9a9aa8;
+    font-size: 10.5px;
+    font-weight: 700;
+    font-style: normal;
+    text-align: center;
+    margin-top: 2px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+/* ============ HUD editor (overlay page) ============ */
+/* layer is transparent to clicks; only widgets capture, so the rail and
+   center stack stay clickable while the editor is open. */
+
+.hud-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+}
+
+.hud-widget {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    pointer-events: auto;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    transform-origin: 0 0;
+}
+
+.hud-widget.dragging {
+    cursor: grabbing;
+    z-index: 9;
+}
+
+/* dark rounded content box (Feather-style) */
+.hud-wbox {
+    position: relative;
+    background: rgba(8, 8, 11, 0.78);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 8px 12px;
+    min-width: 64px;
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.12s ease, background 0.12s ease;
+}
+
+.hud-widget:hover .hud-wbox {
+    border-color: #4da3ff;
+    background: rgba(8, 8, 11, 0.88);
+}
+
+/* blue gear (left) + red minus (right), always visible in edit mode */
+.hud-btn {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    z-index: 2;
+    transition: transform 0.12s ease, filter 0.12s ease;
+}
+
+.hud-gear {
+    left: -10px;
+    top: -10px;
+    background: #4da3ff;
+    color: #ffffff;
+}
+
+.hud-hide {
+    right: -10px;
+    top: -10px;
+    background: #e5484d;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1;
+    padding-bottom: 2px;
+}
+
+.hud-btn:hover {
+    filter: brightness(1.15);
+    transform: scale(1.08);
+}
+
+.hud-btn svg {
+    width: 12px;
+    height: 12px;
+}
+
+/* label pill BELOW the box */
+.hud-wlabel {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    background: rgba(8, 8, 11, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border-radius: 5px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.12s ease;
+}
+
+.hud-widget:hover .hud-wlabel {
+    opacity: 1;
+}
+
+/* 4 blue corner resize handles (Feather-style) — scale 0.5-3.0 */
+.hud-rz {
+    position: absolute;
+    width: 11px;
+    height: 11px;
+    background: #4da3ff;
+    border: 1.5px solid #0b1622;
+    border-radius: 3px;
+    opacity: 0;
+    pointer-events: auto;
+    transition: opacity 0.12s ease;
+    touch-action: none;
+}
+
+.hud-rz-nw { left: -6px; top: -6px; cursor: nwse-resize; }
+.hud-rz-ne { right: -6px; top: -6px; cursor: nesw-resize; }
+.hud-rz-sw { left: -6px; bottom: -6px; cursor: nesw-resize; }
+.hud-rz-se { right: -6px; bottom: -6px; cursor: nwse-resize; }
+
+.hud-widget:hover .hud-rz,
+.hud-widget.dragging .hud-rz {
+    opacity: 1;
+}
+
+/* spacer for module cards that have no settings gear */
+.mod-card-pad {
+    width: 28px;
+    height: 28px;
+    flex: none;
+}
+
+/* HUD EDITOR rail button — white fill while the editor is on */
+.pause-tool.active {
+    background: #ffffff;
+    border-color: #ffffff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5), 0 0 14px rgba(255, 255, 255, 0.25);
+}
+
+.pause-tool.active svg {
+    stroke: #0a0a0c;
+}
+
+
+/* ---- round 2: preview == game, settings preview backdrop, smaller mod menu ---- */
+.ms-preview {
+    background:
+        linear-gradient(rgba(6, 6, 8, 0.45), rgba(0, 0, 0, 0.85)),
+        url("bg.png") center / cover no-repeat;
+}
+
+.mm-body {
+    padding: 28px 5vw 44px;
+}
+
+.mm-panel {
+    min-height: calc(100vh - 300px);
+    max-width: 1460px;
+    margin: 0 auto;
+}
+
+.keys {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: flex-start;
+}
+
+.keys .krow {
+    display: flex;
+    gap: 2px;
+    align-items: stretch;
+}
+
+.keys .kr-c {
+    align-self: center;
+}
+
+/* Mirror the game's keystroke geometry (Java draws 16x16 GUI-unit keys,
+   text-only on the unified plate — no per-key dark boxes anymore). */
+.keys b,
+.keys i {
+    width: 16px;
+    height: 16px;
+    font-size: 9px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+}
+
+.keys .km {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    width: 36px;
+    height: 14px;
+    padding: 0 3px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    color: #ffffff;
+    font-size: 8px;
+    font-weight: 800;
+    font-style: normal;
+    text-decoration: none;
+}
+
+.keys .ks {
+    width: 50px;
+    height: 10px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.27);
+    border-radius: 2px;
+}
+
+.hp-armor u,
+.hp-potions u {
+    justify-content: flex-start;
+}
+
+.hp-armor u {
+    gap: 5px;
+}
+
+.hp-dura {
+    display: flex;
+    gap: 7px;
+}
+
+.hp-dura u {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.pit {
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+    background: rgba(255, 255, 255, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 2px;
+}
+
+/* ---- W2: ONE renderer — the web widgets ARE the in-game HUD ----
+   Java HudRenderer draws this page's texture under the game and pushes the
+   body classes every frame:
+     hud-idle = overlay screen closed (live game): show ONLY the widgets —
+                no dim, no menu chrome, no edit affordances.
+     hud-edit = overlay screen open, editor on: widgets + gear/hide/label/
+                handles, near-transparent dim.
+     (neither) = overlay screen open, editor off: widgets without chrome
+                over the normal .55 dim (menu state). */
+body.hud-edit .overlay-dim {
+    background: rgba(0, 0, 0, 0.12);
+}
+
+body.hud-idle .overlay-dim {
+    background: transparent;
+}
+
+body.hud-idle .pause-rail,
+body.hud-idle .overlay-center,
+body.hud-idle .mm-layer {
+    display: none;
+}
+
+body.hud-idle .hud-widget {
+    pointer-events: none;
+}
+
+/* edit chrome only exists while the editor is on */
+body:not(.hud-edit) .hud-btn,
+body:not(.hud-edit) .hud-wlabel,
+body:not(.hud-edit) .hud-rz {
+    display: none;
+}
+
+/* no hover affordances (and no stuck hover highlight) in the live game */
+body.hud-idle .hud-widget:hover .hud-wbox {
+    border-color: transparent;
+    background: var(--hbg, rgba(8, 8, 11, 0.78));
+}
+
+/* modules with no live data (no target, no potions, not sprinting, ...) are
+   hidden in-game but always shown in the editor as previews */
+body.hud-idle .hud-widget[data-live="0"] {
+    display: none;
+}
+
+/* ---- per-module appearance settings (classes/vars set in renderHudWidgets) ---- */
+.hud-wbox.no-bg,
+.hud-widget:hover .hud-wbox.no-bg {
+    background: transparent;
+}
+
+.hud-wbox.no-shadow .hp {
+    text-shadow: none;
+}
+
+.hud-wbox.no-num .hp-armor span,
+.hud-wbox.no-num .hp-dura span {
+    display: none;
+}
+
+.hud-wbox.nocps .km span:last-child {
+    display: none;
+}
+
+.hud-wbox.noborder .keys .ks {
+    border-color: transparent;
+}
+
+/* background off: keys fall back to classic per-key boxes */
+.hud-wbox.no-bg .keys b,
+.hud-wbox.no-bg .keys i {
+    background: rgba(0, 0, 0, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 4px;
+}
+
+.hud-wbox.no-bg .keys b.on,
+.hud-wbox.no-bg .keys i.on {
+    background: var(--kflash, rgba(255, 255, 255, 0.33));
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+/* pressed keys on the unified plate: light flash (matches Java pressFlash) */
+.keys .on {
+    background: var(--kflash, rgba(255, 255, 255, 0.33));
+}
+
+.keys b,
+.keys i,
+.keys .km {
+    color: var(--hpc, #ffffff);
+}
+
+/* ============ MOD MENU additions (favorites / density / move / preview) ============ */
+.mm-subicon {
+    width: 34px;
+    height: 34px;
+    flex: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #b9b9c6;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+
+.mm-subicon svg {
+    width: 15px;
+    height: 15px;
+}
+
+.mm-subicon:hover {
+    background: rgba(255, 255, 255, 0.13);
+    color: #ffffff;
+}
+
+.mm-subicon.active {
+    background: #4da3ff;
+    border-color: #4da3ff;
+    color: #ffffff;
+}
+
+.mod-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.mod-card-top .mod-card-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mod-fav {
+    width: 24px;
+    height: 24px;
+    flex: none;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.28);
+    cursor: pointer;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mod-fav svg {
+    width: 15px;
+    height: 15px;
+}
+
+.mod-fav:hover {
+    color: #ffffff;
+}
+
+.mod-card.fav .mod-fav {
+    color: #f5c518;
+}
+
+.mod-card.fav {
+    border-color: rgba(245, 197, 24, 0.45);
+}
+
+.mod-grid.dense {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.mod-grid.dense .mod-card {
+    min-height: 120px;
+    padding: 10px;
+    gap: 6px;
+}
+
+.mod-grid.dense .mod-card-icon svg {
+    width: 30px;
+    height: 30px;
+}
+
+.mod-grid.dense .mod-card-name {
+    font-size: 12px;
+}
+
+.mod-grid.dense .mod-toggle {
+    font-size: 10px;
+    padding: 6px 8px;
+}
+
+.mod-grid.dense .mod-gear {
+    width: 26px;
+    height: 26px;
+}
+
+.ms-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: none;
+}
+
+.ms-move {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: background 0.14s ease;
+}
+
+.ms-move svg {
+    width: 15px;
+    height: 15px;
+}
+
+.ms-move:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.ms-move.nope {
+    opacity: 0.35;
+    cursor: default;
+}
+
+.ms-move.nope:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.ms-pv {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: #a9a9b8;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.14s ease, color 0.14s ease;
+}
+
+.ms-pv:hover {
+    color: #ffffff;
+}
+
+.ms-pv.active {
+    background: #4da3ff;
+    border-color: #4da3ff;
+    color: #ffffff;
+}
+
+.ms-sec-title {
+    cursor: pointer;
+    user-select: none;
+}
+
+.ms-chev {
+    display: inline-block;
+    transition: transform 0.14s ease;
+}
+
+.ms-sec.closed .ms-chev {
+    transform: rotate(-90deg);
+}
+
+.ms-sec.closed .ms-sec-title {
+    border-bottom: none;
+}
+
+.ms-sec.closed .ms-row {
+    display: none;
+}
+
+.swatch {
+    width: 42px;
+    height: 26px;
+    border-radius: 7px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    cursor: pointer;
+    padding: 0;
+    background-image: repeating-conic-gradient(rgba(255, 255, 255, 0.14) 0% 25%, transparent 0% 50%);
+    background-size: 8px 8px;
+    background-color: #ffffff;
+}
+
+.swatch:hover {
+    border-color: #ffffff;
+}
+
+/* custom per-widget background color (Background Color setting) */
+.hud-wbox {
+    background: var(--hbg, rgba(8, 8, 11, 0.78));
+}
+
+.hud-widget:hover .hud-wbox {
+    border-color: #4da3ff;
+    background: var(--hbg, rgba(8, 8, 11, 0.88));
+}
+
+/* ============ Feather-style COLOR PICKER (SV + hue + alpha + hex) ============ */
+.cp-veil {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.cp-veil.hidden {
+    display: none;
+}
+
+.cp-pop {
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    padding: 18px;
+    width: 520px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+}
+
+.cp-title {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: #8f8fa0;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+
+.cp-main {
+    display: grid;
+    grid-template-columns: 230px 14px 14px 1fr;
+    gap: 12px;
+    align-items: start;
+}
+
+.cp-sv {
+    position: relative;
+    width: 230px;
+    height: 230px;
+    border-radius: 10px;
+    cursor: crosshair;
+    touch-action: none;
+}
+
+.cp-circ {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6), 0 1px 3px rgba(0, 0, 0, 0.6);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.cp-strip {
+    position: relative;
+    width: 14px;
+    height: 230px;
+    border-radius: 7px;
+    cursor: pointer;
+    touch-action: none;
+}
+
+.cp-hue {
+    background: linear-gradient(to bottom, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+}
+
+.cp-alpha {
+    background-image: linear-gradient(to bottom, var(--cp-rgb, #ffffff), transparent),
+        repeating-conic-gradient(rgba(255, 255, 255, 0.2) 0% 25%, transparent 0% 50%);
+    background-size: 100% 100%, 8px 8px;
+}
+
+.cp-mark {
+    position: absolute;
+    left: -3px;
+    right: -3px;
+    height: 4px;
+    border-radius: 2px;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.cp-right {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.cp-apply {
+    background: #fff;
+    color: #000;
+    border: 1px solid #fff;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background .14s, color .14s;
+}
+.cp-apply:hover, .cp-apply:focus-visible { background: #ddd; }
+.cp-note, .cp-error { font-size: 11px; line-height: 1.5; color: #ccc; margin-top: 8px; }
+.cp-note:empty, .cp-error:empty { display: none; }
+
+.cp-lab {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #8f8fa0;
+    text-transform: uppercase;
+}
+
+.cp-lab2 {
+    margin: 14px 0 8px;
+}
+
+.cp-sel {
+    height: 56px;
+    border-radius: 9px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background-image: repeating-conic-gradient(rgba(255, 255, 255, 0.12) 0% 25%, transparent 0% 50%);
+    background-size: 10px 10px;
+    overflow: hidden;
+}
+
+.cp-sel span {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.cp-hex {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 8px 10px;
+    border-radius: 8px;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.cp-hex:focus {
+    border-color: #4da3ff;
+}
+
+.cp-hexa {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #6f6f80;
+    text-align: right;
+}
+
+.cp-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.cp-sw {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.12s ease, border-color 0.12s ease;
+}
+
+.cp-sw:hover {
+    transform: scale(1.12);
+    border-color: #ffffff;
+}
+
+.cp-empty {
+    color: #6f6f80;
+    font-size: 11.5px;
+}
+
+
+/* ---- round 6: windowed mod menu + editor ghost + Java plate geometry ---- */
+/* Mod menu is a centered card over a dimmed world (not a full-screen slab). */
+.mm-layer {
+    background: rgba(0, 0, 0, 0.85);
+    padding: 28px 32px;
+    align-items: stretch;
+    justify-content: center;
+}
+
+.mm-win {
+    display: flex;
+    flex-direction: column;
+    width: 92%;
+    max-width: 1520px;
+    margin: 0 auto;
+    min-height: 0;
+    max-height: 78vh;
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 18px;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+}
+
+.mm-win .mm-head {
+    border-radius: 18px 18px 0 0;
+    flex: none;
+}
+
+.mm-win .mm-tabs {
+    flex: none;
+}
+
+.mm-win .mm-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 20px 28px 32px;
+}
+
+.mm-win .mm-panel {
+    min-height: 0;
+    max-width: none;
+    margin: 0;
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    padding: 18px 20px;
+}
+
+.pause-page .mm-layer {
+    background: rgba(0, 0, 0, 0.55);
+}
+
+/* Widgets show in live game (hud-idle) and editor (hud-edit) — one web HUD. */
+.hud-widget {
+    display: none;
+}
+
+body.hud-edit .hud-widget,
+body.hud-idle .hud-widget,
+body.hud-menu .hud-widget {
+    display: flex;
+}
+
+/* Mod menu open: hide HUD widgets so they don't float on top of the panel. */
+body.panel-open .hud-widget {
+    display: none !important;
+}
+
+body.hud-edit .overlay-dim {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+/* ONE plate style for live / menu / editor — Feather parity (no size gap). */
+body.hud-idle .hud-wbox,
+body.hud-edit .hud-wbox,
+body.hud-menu .hud-wbox {
+    background: var(--hbg, rgba(8, 8, 11, 0.78));
+    border: 1px solid transparent;
+    padding: 8px 14px;
+    min-width: 0;
+    min-height: 0;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+body.hud-idle .hp,
+body.hud-edit .hp,
+body.hud-menu .hp {
+    font-size: 18px;
+    line-height: 1.25;
+    font-weight: 600;
+}
+
+body.hud-idle .keys b, body.hud-idle .keys i,
+body.hud-edit .keys b, body.hud-edit .keys i,
+body.hud-menu .keys b, body.hud-menu .keys i {
+    width: 22px;
+    height: 22px;
+    font-size: 12px;
+}
+
+body.hud-idle .keys .km,
+body.hud-edit .keys .km,
+body.hud-menu .keys .km {
+    width: 50px;
+    height: 18px;
+    font-size: 10px;
+}
+
+body.hud-idle .keys .ks,
+body.hud-edit .keys .ks,
+body.hud-menu .keys .ks {
+    width: 72px;
+    height: 12px;
+}
+
+/* Blue outline only while editing (hover / selected / drag). */
+body.hud-edit .hud-wbox:hover,
+body.hud-edit .hud-widget.selected .hud-wbox,
+body.hud-edit .hud-widget.dragging .hud-wbox {
+    border-color: #4da3ff;
+    background: var(--hbg, rgba(8, 8, 11, 0.78));
+}
+
+body.hud-idle .hud-wbox > .hp,
+body.hud-idle .hud-wbox > .keys,
+body.hud-edit .hud-wbox > .hp,
+body.hud-edit .hud-wbox > .keys,
+body.hud-menu .hud-wbox > .hp,
+body.hud-menu .hud-wbox > .keys {
+    visibility: visible;
+}
+
+/* Light dim under editor / menu-with-HUD (not the dark .55 menu slab). */
+body.hud-edit .overlay-dim,
+body.hud-menu .overlay-dim {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+/* Same-screen: settings + HUD editor. Widgets above panel; only .mm-win clicks. */
+body.hud-edit .hud-layer,
+body.hud-menu .hud-layer {
+    z-index: 12;
+}
+
+body.hud-edit .panel-layer,
+body.hud-menu .panel-layer {
+    pointer-events: none;
+}
+
+body.hud-edit .mm-win,
+body.hud-edit .mod-settings,
+body.hud-menu .mm-win,
+body.hud-menu .mod-settings {
+    pointer-events: auto;
+}
+
+/* ---- Feather/Lunar snap guides + toolbar ---- */
+.hud-guide {
+    position: fixed;
+    z-index: 5;
+    pointer-events: none;
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: none;
+}
+
+.hud-guide.hidden {
+    display: none;
+}
+
+.hud-guide-v {
+    top: 0;
+    bottom: 0;
+    width: 1px;
+}
+
+.hud-guide-h {
+    left: 0;
+    right: 0;
+    height: 1px;
+}
+
+.hud-toolbar {
+    position: fixed;
+    left: 50%;
+    bottom: 16px;
+    transform: translateX(-50%);
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.hud-toolbar.hidden {
+    display: none;
+}
+
+.hud-toolbar > * {
+    pointer-events: auto;
+}
+
+.hud-tb-btns {
+    display: flex;
+    gap: 6px;
+    background: rgba(0, 0, 0, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 6px 8px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
+}
+
+.hud-tb-btn {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.12s ease, color 0.12s ease;
+}
+
+.hud-tb-btn:hover {
+    background: #4da3ff;
+}
+
+.hud-tb-btn.off {
+    opacity: 0.4;
+}
+
+.hud-tb-btn svg {
+    width: 15px;
+    height: 15px;
+}
+
+/* Selected widget keeps a solid Feather-style outline */
+body.hud-edit .hud-widget.selected .hud-wbox {
+    border-color: #4da3ff;
+    box-shadow: 0 0 0 1px rgba(77, 163, 255, 0.4), 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+body.hud-edit .hud-widget.selected .hud-rz,
+body.hud-edit .hud-widget.selected .hud-wlabel {
+    opacity: 1;
+}
+
+/* Overlay center menu stays visible alongside the HUD editor (same screen). */
+
+/* Feather-style: gear/minus only on hover — not a permanent badge pile. */
+body.hud-edit .hud-btn {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.12s ease, transform 0.12s ease;
+}
+
+body.hud-edit .hud-widget:hover .hud-btn,
+body.hud-edit .hud-widget.dragging .hud-btn {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* label pill: hover only too */
+body.hud-edit .hud-wlabel {
+    opacity: 0;
+}
+
+body.hud-edit .hud-widget:hover .hud-wlabel {
+    opacity: 1;
+}
+
+/* resize handles: hover/drag only (already were) — shrink a bit */
+body.hud-edit .hud-rz {
+    width: 9px;
+    height: 9px;
+}
+
+body.hud-edit .hud-rz-nw { left: -5px; top: -5px; }
+body.hud-edit .hud-rz-ne { right: -5px; top: -5px; }
+body.hud-edit .hud-rz-sw { left: -5px; bottom: -5px; }
+body.hud-edit .hud-rz-se { right: -5px; bottom: -5px; }
+
+/* Match Java plate metrics (pad 6/4, radius 4, compact text). */
+.hud-wbox {
+    border-radius: 4px;
+    padding: 4px 6px;
+    min-width: 0;
+    min-height: 0;
+}
+
+.hp {
+    font-size: 8px;
+    line-height: 1;
+}
+
+.hp-cross {
+    font-size: 14px;
+}
+
+/* Edit-only chrome; live widgets stay (Java is no longer the HUD). */
+body:not(.hud-edit) .hud-btn,
+body:not(.hud-edit) .hud-wlabel,
+body:not(.hud-edit) .hud-rz {
+    display: none;
+}
+
+/* ---- round 6b: Feather parity — hover-only chrome + tighter keys preview ---- */
+/* Default (non-hover) gear/minus: hidden, tiny on hover. */
+.hud-btn {
+    opacity: 0;
+    pointer-events: none;
+    width: 16px;
+    height: 16px;
+    transition: opacity 0.12s ease, transform 0.12s ease;
+}
+
+.hud-widget:hover .hud-btn,
+.hud-widget.dragging .hud-btn {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.hud-gear {
+    left: -8px;
+    top: -8px;
+}
+
+.hud-hide {
+    right: -8px;
+    top: -8px;
+    font-size: 12px;
+}
+
+.hud-btn svg {
+    width: 9px;
+    height: 9px;
+}
+
+/* Preview keystrokes: match the new Java geometry (W/ASD 16px, thin space). */
+.keys {
+    gap: 1px;
+}
+
+.keys .krow {
+    gap: 1px;
+}
+
+.keys b,
+.keys i {
+    width: 16px;
+    height: 16px;
+    font-size: 9px;
+}
+
+.keys .km {
+    width: 36px;
+    height: 13px;
+    font-size: 7px;
+    padding: 0 2px;
+}
+
+.keys .ks {
+    width: 54px;
+    height: 7px;
+    border-radius: 2px;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.keys .ks.on {
+    background: var(--kflash, rgba(255, 255, 255, 0.33));
+}
+
+/* Settings must win over mode/hover rules in both previews and live HUD. */
+body .hud-wbox.no-bg,
+body .hud-widget:hover .hud-wbox.no-bg,
+body.hud-edit .hud-widget.selected .hud-wbox.no-bg,
+body.hud-edit .hud-widget.dragging .hud-wbox.no-bg {
+    background: transparent;
+    box-shadow: none;
+}
+body .hud-wbox.no-shadow .hp,
+body .hud-wbox.no-shadow .keys {
+    text-shadow: none;
+}
+body .hud-wbox.noborder .keys b,
+body .hud-wbox.noborder .keys i,
+body .hud-wbox.noborder .keys u {
+    border-color: transparent;
+}
+body .hud-wbox .hp-dura u,
+body .hud-wbox .hp-armor u,
+body .hud-wbox .hp-potions u,
+body .hud-wbox .keys,
+body .hud-wbox .keys b,
+body .hud-wbox .keys i,
+body .hud-wbox .keys .km {
+    color: var(--hpc, #fff);
+}
+body .hud-wbox .keys [data-k] { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.27); }
+body .hud-wbox.noborder .keys [data-k] { box-shadow: none; }
+body .hud-wbox .hp-cross {
+    position: relative;
+    width: 22px;
+    height: 22px;
+}
+.hp-cross::before, .hp-cross::after, .hp-cross i {
+    content: "";
+    position: absolute;
+    background: currentColor;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+.hp-cross::before { width: 18px; height: 2px; }
+.hp-cross::after { width: 2px; height: 18px; }
+.hp-cross i { display: none; width: 4px; height: 4px; border-radius: 50%; }
+.crosshair-dot::before, .crosshair-dot::after { display: none; }
+.crosshair-dot i, .crosshair-cross-dot i { display: block; }
+
+.setting-search-result{display:block;margin:4px 12px;padding:6px 9px;border:1px solid #333;border-radius:5px;background:#151515;color:#ddd;text-align:left;cursor:pointer;font:inherit;font-size:11px}.search-highlight{outline:1px solid #fff;outline-offset:-1px;background:#ffffff12}.module-conflict-notice{margin-top:10px;padding:10px 12px;border:1px solid #806635;border-radius:6px;background:#2b2316;color:#f0d59c;font-size:12px}
+
+.changed-settings-tools{display:flex;align-items:center;justify-content:space-between;padding:8px 0;color:#aaa;font-size:12px}.setting-modified>.ms-label::after{content:' •';color:#f5cf73}.hud-widget.locked{border-color:#a99962!important}.hud-widget.locked .hud-rz{display:none!important}.hud-widget.locked .hud-wlabel::after{content:' · Locked';color:#ddc88f}.hud-toolbar .hud-tb-text{font:inherit;font-size:10px;min-width:42px;width:auto;padding:0 8px}.hud-toolbar button:disabled{opacity:.3}.hud-selection-hint{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:#080808d9;padding:7px 12px;border-radius:6px;color:#bbb;font-size:11px;pointer-events:none}.hud-toolbar{max-width:96vw;overflow-x:auto}
+
+.wp-view{background:#050505!important}.wp-heading{display:flex;align-items:center;gap:10px;margin-bottom:12px}.wp-heading h2{flex:1;margin:0}.wp-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border:1px solid #303030;border-radius:10px;margin-bottom:12px}.wp-summary span,.wp-note{font-size:11px!important;color:#999!important}.wp-enable{margin-bottom:12px}.wp-status{min-height:20px;color:#eee!important}.wp-filters{display:grid;grid-template-columns:minmax(170px,1.5fr) 1fr 1fr 1fr;gap:9px;margin:8px 0 16px}.wp-filters .bat-tool-input{margin:0;font-size:12px;padding:10px}.wp-layout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(235px,1fr);gap:18px;align-items:start}.wp-list-tools{display:flex;align-items:center;gap:7px;color:#888;font-size:11px;min-height:30px;margin-bottom:8px}.wp-list-tools>span{flex:1}.wp-list-tools button{font-size:10px;padding:5px 7px}.wp-card{border:1px solid #303030;background:#0b0b0b;border-radius:10px;padding:14px;margin-bottom:10px;transition:border-color .15s}.wp-card:hover{border-color:#777}.wp-tracked{border-color:#8c8c8c}.wp-hidden{opacity:.62}.wp-card-top{display:flex;align-items:center;gap:8px;min-width:0}.wp-dot{width:10px;height:10px;border-radius:50%;flex:none}.wp-name{padding:0!important;border:0!important;background:transparent!important;color:#fff!important;text-align:left;overflow-wrap:anywhere;font-weight:700;flex:1;min-width:0}.wp-badge{font-size:8px;letter-spacing:.6px;border:1px solid #555;border-radius:4px;padding:3px 4px}.wp-card p{margin:8px 0!important;font-size:11px!important}.wp-location{color:#ddd!important}.wp-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}.wp-actions button{padding:6px 9px;font-size:10px}.wp-actions .wp-delete{margin-left:auto}.wp-editor{padding:18px;border:1px solid #333;border-radius:10px;background:#090909}.wp-editor h3{font-size:16px;margin:0 0 15px}.wp-form{display:flex;flex-direction:column;gap:10px}.wp-field{display:flex;flex-direction:column;gap:6px;min-width:0;color:#aaa;font-size:11px}.wp-field .bat-tool-input{margin:0;padding:9px;font-size:12px}.wp-coordinate-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.wp-color-row{display:flex;align-items:end;gap:7px}.wp-color-row .wp-field{flex:1}.wp-color-row input{height:35px;cursor:pointer;padding:3px}.wp-color-swatch{width:18px;height:18px;flex:none;border:1px solid #777;border-radius:50%;margin-bottom:8px;cursor:pointer}.wp-check{display:flex;align-items:center;gap:8px;font-size:12px;color:#bbb}.wp-check input{accent-color:#eee}.wp-save{background:#f5f5f5!important;color:#080808!important;font-weight:700;margin-top:5px}.wp-note{line-height:1.65!important;margin:12px 0 0!important}.wp-empty{border:1px dashed #353535;padding:28px 18px;border-radius:10px;color:#888;font-size:12px;line-height:1.8;text-align:center}.wp-editor>p{overflow-wrap:anywhere}@media(max-width:850px){.wp-layout{grid-template-columns:1fr}.wp-filters{grid-template-columns:1fr 1fr}.wp-summary{align-items:flex-start;flex-direction:column}}@media(prefers-reduced-motion:reduce){.wp-card{transition:none}}
+
+/* Keep the destination list within reach in small game windows. */
+.wp-view{padding:16px!important}.wp-status:empty{display:none}.wp-status{margin:6px 0!important;min-height:0}.wp-heading h2{font-size:20px}.wp-summary{padding:9px 12px;margin-bottom:9px}.wp-enable{margin-bottom:4px}.wp-filters{margin-top:10px}.wp-summary strong{overflow-wrap:anywhere}.wp-card-top{flex-wrap:wrap}
+@media(max-height:600px){.wp-view{padding:12px!important}.wp-heading{margin-bottom:8px}.wp-heading h2{font-size:18px}.wp-summary{padding:7px 10px;margin-bottom:6px}.wp-heading button,.wp-enable{padding:7px 10px}.wp-filters{margin-bottom:10px}.wp-editor{padding:12px}.wp-note{margin-top:6px!important}}
+
+@keyframes wp-chroma{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}.wp-chroma{animation:wp-chroma 10s linear infinite}@media(prefers-reduced-motion:reduce){.wp-chroma{animation:none}}
+
+/* Destination manager: independent list/editor scrolling, persistent save footer. */
+body.wp-manager .mm-win .mm-head{padding-bottom:18px;min-height:54px}body.wp-manager .mm-win .mm-tabs,body.wp-manager .mm-win .mm-body{width:94%;max-width:1180px}body.wp-manager .mm-win .mm-body{overflow:hidden}body.wp-manager .mm-win .mm-panel{height:100%;box-sizing:border-box;padding:14px}body.wp-manager .wp-view:not(.hidden){display:flex;flex-direction:column;height:100%;box-sizing:border-box;padding:0!important;border:0;background:#000!important;min-height:0}.wp-heading{flex:none;margin-bottom:10px}.wp-heading-copy{flex:1}.wp-heading-copy h2{font-size:19px!important;margin:0}.wp-heading-copy p{font-size:11px;color:#777;margin:4px 0 0}.wp-heading>button{font-size:11px;padding:9px 12px}.wp-heading>button:first-of-type{background:#f6f6f6;color:#080808}.wp-summary{flex:none;padding:8px 10px;gap:10px;border-color:#252525;background:#090909}.wp-summary strong{font-size:11px}.wp-summary span{flex:1;font-size:10px;text-align:right}.wp-summary .wp-enable{margin:0;font-size:10px;padding:7px 9px}.wp-status{flex:none;font-size:11px!important}.wp-filters{flex:none;margin:4px 0 10px;gap:6px}.wp-filters .bat-tool-input{font-size:11px;padding:8px}.wp-layout{flex:1;min-height:0;grid-template-columns:minmax(0,1fr) 310px;gap:12px;align-items:stretch}.wp-list{min-height:0;overflow-y:auto;padding-right:4px}.wp-editor{min-height:0;padding:14px;display:flex;flex-direction:column;border-color:#303030;border-radius:9px}.wp-editor>h3{flex:none;font-size:14px;margin-bottom:10px}.wp-live-preview{flex:none;align-self:center;max-width:90%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:7px 12px;margin:0 0 12px;border:1px solid #75cfff;border-radius:7px;color:#fff;background:#151515;font-size:13px}.wp-form{flex:1;min-height:0;gap:0}.wp-form-body{min-height:0;overflow-y:auto;padding:0 5px 6px 0;display:flex;flex-direction:column;gap:9px}.wp-field{font-size:10px;gap:5px}.wp-field .bat-tool-input{font-size:11px;padding:8px}.wp-check{font-size:11px}.wp-position{font-size:10px;padding:6px}.wp-advanced{border-top:1px solid #292929;margin-top:3px;padding-top:9px}.wp-advanced summary{cursor:pointer;color:#aaa;font-size:11px;list-style-position:inside}.wp-advanced-body{display:flex;flex-direction:column;gap:10px;padding-top:12px}.wp-form-footer{flex:none;display:flex;gap:8px;padding-top:10px;border-top:1px solid #292929}.wp-form-footer .wp-save{flex:1;margin:0;padding:10px;font-size:12px}.wp-form-footer>button:not(.wp-save){font-size:10px;padding:8px}.wp-form-error{flex:none;margin:6px 0!important;color:#ff9c9c!important;font-size:11px!important;line-height:1.4}.wp-form-error:empty{display:none}.wp-invalid{border-color:#ff7575!important}.wp-card{padding:11px 12px;border-color:#252525;border-radius:8px}.wp-card.wp-selected{border-color:#aaa;background:#121212}.wp-card .wp-name{font-size:12px}.wp-card p{font-size:10px!important;margin:5px 0!important}.wp-actions{gap:5px;margin-top:8px}.wp-actions button{font-size:10px;padding:5px 8px}.wp-list-tools{min-height:22px;margin-bottom:6px}body.wp-manager #waypoint-disabled-note{margin:0 0 8px!important;font-size:10px!important;flex:none}@media(max-width:850px){.wp-layout{grid-template-columns:minmax(0,1fr) minmax(245px,.95fr)}.wp-summary{flex-direction:row;align-items:center}.wp-filters{grid-template-columns:1.3fr 1fr 1fr 1fr}.wp-summary span{display:none}}@media(max-height:600px){body.wp-manager .mm-win .mm-head{padding-bottom:8px;min-height:42px}body.wp-manager .mm-win .mm-tabs{margin-bottom:8px}.wp-heading-copy p,.wp-live-preview{display:none}.wp-heading{margin-bottom:7px}.wp-editor{padding:10px}.wp-editor>h3{margin-bottom:7px}.wp-summary{margin-bottom:6px}.wp-form-footer{padding-top:7px}.wp-form-footer .wp-save{padding:8px}}@media(max-width:600px){.wp-layout{grid-template-columns:1fr 1fr}.wp-filters{grid-template-columns:1fr 1fr}.wp-summary strong{max-width:50%}.wp-heading-copy h2{font-size:15px!important}.wp-heading>button{padding:7px;font-size:10px}}
+
+@media(max-height:600px){body.wp-manager .mm-win{height:94vh;max-height:94vh}body.wp-manager .mm-win .mm-head{min-height:30px;padding:0 0 6px}body.wp-manager .mm-title img{width:34px;height:24px}body.wp-manager .mm-title h1{font-size:16px}body.wp-manager .time-pill,body.wp-manager .mm-head .mm-tools{display:none}body.wp-manager .mm-tab{height:36px;padding:0 12px;font-size:10px}body.wp-manager .mm-tab-i{width:40px;padding:0}body.wp-manager .mm-x{height:30px;width:30px}.wp-heading-copy h2{font-size:15px!important}.wp-heading>button{padding:6px 9px}.wp-heading{margin-bottom:5px}.wp-summary{padding:4px 8px}.wp-summary .wp-enable{padding:5px 7px}body.wp-manager #waypoint-disabled-note{display:none}.wp-filters{margin:4px 0 7px}.wp-filters .bat-tool-input{padding:6px}.wp-editor>h3{font-size:12px}.wp-form-body{gap:7px}}
+
+.cp-sv,.cp-strip{-webkit-user-select:none;user-select:none;touch-action:none}.cp-circ,.cp-mark{transition:none!important}.cp-pop{max-width:calc(100vw - 28px);max-height:calc(100vh - 28px);overflow-y:auto;box-sizing:border-box}.wp-color-row .wp-color-value{cursor:pointer;height:35px;padding:8px!important;font-family:monospace;border-left:4px solid #75cfff}.wp-color-value:hover,.wp-color-value:focus{border-color:#aaa}@media(max-height:600px){.cp-pop{padding:14px}.cp-main{grid-template-columns:190px 14px 14px 1fr}.cp-sv{width:190px;height:190px}.cp-strip{height:190px}.cp-lab2{margin-top:10px}}
+
+.trail-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.trail-status{flex-basis:100%;font-size:11px;color:#aaa}.trail-actions button{font-size:11px;padding:7px 10px}
+
+/* Destination library, with an optional editor alongside the list. */
+.wp-sources{display:flex;gap:5px;flex:none;margin:0 0 10px;padding:3px;border:1px solid #222;border-radius:7px;background:#070707;align-self:flex-start}.wp-source-tab{font:inherit;font-size:11px;padding:7px 13px;border:0;border-radius:5px;background:transparent;color:#888;cursor:pointer}.wp-source-tab.active{background:#f1f1f1;color:#101010}.wp-source-tab:hover:not(.active){background:#1a1a1a;color:#eee}.wp-card-top .wp-dot{width:28px;height:34px;border-radius:7px;display:flex;align-items:center;justify-content:center}.wp-dot svg{width:19px;height:23px}.wp-distance{color:#bbb;font-size:11px;margin-left:auto;font-variant-numeric:tabular-nums}.wp-card{border-left:2px solid #252525}.wp-card.wp-selected{border-left-color:#ddd}.wp-tracked{background:#0d1216}.wp-editor-heading{display:flex;align-items:center;justify-content:space-between;flex-direction:row-reverse;gap:10px;margin:0 0 12px;flex:none}.wp-editor-heading h3{font-size:14px;margin:0}.wp-editor-dismiss{font:inherit;width:25px;height:25px;border:1px solid #333;border-radius:5px;background:#121212;color:#aaa;cursor:pointer}.wp-editor-dismiss:hover{color:#fff;border-color:#aaa}.wp-browse-only{grid-template-columns:1fr!important}.wp-browse-only .wp-editor{display:none}.wp-live-preview{background:linear-gradient(130deg,#141b22,#090909);padding:11px 17px;border-radius:8px}.wp-summary strong{display:flex;align-items:center;gap:7px}.wp-summary strong::before{content:'';width:6px;height:6px;border-radius:50%;background:#aaa}.wp-card .wp-meta{color:#777}.wp-card .wp-location{font-family:monospace;color:#aaa!important}.wp-actions .wp-delete{color:#dca5a5}.wp-name{line-height:1.5}.ms-action-bind{min-width:150px;font-size:11px}.wp-source-tab:focus-visible,.wp-editor-dismiss:focus-visible{outline:1px solid #fff;outline-offset:2px}@media(max-height:600px){.wp-sources{margin-bottom:6px}.wp-source-tab{font-size:10px;padding:5px 10px}.wp-editor-heading{margin-bottom:7px}.wp-editor-heading h3{font-size:12px}.wp-card-top .wp-dot{height:28px;width:24px}.wp-distance{font-size:10px}}
+
+@media(max-height:600px){.wp-summary{padding:2px 6px;margin-bottom:3px}.wp-summary .wp-enable{padding:3px 6px;line-height:14px;min-height:0}.wp-source-tab{padding:3px 8px;line-height:14px}.wp-sources{padding:2px;margin-bottom:3px}.wp-filters{margin:2px 0 4px}.wp-filters .bat-tool-input{padding:4px;min-height:0;line-height:15px}.wp-heading>button{padding:4px 7px;min-height:0}.wp-heading-copy h2{line-height:20px!important}.wp-editor-heading{margin-bottom:4px}.wp-editor-dismiss{width:20px;height:20px;line-height:16px}.wp-editor{padding:8px}.wp-form-footer{padding-top:5px}}

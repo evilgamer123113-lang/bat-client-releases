@@ -1,0 +1,8 @@
+# Bat Client crawler rules
+User-agent: *
+Allow: /
+
+Disallow: /releases/
+Disallow: /consent-manager.js
+
+Sitemap: https://batclient.xyz/sitemap.xml

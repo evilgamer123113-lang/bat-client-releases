@@ -1,0 +1,16 @@
+allprojects {
+    afterEvaluate {
+        def compileAssets = tasks.register('compileProtectedAssetsSmoke', JavaCompile) {
+            dependsOn tasks.named('classes')
+            source files('scripts/WebAssetsSmoke.java','scripts/ProtectedAssetsSmoke.java')
+            classpath = sourceSets.main.runtimeClasspath
+            destinationDirectory = layout.buildDirectory.dir('protected-asset-smoke-classes')
+            options.release = 21
+        }
+        tasks.register('protectedAssetsSmoke', JavaExec) {
+            dependsOn compileAssets
+            classpath = files(compileAssets.flatMap { it.destinationDirectory }) + sourceSets.main.runtimeClasspath
+            mainClass = 'ProtectedAssetsSmoke'
+        }
+    }
+}

@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "waypoints": [
+    {
+      "id": "686f1ab6-1b68-4f71-93b1-d28dd6686c0a",
+      "scope": "save:C:\\Users\\Noor-ul-Islam\\Desktop\\Raven-Client\\bat-client-mod\\run\\saves\\New World (1)",
+      "dimension": "minecraft:overworld",
+      "name": "aasdasdasdasdasdasdasdasdasd",
+      "group": "General",
+      "x": -376,
+      "y": 99,
+      "z": -941,
+      "color": "#75CFFF",
+      "visible": true,
+      "favorite": false,
+      "tracked": true,
+      "created": 1792837876856,
+      "beam": true,
+      "chroma": false,
+      "opacity": 100,
+      "expiresAt": 0
+    }
+  ]
+}

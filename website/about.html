@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>About Bat Client by Raven | Bat Client</title>
+    <meta name="description" content="About Bat Client by Raven: the independent Minecraft Java launcher and companion Fabric mod at batclient.xyz. Separate from BatMod at batmod.com.">
+    <link rel="canonical" href="https://batclient.xyz/about.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Bat Client">
+    <meta property="og:title" content="About Bat Client by Raven | Bat Client">
+    <meta property="og:description" content="Meet Bat Client by Raven, our Minecraft Java launcher and companion Fabric mod. An independent project, separate from BatMod.">
+    <meta property="og:url" content="https://batclient.xyz/about.html">
+    <meta property="og:image" content="https://batclient.xyz/bat-logo.png">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="About Bat Client by Raven | Bat Client">
+    <meta name="twitter:description" content="The independent Minecraft Java launcher and companion mod at batclient.xyz.">
+    <meta name="twitter:image" content="https://batclient.xyz/bat-logo.png">
+    <link rel="icon" href="favicon-32x32.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --bg-soft: #0b0b0c;
+            --ink: #f4f4f2;
+            --ink-dim: #9c9c98;
+            --ink-faint: #6b6b68;
+            --line: #1a1a1d;
+            --font-head: 'DM Sans', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+            --nav-h: 72px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--ink); font-family: var(--font-body); line-height: 1.7; padding-top: var(--nav-h); -webkit-font-smoothing: antialiased; }
+        a { color: inherit; }
+
+        /* ---------- nav ---------- */
+        .nav {
+            position: fixed; top: 0; left: 0; width: 100%; height: var(--nav-h);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 clamp(1.25rem, 4vw, 3rem);
+            background: rgba(10,10,10,0.82); backdrop-filter: blur(14px);
+            z-index: 1000; border-bottom: 1px solid var(--line);
+        }
+        .nav-brand { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; }
+        .nav-brand img { height: 34px; width: auto; display: block; }
+        .nav-brand b { font-family: var(--font-head); font-weight: 700; font-size: 1.2rem; letter-spacing: 0.3px; }
+        .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+        .nav-links a { color: var(--ink-dim); text-decoration: none; font-size: 0.92rem; font-weight: 500; transition: color 0.2s ease; }
+        .nav-links a:hover { color: var(--ink); }
+        .nav-cta { color: var(--bg) !important; background: var(--ink); border-radius: 6px; padding: 0.5rem 1.1rem; font-weight: 700 !important; }
+        .nav-cta:hover { color: var(--bg) !important; background: #ffffff; }
+
+        /* ---------- content ---------- */
+        .content { max-width: 900px; margin: 0 auto; padding: 4.5rem clamp(1.25rem, 4vw, 3rem) 5rem; }
+        .page-head { margin-bottom: 3rem; }
+        .page-head h1 { font-family: var(--font-head); font-size: clamp(2.2rem, 5vw, 3.2rem); letter-spacing: -0.02em; line-height: 1.05; margin-bottom: 0.6rem; }
+        .page-head .sub { color: var(--ink-dim); font-size: 1.02rem; max-width: 40rem; }
+        .section h2 {
+            font-family: var(--font-head); font-size: 1.35rem; font-weight: 700; color: var(--ink);
+            margin: 3rem 0 1rem; padding-top: 1.5rem; border-top: 1px solid var(--line);
+        }
+        .section h2:first-of-type { border-top: none; padding-top: 0; }
+        .section p, .section li, .section .txt { color: var(--ink-dim); margin-bottom: 1rem; font-size: 0.97rem; line-height: 1.75; }
+        .section ul, .section ol { padding-left: 1.4rem; margin-bottom: 1rem; }
+        .section li { margin-bottom: 0.5rem; }
+        .section strong { color: var(--ink); font-weight: 600; }
+        .section a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+        .section code { background: #141417; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; color: var(--ink); }
+        .troubleshooting-steps { counter-reset: step; list-style: none; padding-left: 0; }
+        .troubleshooting-steps li { counter-increment: step; padding-left: 2.6rem; position: relative; margin-bottom: 1rem; color: var(--ink-dim); }
+        .troubleshooting-steps li::before {
+            content: counter(step); position: absolute; left: 0; top: 0.15rem;
+            width: 1.8rem; height: 1.8rem; background: #121214; border: 1px solid var(--line);
+            border-radius: 6px; display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-head); font-size: 0.8rem; font-weight: 700; color: var(--ink);
+        }
+
+        .contact-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
+        .contact-card { background: var(--bg-soft); padding: 2rem; border-radius: 10px; border: 1px solid var(--line); transition: border-color 0.2s; }
+        .contact-card:hover { border-color: var(--ink-faint); }
+        .contact-card h3 { font-family: var(--font-head); font-size: 1.15rem; color: var(--ink); margin-bottom: 0.6rem; }
+        .contact-card a { color: var(--ink); text-decoration: underline; font-weight: 600; text-underline-offset: 3px; word-break: break-all; }
+        .contact-card p { color: var(--ink-dim); font-size: 0.9rem; margin-bottom: 0.8rem; }
+
+        /* ---------- footer ---------- */
+        footer { border-top: 1px solid var(--line); background: var(--bg); }
+        .footer-inner { max-width: 1280px; margin: 0 auto; padding: 3.5rem clamp(1.25rem,4vw,3rem) 2rem; }
+        .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; padding-bottom: 3rem; }
+        .footer-brand img { height: 30px; width: auto; margin-bottom: 1rem; }
+        .footer-brand p { color: var(--ink-dim); font-size: 0.88rem; max-width: 22rem; }
+        .footer-col h3 { font-family: var(--font-head); font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 1rem; }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+        .footer-col a { color: var(--ink-dim); text-decoration: none; font-size: 0.92rem; transition: color 0.2s; }
+        .footer-col a:hover { color: var(--ink); }
+        .footer-bottom { border-top: 1px solid var(--line); padding-top: 1.6rem; color: var(--ink-faint); font-size: 0.82rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+        .footer-disclaimer { margin-top: 1.4rem; padding-top: 1.2rem; border-top: 1px solid var(--line); color: var(--ink-faint); font-size: 0.75rem; line-height: 1.6; max-width: 60rem; }
+        .footer-disclaimer a { color: var(--ink-dim); text-decoration: underline; text-underline-offset: 3px; }
+
+        /* ---------- intro card ---------- */
+        .intro-card {
+            background: var(--bg-soft); border: 1px solid var(--line); border-radius: 10px;
+            padding: 1.8rem 2rem; margin: 5rem 0 3rem;
+        }
+        .intro-card p { margin-bottom: 0; }
+
+        @media (max-width: 900px) {
+            .nav-links { display: none; }
+            .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
+            .footer-brand { grid-column: span 2; }
+        }
+        @media (max-width: 620px) {
+            .contact-methods { grid-template-columns: 1fr; }
+            .footer-top { grid-template-columns: 1fr; }
+            .footer-brand { grid-column: span 1; }
+        }
+    </style>
+    <style>
+        .nav-links [aria-current="page"] { color: var(--ink); }
+        .page-head { animation: about-enter .5s ease both; }
+        .intro-card { margin: 0 0 2.5rem; }
+        @keyframes about-enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+        @media (prefers-reduced-motion: reduce) { .page-head { animation: none; } .nav-links a, .contact-card { transition: none; } }
+    </style>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "AboutPage",
+      "@id": "https://batclient.xyz/about.html#page",
+      "url": "https://batclient.xyz/about.html",
+      "name": "About Bat Client by Raven",
+      "isPartOf": {"@id": "https://batclient.xyz/#website"},
+      "about": {"@id": "https://batclient.xyz/#launcher"},
+      "publisher": {"@id": "https://batclient.xyz/#organization"},
+      "description": "Bat Client by Raven, the Minecraft Java launcher at batclient.xyz, is separate from the unrelated BatMod project at batmod.com. Bat Client's companion Fabric mod is part of Bat Client."
+    }
+    </script>
+</head>
+<body>
+    <nav class="nav">
+        <a href="index.html" class="nav-brand">
+            <img src="bat-logo.png" alt="Bat Client Logo">
+            <b>Bat Client</b>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html#features">Features</a></li>
+            <li><a href="index.html#compare">Compare</a></li>
+            <li><a href="index.html#faq">FAQ</a></li>
+            <li><a href="changelog.html">Changelog</a></li>
+            <li><a href="about.html" aria-current="page">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <a href="download.html" class="nav-cta">Download</a>
+    </nav>
+    <main class="content">
+        <div class="page-head">
+            <h1>About Bat Client</h1>
+            <p class="sub">An independent Minecraft project by Raven. Here's what we build and where to find us.</p>
+        </div>
+        <div class="section">
+            <div class="intro-card">
+                <p><strong>Bat Client by Raven</strong> is our Minecraft Java launcher and companion Fabric mod. Our official website is <a href="https://batclient.xyz/">batclient.xyz</a>.</p>
+            </div>
+            <h2>What is Bat Client?</h2>
+            <p>Bat Client brings game profiles, mod loaders, performance tools and cosmetic features together in a Minecraft: Java Edition launcher. It gives players a place to manage their game and customize how they play.</p>
+            <h2>The launcher and companion mod</h2>
+            <p>The <strong>launcher</strong> manages Minecraft versions, profiles, accounts and game settings. The <strong>companion Fabric mod</strong> adds Bat Client's in-game menus, HUD editor and modules such as Zoom, Nametags and Block Indicator.</p>
+            <p>Both belong to the Bat Client project by Raven. Our companion mod is called the Bat Client mod; it is not the unrelated project named BatMod.</p>
+            <h2>Bat Client is not BatMod</h2>
+            <p><strong>Bat Client at batclient.xyz and BatMod at batmod.com are different projects.</strong> Bat Client is not affiliated with, developed by, or endorsed by BatMod. Similar names do not mean the same software or team.</p>
+            <p>BatMUD is also a separate project and has no connection to Bat Client.</p>
+            <h2>Official website and downloads</h2>
+            <p>Use <a href="index.html">batclient.xyz</a> as the starting point for our downloads and updates. You can find our public releases in <a href="https://github.com/evilgamer123113-lang/bat-client-releases" target="_blank" rel="noopener noreferrer">the Bat Client releases repository</a> and read release notes on the <a href="changelog.html">Changelog</a> page.</p>
+            <h2>Get in touch</h2>
+            <p>For questions, bug reports or feedback about our launcher and mod, visit the <a href="contact.html">Contact page</a> or reach us through the options below.</p>
+            <div class="contact-methods">
+                <div class="contact-card">
+                    <h3>Email</h3>
+                    <p>Support, bug reports and partnerships.</p>
+                    <a href="mailto:batsupport@batclient.xyz">batsupport@batclient.xyz</a>
+                </div>
+                <div class="contact-card">
+                    <h3>Discord</h3>
+                    <p>Community chat and help with Bat Client.</p>
+                    <a href="https://batclient.xyz/discord" target="_blank" rel="noopener noreferrer">batclient.xyz/discord</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <img src="bat-logo.png" alt="Bat Client Logo">
+                    <p>A Minecraft performance client focused on one thing: making the game run better on the hardware you've already got.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Client</h3>
+                    <ul>
+                        <li><a href="index.html#features">Features</a></li>
+                        <li><a href="index.html#compare">Compare</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="index.html#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Community</h3>
+                    <ul>
+                        <li><a href="https://batclient.xyz/discord" target="_blank">Discord</a></li>
+                        <li><a href="https://www.youtube.com/@ravenplayzzdev" target="_blank">YouTube</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="terms.html">Terms</a></li>
+                        <li><a href="privacy.html">Privacy</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="javascript:void(0)" onclick="BatConsent.show()">Ad Consent</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 Bat Client. All rights reserved.</span>
+                <span>Bat Client by Raven — made for players, not dashboards.</span>
+            </div>
+            <p class="footer-disclaimer">Bat Client is not the same as, and is not affiliated with, <a href="https://batmod.com/" target="_blank" rel="noopener noreferrer">Bat Mod (batmod.com)</a> or BatMUD. Three separate projects, three different teams.</p>
+        </div>
+    </footer>
+    <script src="consent-manager.js"></script>
+</body>
+</html>
+

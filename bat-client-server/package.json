@@ -1,0 +1,13 @@
+{
+  "name": "bat-client-skin-server",
+  "version": "1.0.0",
+  "description": "Central skin/cape server for Bat Client multiplayer",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^4.22.2"
+  }
+}

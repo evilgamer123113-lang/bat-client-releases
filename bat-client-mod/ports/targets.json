@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "minecraft": [
+    "1.8",
+    "1.8.9",
+    "1.16.5",
+    "1.17.1",
+    "1.18.2",
+    "1.19.2",
+    "1.19.4",
+    "1.20.1",
+    "1.20.4",
+    "1.20.6",
+    "1.21.1",
+    "1.21.4",
+    "1.21.5",
+    "1.21.8",
+    "1.21.11"
+  ],
+  "loaders": [
+    "fabric",
+    "forge"
+  ],
+  "legacyFabric": [
+    "1.8",
+    "1.8.9"
+  ],
+  "implemented": {
+    "fabric-1.21.1": {
+      "project": ".",
+      "java": 21,
+      "loaderVersion": "0.16.9",
+      "mappings": "1.21.1+build.3",
+      "api": "0.102.1+1.21.1",
+      "runtime": "clean-native-smoke-with-workaround",
+      "knownIssues": [
+        "Renderer-lifetime workaround passes clean native smoke; long-session/repeated-world validation pending.",
+        "Bundled UI natives currently target Windows x64."
+      ],
+      "nativeEvidence": [
+        "build/flight-profile/renderer-lifetime-protected-native.log"
+      ]
+    },
+    "fabric-1.20.6": {
+      "project": "ports/fabric-1.20.6",
+      "verificationTask": "verifyProtectedJar",
+      "java": 21,
+      "loaderVersion": "0.20.1",
+      "mappings": "1.20.6+build.3",
+      "api": "0.100.8+1.20.6",
+      "runtime": "clean-protected-native-smoke",
+      "knownIssues": [
+        "Internal test build; remapped production runtime and long-session feature sweep pending.",
+        "No bundled third-party mesh renderer for this target yet; built-in adaptive fallback remains active.",
+        "UI natives currently Windows x64 only; live cosmetics visuals not certified."
+      ],
+      "nativeEvidence": [
+        "build/flight-profile/fabric-1.20.6-first-native.log",
+        "build/flight-profile/fabric-1.20.6-protected-native.log",
+        "build/flight-profile/fabric-1.20.6-protected-agent-native.log"
+      ]
+    },
+    "forge-1.20.6": {
+      "project": "ports/forge-1.20.6",
+      "verificationTask": "verifyProtectedForgeJar",
+      "java": 21,
+      "loaderVersion": "1.20.6-50.2.14",
+      "mappings": "1.20.6+build.3",
+      "runtime": "clean-production-smoke",
+      "knownIssues": [
+        "Internal build; broad feature sweep and long-session validation pending.",
+        "Forge 50 uses genuine Java 17 mixin bytecode; game still requires Java 21.",
+        "Named Gradle protected smoke has duplicate development mod discovery; actual remapped production smoke passes.",
+        "No bundled third-party mesh renderer; native UI currently Windows x64 only.",
+        "Production cosmetics-agent skin/cape visuals and custom JVM compatibility are not certified."
+      ],
+      "nativeEvidence": [
+        "build/flight-profile/forge-1.20.6-tooltip-event-native.log",
+        "build/flight-profile/forge-1.20.6-production-harness.log",
+        "build/forge-production-1.20.6-20261027/production-smoke.log"
+      ]
+    },
+    "forge-1.21.1": {
+      "project": "ports/forge-1.21.1-full",
+      "verificationTask": "verifyProtectedForgeJar",
+      "java": 21,
+      "loaderVersion": "1.21.1-52.1.20",
+      "mappings": "1.21.1+build.3",
+      "runtime": "clean-production-smoke",
+      "knownIssues": [
+        "Internal test build; broader feature sweep and long-session certification pending.",
+        "No bundled third-party Forge renderer; built-in vanilla adaptive fallback is active.",
+        "UI natives currently target Windows x64.",
+        "Cosmetic premain/custom SerialGC passed protected named runtime; production skin/cape visuals not certified."
+      ],
+      "nativeEvidence": [
+        "build/flight-profile/forge-protected-native.log",
+        "build/flight-profile/forge-protected-agent-native.log",
+        "build/flight-profile/forge-production-smoke-harness.log"
+      ]
+    }
+  }
+}

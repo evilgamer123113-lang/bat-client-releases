@@ -1,0 +1,410 @@
+plugins {
+	id 'fabric-loom' version '1.17.21'
+	id 'maven-publish'
+}
+
+// Each port needs its own game adapters. Never retag this source set for another release.
+if (project.minecraft_version != '1.21.1') {
+	throw new GradleException('This project implements Fabric 1.21.1 only. See ports/targets.json for cross-version port status.')
+}
+
+tasks.register('listPortTargets', Exec) {
+	group = 'verification'
+	commandLine 'node', 'ports/targets.cjs', 'list'
+}
+tasks.register('verifyPortCore', Exec) {
+	group = 'verification'
+	commandLine 'node', 'scripts/verify-port-core.cjs'
+}
+tasks.register('verifyBuiltinPerformance', Exec) {
+	group = 'verification'
+	environment 'GRADLE_USER_HOME', gradle.gradleUserHomeDir.absolutePath
+	commandLine 'node', 'scripts/verify-builtin-performance.cjs'
+}
+def compileCubicSmoke = tasks.register('compileCubicSamplerSmoke', JavaCompile) {
+	dependsOn tasks.named('classes')
+	source file('scripts/CubicSamplerSmoke.java')
+	classpath = sourceSets.main.runtimeClasspath
+	destinationDirectory = layout.buildDirectory.dir('cubic-smoke-classes')
+	options.release = 21
+}
+tasks.register('verifyCubicSampler', JavaExec) {
+	dependsOn compileCubicSmoke
+	classpath = files(compileCubicSmoke.flatMap { it.destinationDirectory }) + sourceSets.main.runtimeClasspath
+	mainClass = 'CubicSamplerSmoke'
+}
+def compileYieldContract = tasks.register('compileYieldContract', JavaCompile) {
+    dependsOn tasks.named('classes')
+    source file('scripts/GameLoopYieldContract.java')
+    classpath = sourceSets.main.runtimeClasspath
+    destinationDirectory = layout.buildDirectory.dir('yield-contract')
+    options.release = 21
+}
+def yieldContract = tasks.register('verifyYieldContract', JavaExec) {
+    dependsOn compileYieldContract
+    classpath = files(compileYieldContract.flatMap { it.destinationDirectory }) + sourceSets.main.runtimeClasspath
+    mainClass = 'GameLoopYieldContract'
+}
+tasks.named('check') { dependsOn yieldContract }
+
+def compileLocalBatchContract = tasks.register('compileLocalBatchContract', JavaCompile) {
+    dependsOn tasks.named('classes')
+    source file('scripts/LocalChunkBatchContract.java')
+    classpath = sourceSets.main.runtimeClasspath
+    destinationDirectory = layout.buildDirectory.dir('local-batch-contract')
+    options.release = 21
+}
+def localBatchContract = tasks.register('verifyLocalBatchContract', JavaExec) {
+    dependsOn compileLocalBatchContract
+    classpath = files(compileLocalBatchContract.flatMap { it.destinationDirectory }) + sourceSets.main.runtimeClasspath
+    mainClass = 'LocalChunkBatchContract'
+}
+tasks.named('check') { dependsOn localBatchContract }
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+repositories {
+	maven {
+		name = 'Modrinth'
+		url = 'https://api.modrinth.com/maven'
+		content { includeGroup 'maven.modrinth' }
+	}
+	mavenCentral()
+	maven {
+		name = 'repsy'
+		url = 'https://repo.repsy.io/nilsen84/maven'
+	}
+}
+
+// Optional renderers must remain removable by users. Keep the legacy opt-in
+// only for isolated renderer experiments; ordinary releases do not nest Sodium.
+def bundledRenderer = project.hasProperty('withBuiltinRenderer') && !project.hasProperty('withoutBuiltinRenderer')
+configurations { builtinRenderer }
+if (bundledRenderer) {
+	dependencies {
+		builtinRenderer('maven.modrinth:sodium:mc1.21-0.5.11') { transitive = false }
+		modImplementation('maven.modrinth:sodium:mc1.21-0.5.11') { transitive = false }
+		include('maven.modrinth:sodium:mc1.21-0.5.11') { transitive = false }
+	}
+}
+tasks.register('verifyBuiltinRenderer') {
+	inputs.files configurations.builtinRenderer
+	inputs.dir 'third-party/sodium'
+	doLast {
+		if (!bundledRenderer) return
+		def artifact=configurations.builtinRenderer.singleFile
+		def expected='a8a4520c2891e6a3c891b0b5c1106c29851a97c8e5a0131fe94cdcdfd755b679ce55dbaeafd14638ef7987b8efcd32619209aba4460762027f1a2ebe121a4046'
+		def digest=java.security.MessageDigest.getInstance('SHA-512').digest(artifact.bytes)
+		if (HexFormat.of().formatHex(digest)!=expected) throw new GradleException('Bundled renderer checksum mismatch')
+		def source=file('third-party/sodium/source-mc1.21-0.5.11.zip')
+		if (HexFormat.of().formatHex(java.security.MessageDigest.getInstance('SHA-256').digest(source.bytes))!='17735c1faaf14b4d1d874a73984de37d6cdf6f463c4133b0553da17606b8007a')
+			throw new GradleException('Renderer corresponding-source checksum mismatch')
+		['COPYING','COPYING.LESSER','NOTICE.txt'].each { name ->
+			if (!file('third-party/sodium/'+name).isFile()) throw new GradleException('Missing renderer notice: '+name)
+		}
+		logger.lifecycle('BUILTIN_RENDERER_VERIFIED: unmodified Sodium 0.5.11; exact source and licenses included')
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+	// Ultralight JNI bindings + win64 natives (windowing/mod logic), nested into the mod jar
+	// so the mod ships self-contained (Fabric's nested-jar classloader exposes the resources
+	// that UltralightLoader reads via Class.getResource).
+	implementation 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT'
+	include 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT'
+	// The JNI binding's Kotlin runtime must also exist in a player's JAR-only install.
+	// Gradle's development classpath used to mask this missing nested dependency.
+	include('org.jetbrains.kotlin:kotlin-stdlib:2.3.10') { transitive=false }
+	runtimeOnly 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:windows-x64'
+	include 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:windows-x64'
+	runtimeOnly 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:linux-x64'
+	include 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:linux-x64'
+	runtimeOnly 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:mac-x64'
+	include 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:mac-x64'
+	runtimeOnly 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:mac-arm64'
+	include 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:mac-arm64'
+}
+
+configurations { obfuscator }
+dependencies { obfuscator 'com.guardsquare:proguard-base:7.6.1' }
+
+// Obfuscate named classes first so Loom can still remap Minecraft references.
+// Development runs retain readable classes; only the distributable mod is obfuscated.
+tasks.register('obfuscateJava', JavaExec) {
+	dependsOn tasks.named('jar')
+	classpath = configurations.obfuscator
+	mainClass = 'proguard.ProGuard'
+	maxHeapSize = '2G'
+	inputs.file tasks.named('jar').flatMap { it.archiveFile }
+	inputs.file 'proguard.pro'
+	inputs.files configurations.compileClasspath
+	outputs.file layout.buildDirectory.file('protected/bat-client-mod.jar')
+	outputs.file layout.buildDirectory.file('private-obfuscation/mapping.txt')
+	doFirst {
+		def inputJar = tasks.named('jar').get().archiveFile.get().asFile
+		def outputJar = layout.buildDirectory.file('protected/bat-client-mod.jar').get().asFile
+		def mapping = layout.buildDirectory.file('private-obfuscation/mapping.txt').get().asFile
+		outputJar.parentFile.mkdirs()
+		mapping.parentFile.mkdirs()
+		def arguments = ['@' + file('proguard.pro').absolutePath,
+			'-injars', inputJar.absolutePath, '-outjars', outputJar.absolutePath,
+			'-printmapping', mapping.absolutePath]
+		if (providers.gradleProperty('visualParitySmoke').isPresent()) {
+			arguments.addAll(['-keep', 'class', 'com.batclient.platform.fabric.VisualParitySmoke', '{', '*;', '}'])
+		}
+		configurations.compileClasspath.files.each { lib ->
+			arguments.addAll(['-libraryjars', lib.absolutePath])
+		}
+		def jmods = new File(System.getProperty('java.home'), 'jmods')
+		['java.base', 'java.desktop', 'java.net.http', 'java.logging', 'java.management', 'jdk.unsupported'].each { module ->
+			arguments.addAll(['-libraryjars', new File(jmods, module + '.jmod').absolutePath + '(!**.jar;!module-info.class)'])
+		}
+		setArgs(arguments)
+	}
+}
+
+tasks.named('remapJar') {
+	dependsOn tasks.named('obfuscateJava')
+	dependsOn tasks.named('verifyBuiltinRenderer')
+	inputFile.set(layout.buildDirectory.file('protected/bat-client-mod.jar'))
+}
+
+tasks.register('verifyProtectedJar') {
+	dependsOn tasks.named('remapJar')
+	doLast {
+		def releaseJar = tasks.named('remapJar').get().archiveFile.get().asFile
+		new java.util.zip.ZipFile(releaseJar).withCloseable { zip ->
+			def names = zip.entries().collect { it.name }
+			if (names.any { it.endsWith('.java') || it.endsWith('.map') || it.endsWith('mapping.txt') })
+				throw new GradleException('Source/debug artifacts found in release JAR')
+			if (names.contains('com/batclient/web/WebAssetManager.class'))
+				throw new GradleException('Unobfuscated implementation found in release JAR')
+			['fabric.mod.json', 'batclient.mixins.json', 'LICENSE_bat-client-mod',
+			 'assets/batclient/textures/gui/loading-brand.png',
+			 'com/batclient/BatClientMod.class', 'com/batclient/mixin/InventoryNametagMixin.class',
+			 'assets/batclient/web/app.js.bin', 'assets/batclient/web/brand.html.bin'].each { name ->
+				if (zip.getEntry(name) == null) throw new GradleException('Missing release entry: ' + name)
+			}
+			if (names.any { it.startsWith('assets/batclient/web/') && !it.endsWith('/') && !it.endsWith('.bin') })
+				throw new GradleException('Unencrypted UI assets found in release JAR')
+			if (zip.getEntry('META-INF/services/com.batclient.platform.PlatformEnvironment') == null)
+				throw new GradleException('Missing platform service provider')
+			if (zip.getEntry('META-INF/services/com.batclient.platform.ClientHooks') == null)
+				throw new GradleException('Missing client hook provider')
+			if (zip.getEntry('META-INF/services/com.batclient.platform.ClientResources') == null)
+				throw new GradleException('Missing client resource provider')
+			def kotlinJar=names.find { it.startsWith('META-INF/jars/kotlin-stdlib-') && it.endsWith('.jar') }
+			if(kotlinJar==null)throw new GradleException('Missing nested Kotlin runtime required by native web bindings')
+			def kotlinBytes=zip.getInputStream(zip.getEntry(kotlinJar)).withCloseable { it.readAllBytes() }
+			def kotlinClasses=[]
+			new java.util.zip.ZipInputStream(new ByteArrayInputStream(kotlinBytes)).withCloseable { nested ->
+				for(def entry=nested.nextEntry;entry!=null;entry=nested.nextEntry)kotlinClasses.add(entry.name)
+			}
+			if(!kotlinClasses.contains('kotlin/jvm/internal/Intrinsics.class'))throw new GradleException('Nested Kotlin runtime is incomplete')
+			def nonces = new HashSet<String>()
+			names.findAll { it.startsWith('assets/batclient/web/') && it.endsWith('.bin') }.each { name ->
+				def bytes = zip.getInputStream(zip.getEntry(name)).withCloseable { it.readAllBytes() }
+				if (bytes.length < 32 || new String(bytes, 0, 4, java.nio.charset.StandardCharsets.US_ASCII) != 'BAT2')
+					throw new GradleException('Invalid encrypted UI envelope: ' + name)
+				def nonce = Base64.encoder.encodeToString(Arrays.copyOfRange(bytes,4,16))
+				if (!nonces.add(nonce)) throw new GradleException('Repeated UI encryption nonce')
+			}
+			def metadata = zip.getInputStream(zip.getEntry('fabric.mod.json')).getText('UTF-8')
+			if (!metadata.contains('LicenseRef-Bat-Client-Proprietary')) throw new GradleException('Incorrect release license')
+			def parsed=new groovy.json.JsonSlurper().parseText(metadata)
+			if (!bundledRenderer && parsed.jars.any { it.file.toLowerCase().contains('sodium') }) {
+				throw new GradleException('Optional Sodium must not be nested in a normal Bat release')
+			}
+			if (bundledRenderer) {
+				if (!parsed.jars.any { it.file.contains('sodium') }) throw new GradleException('Bundled renderer absent from nested mod metadata')
+				def rendererEntry=parsed.jars.find { it.file.contains('sodium') }.file
+				def rendererBytes=zip.getInputStream(zip.getEntry(rendererEntry)).withCloseable { it.readAllBytes() }
+				if (HexFormat.of().formatHex(java.security.MessageDigest.getInstance('SHA-512').digest(rendererBytes))!='a8a4520c2891e6a3c891b0b5c1106c29851a97c8e5a0131fe94cdcdfd755b679ce55dbaeafd14638ef7987b8efcd32619209aba4460762027f1a2ebe121a4046')
+					throw new GradleException('Nested renderer differs from verified original')
+				['COPYING','COPYING.LESSER','NOTICE.txt','source-mc1.21-0.5.11.zip'].each { name ->
+					if (zip.getEntry('META-INF/batclient/third-party/sodium/'+name)==null) throw new GradleException('Missing third-party distribution file: '+name)
+				}
+			}
+		}
+		logger.lifecycle('PROTECTED_RELEASE_JAR_OK: ' + releaseJar.name)
+	}
+}
+tasks.named('build') { dependsOn tasks.named('verifyProtectedJar') }
+tasks.named('check') { dependsOn tasks.named('verifyPortCore') }
+tasks.named('check') { dependsOn tasks.named('verifyBuiltinPerformance') }
+tasks.named('check') { dependsOn tasks.named('verifyCubicSampler') }
+
+def testerFiles = tasks.register('prepareTesterFiles') {
+	dependsOn tasks.named('verifyProtectedJar')
+	doLast {
+		def directory=layout.buildDirectory.dir('tester-notes').get().asFile
+		directory.mkdirs()
+		def release=tasks.named('remapJar').get().archiveFile.get().asFile
+		def digest=java.security.MessageDigest.getInstance('SHA-256')
+		release.withInputStream { input ->
+			byte[] buffer=new byte[65536]
+			int count
+			while ((count=input.read(buffer)) != -1) digest.update(buffer,0,count)
+		}
+		new File(directory,'SHA256SUMS.txt').setText(HexFormat.of().formatHex(digest.digest())+'  mods/'+release.name+'\n','UTF-8')
+		new File(directory,'README.txt').setText('''BAT CLIENT MOD - PROTECTED TEST BUILD
+
+For Minecraft Java 1.21.1, Fabric Loader and Java 21.
+This build bundles Windows x64 UI natives. Use a separate test game profile.
+Install Fabric API for 1.21.1, then copy the JAR from mods/ into your game's mods folder.
+The Sodium renderer is bundled and active automatically; it has no Bat module toggle.
+Its licenses and corresponding public upstream sources are included under
+META-INF/batclient/third-party/sodium/ inside the JAR. Bat Client source is not included.
+Use Right Shift for the Bat Client menu.
+
+Send bug reports with the latest.log and steps to reproduce. Remove private account information first.
+The included checksum identifies this exact JAR.
+
+Original Bat Client material is proprietary; see LICENSE. Do not copy or redistribute it.
+''','UTF-8')
+	}
+}
+tasks.register('testDistribution', Zip) {
+	dependsOn testerFiles
+	archiveFileName = 'Bat-Client-Mod-' + project.version + '-test100.zip'
+	destinationDirectory = layout.buildDirectory.dir('test-distribution')
+	from(tasks.named('remapJar').flatMap { it.archiveFile }) { into 'mods' }
+	from(layout.buildDirectory.dir('tester-notes'))
+	from('LICENSE')
+	doLast {
+		new java.util.zip.ZipFile(archiveFile.get().asFile).withCloseable { zip ->
+			def allowed=['README.txt','SHA256SUMS.txt','LICENSE','mods/','mods/'+tasks.named('remapJar').get().archiveFile.get().asFile.name] as Set
+			if (zip.entries().any { !allowed.contains(it.name) }) throw new GradleException('Unexpected tester ZIP content')
+		}
+		logger.lifecycle('TEST_DISTRIBUTION_OK: ' + archiveFile.get().asFile.absolutePath)
+	}
+}
+
+// Optional runtime check of the obfuscated named JAR in Loom's Minecraft environment.
+if (providers.gradleProperty('protectedClient').isPresent()) {
+	// A running JVM retains ZIP offsets. Never overwrite the JAR it reads when rebuilding.
+	def runtimeJar = layout.buildDirectory.file('protected-runs/' + UUID.randomUUID() + '/bat-client-mod.jar').get().asFile
+	def stageRuntime = tasks.register('stageProtectedClient', Copy) {
+		dependsOn tasks.named('obfuscateJava'),tasks.named('verifyProtectedJar')
+		from layout.buildDirectory.file('protected/bat-client-mod.jar')
+		into runtimeJar.parentFile
+		doLast {
+			// Named game classes are needed in Loom. Bring the exact non-Minecraft
+			// nested libraries from the verified player artifact into this test JAR.
+			// Sodium remains Loom-remapped on the dev classpath.
+			def staged=new File(runtimeJar.parentFile,'with-nested-libraries.tmp')
+			new java.util.zip.ZipFile(runtimeJar).withCloseable { named ->
+				new java.util.zip.ZipFile(tasks.named('remapJar').get().archiveFile.get().asFile).withCloseable { release ->
+					def metadata=new groovy.json.JsonSlurper().parseText(named.getInputStream(named.getEntry('fabric.mod.json')).getText('UTF-8'))
+					def releaseMetadata=new groovy.json.JsonSlurper().parseText(release.getInputStream(release.getEntry('fabric.mod.json')).getText('UTF-8'))
+					metadata.jars=releaseMetadata.jars.findAll { it.file.startsWith('META-INF/jars/ultralight-bindings-')||it.file.startsWith('META-INF/jars/kotlin-stdlib-') }
+					new java.util.zip.ZipOutputStream(new FileOutputStream(staged)).withCloseable { output ->
+						named.entries().each { entry ->
+							if(entry.name!='fabric.mod.json'){
+								output.putNextEntry(new java.util.zip.ZipEntry(entry.name))
+								if(!entry.directory)named.getInputStream(entry).withCloseable { it.transferTo(output) }
+								output.closeEntry()
+							}
+						}
+						output.putNextEntry(new java.util.zip.ZipEntry('fabric.mod.json'))
+						output.write(groovy.json.JsonOutput.toJson(metadata).getBytes('UTF-8'));output.closeEntry()
+						metadata.jars.each { jar ->
+							output.putNextEntry(new java.util.zip.ZipEntry(jar.file))
+							release.getInputStream(release.getEntry(jar.file)).withCloseable { it.transferTo(output) };output.closeEntry()
+						}
+					}
+				}
+			}
+			java.nio.file.Files.move(staged.toPath(),runtimeJar.toPath(),java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+		}
+	}
+	tasks.named('runClient') {
+		dependsOn stageRuntime
+		def protectedJar = runtimeJar
+		def readableOutputs = sourceSets.main.output.files.collect { it.canonicalFile } as Set
+		classpath = files(classpath.files.findAll { !readableOutputs.contains(it.canonicalFile) }, protectedJar)
+		jvmArgs '-Dfabric.classPathGroups=' + protectedJar.absolutePath
+	}
+}
+
+tasks.register('packageWeb', Exec) {
+	inputs.dir 'src/main/resources/assets/batclient/web'
+	inputs.files 'scripts/package-web.cjs', 'package.json', 'package-lock.json'
+	outputs.dir layout.buildDirectory.dir('packaged-web')
+	commandLine 'node', 'scripts/package-web.cjs'
+}
+
+tasks.register('protectWeb', Exec) {
+	dependsOn tasks.named('packageWeb')
+	inputs.dir layout.buildDirectory.dir('packaged-web')
+	inputs.file 'scripts/protect-web.cjs'
+	outputs.dir layout.buildDirectory.dir('protected-web')
+	outputs.dir layout.buildDirectory.dir('generated/protected-ui')
+	commandLine 'node', 'scripts/protect-web.cjs'
+}
+sourceSets.main.java.srcDir layout.buildDirectory.dir('generated/protected-ui')
+if (providers.gradleProperty('visualParitySmoke').isPresent()) {
+	tasks.register('stageVisualParitySmoke', Copy) {
+		from 'scripts/VisualParitySmoke.java'
+		into layout.buildDirectory.dir('visual-parity-src/com/batclient/platform/fabric')
+	}
+	sourceSets.main.java.srcDir layout.buildDirectory.dir('visual-parity-src')
+	tasks.named('compileJava') { dependsOn tasks.named('stageVisualParitySmoke') }
+}
+tasks.named('compileJava') { dependsOn tasks.named('protectWeb'), tasks.named('verifyBuiltinRenderer') }
+
+sourceSets.main.resources { exclude 'assets/batclient/web/**' }
+
+processResources {
+	dependsOn tasks.named('protectWeb')
+	from(layout.buildDirectory.dir('protected-web'))
+	if (bundledRenderer) {
+		from('third-party/sodium') { into 'META-INF/batclient/third-party/sodium' }
+	}
+	doFirst {
+		// Remove only obsolete flat UI outputs from earlier plaintext builds.
+		def target=layout.buildDirectory.dir('resources/main/assets/batclient/web').get().asFile.canonicalFile
+		if (!target.toPath().startsWith(layout.buildDirectory.get().asFile.canonicalFile.toPath()))
+			throw new GradleException('Invalid generated-resource directory')
+		target.listFiles()?.findAll { it.isFile() && !it.name.endsWith('.bin') }?.each {
+			if (!it.delete()) throw new GradleException('Could not remove obsolete plaintext UI output')
+		}
+	}
+	inputs.property 'version', project.version
+	inputs.property 'visualParitySmoke', providers.gradleProperty('visualParitySmoke').isPresent()
+
+	filesMatching('fabric.mod.json') {
+		expand 'version': inputs.properties.version
+		if (providers.gradleProperty('visualParitySmoke').isPresent()) {
+			filter { line -> line.replace('"com.batclient.platform.fabric.BatFabricEntrypoint"', '"com.batclient.platform.fabric.BatFabricEntrypoint", "com.batclient.platform.fabric.VisualParitySmoke"') }
+		}
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 21
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
+}
+
+jar {
+	inputs.property 'archivesName', project.base.archivesName
+
+	from('LICENSE') {
+		rename { "${it}_${inputs.properties.archivesName}" }
+	}
+}

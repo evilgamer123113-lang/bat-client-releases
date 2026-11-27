@@ -1,0 +1,172 @@
+{
+  "name": "bat-client",
+  "version": "2.2.97",
+  "description": "Bat Client â€” Minecraft Performance Launcher",
+  "main": "main.js",
+  "author": "Bat Client",
+  "copyright": "Bat Client",
+  "license": "ISC",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron .",
+    "postdist": "node -e \"const p=require('path'),fs=require('fs');const d=p.join(__dirname,'node_modules','electron','dist','resources');const bak=p.join(d,'app.asar');if(fs.existsSync(bak)&&fs.statSync(bak).size>200000){fs.rmSync(bak)}\"",
+    "build:agent": "node scripts/build-agent.cjs",
+    "predist": "npm run build:agent",
+    "dist": "electron-builder --win --publish never",
+    "dist:mac": "electron-builder --mac zip --x64 --arm64 --publish never",
+    "dist:linux": "electron-builder --linux AppImage --x64 --publish never",
+    "dist:portable": "node scripts/build-portable.js",
+    "release": "node scripts/release.js patch",
+    "release:patch": "node scripts/release.js patch",
+    "release:minor": "node scripts/release.js minor",
+    "release:major": "node scripts/release.js major"
+  },
+  "build": {
+    "appId": "com.batclient.launcher",
+    "productName": "Bat Client",
+    "copyright": "Bat Client",
+    "artifactName": "BatClient-${version}-Setup.${ext}",
+    "directories": {
+      "output": "dist"
+    },
+    "extraResources": [
+      {
+        "from": "bat-client.ico",
+        "to": "icon.ico"
+      },
+      {
+        "from": "bat-client-agent/build/libs/bat-cosmetics.jar",
+        "to": "bundled/bat-cosmetics.jar"
+      }
+    ],
+    "files": [
+      "main.js",
+      "index.html",
+      "extract-worker.js",
+      "launch-worker.js",
+      "launcher-worker.js",
+      "prepare-worker.js",
+      "bg-minecraft.png",
+      "bat-logo.png",
+      "bat-logo-update.png",
+      "widget-bg.png",
+      "flashmc.png",
+      "cube-craft.png",
+      "mineplex.png",
+      "The-Hive.png",
+      "blockMC.png",
+      "steve.png",
+      "3rd-skin-viewer-bg.png",
+      "version.json",
+      "launcher/**/*",
+      "libs/**/*",
+      "config/**",
+      "lang/**/*",
+      "scripts/download-java.js",
+      "auth/**/*",
+      "package.json",
+      "!test/**",
+      "!test_deps.js",
+      "!test_extract.js",
+      "!test_skin_server.js",
+      "!auth-microsoft.js",
+      "!feather font/**",
+      "!icons/**",
+      "!temp_adoptium.json",
+      "!*.log",
+      "!*.md",
+      "!*.class",
+      "!*.jar",
+      "!install_profile.json",
+      "!package-lock.json",
+      "!dist/**",
+      "!build/**",
+      "!logs/**",
+      "!.claude/**",
+      "!.git/**",
+      "!node_modules/.cache/**",
+      "!bat-client-agent/**",
+      "bat-client-server/**/*",
+      "!bat-client-server/node_modules/**",
+      "!bat-client-server/data/**",
+      "!bat-client-server/.env*",
+      "!scripts/release.js",
+      "!gcu.class"
+    ],
+    "asar": true,
+    "afterPack": "./afterPack.js",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "bat-client.ico",
+      "requestedExecutionLevel": "asInvoker",
+      "verifyUpdateCodeSignature": false
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "artifactName": "BatClient-${version}-macOS-${arch}.${ext}",
+      "category": "public.app-category.games",
+      "identity": "-",
+      "hardenedRuntime": false,
+      "icon": "build/icon.png"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "BatClient-${version}-Linux-${arch}.${ext}",
+      "category": "Game",
+      "icon": "build/icon.png",
+      "maintainer": "Bat Client <batsupport@batclient.xyz>"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Bat Client",
+      "deleteAppDataOnUninstall": false,
+      "unicode": true
+    }
+  },
+  "type": "commonjs",
+  "dependencies": {
+    "@xhayper/discord-rpc": "^1.3.4",
+    "adm-zip": "^0.5.18",
+    "axios": "^1.18.1",
+    "cors": "^2.8.6",
+    "express": "^4.22.2",
+    "fs-extra": "^11.3.6",
+    "gifuct-js": "^2.1.2",
+    "graceful-fs": "^4.2.11",
+    "minecraft-launcher-core": "^3.18.2",
+    "msmc": "^5.0.5",
+    "prismarine-auth": "^3.1.1",
+    "unzipper": "^0.12.5"
+  },
+  "devDependencies": {
+    "electron": "^43.1.1",
+    "electron-builder": "^26.15.3",
+    "png-to-ico": "^3.0.2"
+  }
+}

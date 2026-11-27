@@ -1,0 +1,31 @@
+def adapterRoot=file('../..')
+def adapterLoader=project.name.contains('forge')?'forge':'fabric'
+def adapt=tasks.register('adaptMinecraft1214',Exec){
+    inputs.files(fileTree(new File(adapterRoot,'src/main/java')){include '**/*.java'})
+    inputs.files(fileTree('src/main/java'){include '**/*.java'})
+    inputs.file new File(adapterRoot,'scripts/adapt-1.21.4.py')
+    inputs.file new File(adapterRoot,'scripts/adapter_1214.py')
+    inputs.files(fileTree(new File(adapterRoot,'ports/mc1.21.4/src')){include '**/*.java'})
+    inputs.file new File(adapterRoot,'scripts/VisualParitySmoke.java')
+    outputs.dir layout.buildDirectory.dir('version-sources')
+    commandLine 'python',new File(adapterRoot,'scripts/adapt-1.21.4.py').absolutePath,'--loader',adapterLoader,'--project',projectDir.absolutePath
+}
+sourceSets.main.java.setSrcDirs([layout.buildDirectory.dir('version-sources'),layout.buildDirectory.dir('generated/protected-ui')])
+tasks.named('compileJava'){dependsOn adapt;options.compilerArgs.addAll(['-Xmaxerrs','300'])}
+
+tasks.named('processResources') {
+    inputs.property 'shaderLoader1214',true
+    doLast {
+        def config=new File(destinationDir,'batclient.mixins.json')
+        def json=new groovy.json.JsonSlurper().parse(config)
+        ['ShaderReloadMixin','EntityRenderStateMixin','EntityStateCaptureMixin'].each{name->if(!json.client.contains(name))json.client.add(name)}
+        config.setText(new groovy.json.JsonBuilder(json).toPrettyString(),'UTF-8')
+        fileTree(new File(destinationDir,'assets/batclient/shaders/core')).matching{include '*.json'}.files.each{ shader ->
+            def data=new groovy.json.JsonSlurper().parse(shader)
+            ['vertex','fragment'].each{key->
+                if(data[key]!=null){String id=data[key];def split=id.contains(':')?id.split(':',2):['minecraft',id];data[key]=split[0]+':'+(split[1].startsWith('core/')?split[1]:'core/'+split[1])}
+            }
+            shader.setText(new groovy.json.JsonBuilder(data).toPrettyString(),'UTF-8')
+        }
+    }
+}

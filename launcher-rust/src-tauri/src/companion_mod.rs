@@ -16,38 +16,38 @@ pub const SUPPORTED_ENGINES: [&str; 2] = ["fabric", "forge"];
 const PACK_MAGIC: &[u8; 8] = b"BATMODS1";
 const PACK_MASK: [u8; 4] = [0x42, 0x41, 0x54, 0x21];
 const MOD_BUNDLE_BASE_URL: &str =
-    "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/bat-mods-v8";
+    "https://github.com/evilgamer123113-lang/bat-client-releases/releases/download/bat-mods-v10";
 const MOD_BUNDLES: &[(&str, &str, u64)] = &[
-    ("fabric-1.8", "5dacbf022e41b9d9c2a86543566a417620b8a86b2e0a25fc0715ee307a35d14f", 95875557),
+    ("fabric-1.8", "5a17223b4a40eeb0eff5ec6bad85a6523287342f4c16a67a6ff6edbb6bdfa44e", 95875551),
     ("forge-1.8", "9a36502adbd35be3cd3ebe809ca819f8690bbb27152c877fdb7b0da0e12a7135", 97499558),
-    ("fabric-1.8.9", "422e70253208381c8af2fda87b1592c6b6919fb311cbc82970cdb2ba54e15868", 95876378),
-    ("forge-1.8.9", "edef32a5666b85cef0f5fe6d165544154c124791c7e86c2f199cc95e4e14a1f4", 97500105),
-    ("fabric-1.16.5", "ec2350eafc90e2bf3f2bfbca7b07c7dd82bb8adf5c8d1cb5b1b7ddc5c4fc0094", 95929305),
-    ("forge-1.16.5", "c5ea9c33afcf47af0759f05a0ede738fb94c427c79d67ac12868fc186fc69e5b", 191610170),
-    ("fabric-1.17.1", "1949b2c0600f764698700b0d5122eb55602f928b6b68f3dc2ad49c7726c8e173", 95927028),
-    ("forge-1.17.1", "b4e963360052e6c1996d4e2b45f21c093635d8c7d9515cfe5cd96c7d21781761", 191600090),
-    ("fabric-1.18.2", "c7e429dace7656120db3cf11ae4f927fb57997f7fa44b1cc84c6663fc0d8b0ff", 95911880),
-    ("forge-1.18.2", "e43236c34e973299e6376e5412cb91a015043dffb8893d009da9252efaa41807", 95926745),
-    ("fabric-1.19.2", "cd4d4f00e6a542268a85bed091d8fb1733afc2a7541bd02d0aa686d5456ce444", 95913745),
-    ("forge-1.19.2", "bffb21d382b7085e5ff61db64071286b40107ff54ae282ad09806346de3ae3f8", 95929050),
-    ("fabric-1.19.4", "630e0c25e5d384570158f794a6c1ea71d6e8a869987c3b908685981d03df0192", 95913276),
-    ("forge-1.19.4", "4c9ab1c16b68c227a0ee442811afaf143c463628e8db211daaaddb5d9ea91cb0", 95928556),
-    ("fabric-1.20.1", "51591e45df61d7b8e59c6675382733a2f7f7ec844117f8038ae08aad7a63c48f", 95910991),
-    ("forge-1.20.1", "a7526967157afb822ce8af56bf70fdf1dae5359c470b541ef2ff14733d84e65d", 95925072),
-    ("fabric-1.20.4", "c50a855f15e7003fd69a6846eb2f91b3341c6993d64316297dfa1b2e011fb3fa", 95906958),
-    ("forge-1.20.4", "28a6fd83b9c15c64656909f717d507e1d2343186db5cbad3deffcc0610bbe4b2", 95920597),
-    ("fabric-1.20.6", "4ec9323e9687a573a2893bdb880970d25665d6965a67ec4252da5e1237805c6f", 95903084),
-    ("forge-1.20.6", "c561430a80b096e9e1d6fa3e4e05958bac3ae0129a266aea385f6614ae8ca690", 95917193),
+    ("fabric-1.8.9", "ec1ff7782885182e786cd401772e9e6b3a0efaa871158364cf4bf9bdb3e48d1d", 95876380),
+    ("forge-1.8.9", "26c8d9958a532dca7a2aae395ae109943332f368a47e91c9f039d83642d981ef", 97500108),
+    ("fabric-1.16.5", "eedeeaecb0d0c39465e92eedc4ac78006159f986c2a67af126dfef6fbd3e560d", 95929299),
+    ("forge-1.16.5", "905cc86a8e02f338e22a05dd7866ceae66da711bf1f0204bf1ffaf6e815c4cec", 191610167),
+    ("fabric-1.17.1", "18d7ffcdfdae66ac0f157d6b07ade3909584ea428226b08a39c4c6e84f7948c5", 95927115),
+    ("forge-1.17.1", "f1be82cb0efd77b91fd973e7f8929a925c9cd86b1582a174b128b714296f6b88", 191600177),
+    ("fabric-1.18.2", "b02f134fd181977b75fb53a697d4ede6fad75ccb55d5b3b52be74ce5f587541d", 95911965),
+    ("forge-1.18.2", "7c0da1e39e34bce0bb9fa8a762ec807796ad9f9a5a8785ef952b79cec037fbc5", 95926828),
+    ("fabric-1.19.2", "6d7998115c99f2b4696f3505dfa5851ff0bb59ef4cad2edbe23be94a93f6b3df", 95913838),
+    ("forge-1.19.2", "1ac57053e292c4421e3764ecac8564096396f422ec0ca924cf78e1a343bd1c4d", 95929132),
+    ("fabric-1.19.4", "145ee61e06d0f6deeaa848b3bd247778ac6f0dd696680b79e3119d413621c77b", 95913357),
+    ("forge-1.19.4", "682eb2e31b62d22f62615e2410393a79e5c648468eccb994657a97c26c7c2264", 95928641),
+    ("fabric-1.20.1", "1e2b345f797870f29b48842afdc9d7c73c51688f41600898c1b26ecab19da125", 95911074),
+    ("forge-1.20.1", "b1fa097281534365dc79e1a7ddefd260c680e6483cdef5397062a2cdc3f51d03", 95925149),
+    ("fabric-1.20.4", "64d3b8fccd8d48a358104707b1b4171ffa4332cffe9c591ff323be2849f4a827", 95907043),
+    ("forge-1.20.4", "047d378b7269d0c9a60b0ab7da90b8893dd46c8d0e569e2388cb67a464b721a7", 95920678),
+    ("fabric-1.20.6", "5e0c889d685462b9617cf7b4ceaf143b48669f0961a931aaf5593f81c4e8c5b6", 95903158),
+    ("forge-1.20.6", "0c7ccbefee26b07fb4c513264488e80e12ac8c003a14957c3bf0ca5818c1207e", 95917278),
     ("fabric-1.21.1", "29162c62d79a5dcda55ba8b46be601baf03ad6e79697b9c4f482b0e80039cf28", 95890097),
-    ("forge-1.21.1", "efc956dac5f49ff6ff4e3fd8e0d4616fe74436ff35054b25845e27e1ae72739c", 95916803),
-    ("fabric-1.21.4", "c069cce1c219a9fefcaa9e894cd14017c859e069926a902f79d81bc8b9eff2b6", 95908297),
-    ("forge-1.21.4", "30736a1fd7a38ef3104e35963af73a5fd84ec9a977acb08e55af861fc786f8e5", 95923944),
-    ("fabric-1.21.5", "cbc931d95564c708d88337d6c8a0466217ba1381b9785117f32860637d0498d7", 95918249),
+    ("forge-1.21.1", "1c02cb9059c92011135e602ca320231c9aee9dfcf15e82a7793044c3574d9a79", 95916880),
+    ("fabric-1.21.4", "091f93cb9909cf6b8c9da6a0d58e8353b6239eb89a6af463464c54c9bf7247fa", 95908379),
+    ("forge-1.21.4", "7231a2acff173f5ba5a50208446b7c49da8f8fff8d824adab14b8060231ad525", 95924025),
+    ("fabric-1.21.5", "a8b1d8a32002853635d714c3ea958bf670ab57b87a2d3a77593087497499a230", 95918333),
     ("forge-1.21.5", "17234e28437c90bd622dd5e9077c0762bf66267d3a99ec0d42f86178648dc573", 95933536),
-    ("fabric-1.21.8", "dccc83026ab238f08fcec628ee181af69a563f677f26f35d892dc855ad3e259e", 95915243),
+    ("fabric-1.21.8", "27fdea7026596448daf1226ca4fb26203e3888e164b5620cce1fa2bda79a5ba7", 95915319),
     ("forge-1.21.8", "ef86f5c886a8d06afe304589c72562391af4f9aeab00d1c646266f2e0e73c71a", 95930661),
-    ("fabric-1.21.11", "6ff4d5e0c682996209f9b2ae83d77bd149b42e96f9e0d801f9df9e149d4b7efd", 95918402),
-    ("forge-1.21.11", "c1125135cd34486d9b4bc4f0afacac93c2cc7260f7fa6d49a374586ba7b38838", 95933723),
+    ("fabric-1.21.11", "9c2f94a7a46829907f55ea00723311fb58e56d1c1335ef13aad17f4b6fc09919", 95918483),
+    ("forge-1.21.11", "9f5d67dd614e2146da161424e31e26e5ba25f8a282e71cc090079dadf4fbeec0", 95933800),
 ];
 static PACK_DOWNLOAD_LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
 
@@ -393,14 +393,17 @@ pub fn stage_for_launch(
     let staged_path = mods.join(format!("bat-client-{engine}-{version}.jar"));
 
     if let Some(pack) = cached_target_bundle_path(&key) {
-        if let Some((offset, length)) = find_pack_entry(&pack, &key)? {
+        if let Ok(Some((offset, length))) = find_pack_entry(&pack, &key) {
             progress("Preparing Bat Client companion mod…", None);
-            extract_from_pack(&pack, offset, length, &staged_path)?;
-            if !valid_mod_jar(&staged_path, &engine) {
-                let _ = fs::remove_file(&staged_path);
-                return Err("Cached Bat Client mod failed verification".into());
+            if extract_from_pack(&pack, offset, length, &staged_path).is_ok()
+                && valid_mod_jar(&staged_path, &engine)
+            {
+                return Ok(Some(StagedCompanionMod { path: staged_path }));
             }
-            return Ok(Some(StagedCompanionMod { path: staged_path }));
+            let _ = fs::remove_file(&staged_path);
+            let _ = fs::remove_file(&pack);
+        } else {
+            let _ = fs::remove_file(&pack);
         }
     }
 

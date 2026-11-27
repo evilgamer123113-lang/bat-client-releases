@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://ads.halalspark.co.uk">
+    <link rel="dns-prefetch" href="https://ads.halalspark.co.uk">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Downloading Bat Client | Bat Client</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --bg-soft: #0b0b0c;
+            --ink: #f4f4f2;
+            --ink-dim: #9c9c98;
+            --ink-faint: #6b6b68;
+            --line: #1a1a1d;
+            --font-head: 'DM Sans', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg); color: var(--ink);
+            font-family: var(--font-body); line-height: 1.6;
+            min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+            -webkit-font-smoothing: antialiased;
+        }
+        .dl-card {
+            width: 100%; max-width: 500px; background: var(--bg-soft);
+            border: 1px solid var(--line); border-radius: 12px;
+            padding: 2.75rem 2rem 2.25rem; text-align: center;
+        }
+        .dl-brand {
+            font-family: var(--font-head); font-size: 0.78rem; font-weight: 600;
+            color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 1.7rem;
+        }
+        .dl-dots { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1.6rem; }
+        .dl-dot { width: 40px; height: 4px; border-radius: 2px; background: #1c1c1f; transition: background 0.3s ease; }
+        .dl-dot.done { background: #4ade80; }
+        .dl-dot.now { background: var(--ink); }
+        .dl-step-label { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.5rem; }
+        .dl-title { font-family: var(--font-head); font-weight: 700; font-size: clamp(1.6rem, 5vw, 2.1rem); letter-spacing: -0.02em; margin-bottom: 1rem; }
+        .dl-sub { color: var(--ink-dim); font-size: 0.9rem; line-height: 1.7; margin-bottom: 1.7rem; }
+        .dl-sub strong { color: var(--ink); font-weight: 600; }
+        .dl-progress { height: 6px; background: #0f0f11; border-radius: 3px; overflow: hidden; margin-bottom: 1.7rem; }
+        .dl-progress-fill { height: 100%; width: 0%; background: var(--ink); border-radius: 3px; transition: width 0.95s linear; }
+        .dl-btn {
+            display: block; width: 100%; padding: 1rem; background: var(--ink); color: var(--bg);
+            font-family: var(--font-head); font-size: 0.92rem; font-weight: 700; letter-spacing: 0.02em;
+            text-align: center; text-decoration: none; border: none; border-radius: 8px; cursor: pointer;
+            transition: transform 0.15s ease, background 0.15s ease;
+        }
+        .dl-btn.ready:hover { background: #ffffff; transform: translateY(-1px); }
+        .dl-btn.waiting { background: #0f0f11; color: var(--ink-faint); cursor: not-allowed; }
+        .dl-trust {
+            margin-top: 1.4rem; display: flex; align-items: center; justify-content: center; gap: 0.45rem;
+            color: #4ade80; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600;
+        }
+        .dl-trust svg { width: 13px; height: 13px; flex-shrink: 0; }
+        .dl-platform { width:100%; margin:0 0 1.4rem; padding:.8rem; background:var(--bg-soft); color:var(--ink); border:1px solid var(--line); border-radius:8px; font:inherit; }
+        .dl-platform-note {color:var(--ink-dim);font-size:.85rem;margin:1rem 0;line-height:1.6}
+    </style>
+</head>
+<body>
+    <main class="dl-card">
+        <div class="dl-brand">Bat Client &mdash; Free Download</div>
+        <label for="dl-platform">Operating system</label>
+        <select id="dl-platform" class="dl-platform">
+            <option value="windows">Windows · Installer</option>
+            <option value="mac-intel">macOS · Intel</option>
+            <option value="mac-arm">macOS · Apple Silicon</option>
+            <option value="linux">Linux · AppImage (x64)</option>
+        </select>
+        <p class="dl-platform-note" id="dl-platform-note"></p>
+        <div class="dl-dots">
+            <span class="dl-dot" id="dot1"></span>
+            <span class="dl-dot" id="dot2"></span>
+            <span class="dl-dot" id="dot3"></span>
+        </div>
+        <div class="dl-step-label" id="dl-step-label">Step 1 of 3</div>
+        <h1 class="dl-title" id="dl-title">Preparing Installer</h1>
+        <p class="dl-sub">
+            Bat Client is <strong>100% free</strong>. Choose the package for your computer above.
+            Please wait <strong><span id="dl-count">5</span></strong> seconds while we prepare your secure download.
+        </p>
+        <div class="dl-progress"><div class="dl-progress-fill" id="dl-fill"></div></div>
+        <a class="dl-btn waiting" id="dl-btn">Please Wait&hellip;</a>
+        <div class="dl-trust">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 5v6c0 5.25 3.4 10.74 8 12 4.6-1.26 8-6.75 8-12V5l-8-3z"/><path d="M9 12l2 2 4-4"/></svg>
+            SHA-256 checksums available with the release
+        </div>
+    </main>
+
+    <script src="consent-manager.js"></script>
+    <script src="ads-loader.js"></script>
+    <script>
+        window.BatAds && window.BatAds.refresh();
+
+        (function() {
+            // ---- Token gate -------------------------------------------------
+            // Each completed step mints a random one-time token stored in
+            // sessionStorage; the next step only unlocks when its URL token
+            // matches. Jumping straight to ?s=3 (with any guessed/fake/no
+            // token) bounces the visitor back to step 1.
+            function makeToken() {
+                var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+                var out = '';
+                for (var i = 0; i < 24; i++) out += chars.charAt(Math.floor(Math.random() * chars.length));
+                return out;
+            }
+
+            var params = new URLSearchParams(location.search);
+            var defaultPlatform = /Mac/i.test(navigator.platform) ? 'mac-intel' : /Linux/i.test(navigator.platform) ? 'linux' : 'windows';
+            var platformChoice = params.get('p') || defaultPlatform;
+            var platformMap = {'windows':['win32','x64'], 'mac-intel':['darwin','x64'], 'mac-arm':['darwin','arm64'], 'linux':['linux','x64']};
+            if (!platformMap[platformChoice]) platformChoice = defaultPlatform;
+            var platformSelect = document.getElementById('dl-platform');
+            platformSelect.value = platformChoice;
+            platformSelect.addEventListener('change', function(){ location.href='download.html?p='+encodeURIComponent(platformSelect.value); });
+            document.getElementById('dl-platform-note').textContent = platformChoice === 'linux' ? 'Download the AppImage, allow it to run as a program, then open it. Automatic updates work from the AppImage.' : platformChoice.indexOf('mac-') === 0 ? 'Extract the ZIP and move Bat Client.app into Applications. This build is not Apple-notarized. Choose the package matching your Mac’s processor.' : 'Download and run the Windows installer.';
+            var urlToken = params.get('t') || '';
+            var step;
+
+            var t2 = sessionStorage.getItem('bat_dl_t2');
+            var t3 = sessionStorage.getItem('bat_dl_t3');
+
+            if (!urlToken) {
+                step = 1;
+            } else if (t2 && urlToken === t2) {
+                step = 2;
+            } else if (t3 && urlToken === t3) {
+                step = 3;
+            } else {
+                location.replace('download.html?p='+encodeURIComponent(platformChoice));
+                return;
+            }
+
+            // Consumed tokens are wiped so old/back URLs stop working.
+            if (step === 1) {
+                sessionStorage.removeItem('bat_dl_t2');
+                sessionStorage.removeItem('bat_dl_t3');
+            } else if (step === 2) {
+                sessionStorage.removeItem('bat_dl_t3');
+            }
+
+            // ---- UI ---------------------------------------------------------
+            var titles = ['Preparing Installer', 'Verifying Integrity', 'Almost Ready'];
+            document.getElementById('dl-title').textContent = titles[step - 1];
+            document.getElementById('dl-step-label').textContent = 'Step ' + step + ' of 3';
+            for (var i = 1; i <= 3; i++) {
+                var dot = document.getElementById('dot' + i);
+                dot.className = 'dl-dot' + (i < step ? ' done' : i === step ? ' now' : '');
+            }
+
+            var btn = document.getElementById('dl-btn');
+            var fill = document.getElementById('dl-fill');
+            var countEl = document.getElementById('dl-count');
+
+            var realUrl = null;
+            var releaseReady = step !== 3;
+            if (step === 3) {
+                // Serve the Setup.exe pointed to by update.json's "website"
+                // field. Falls back to "download", then the releases page.
+                fetch('update.json').then(function(r) { return r.json(); }).then(function(d) {
+                    var pair = platformMap[platformChoice];
+                    var release = d && d.platforms && d.platforms[pair[0]] && d.platforms[pair[0]][pair[1]];
+                    var w = release && (release.website || release.download) || (platformChoice === 'windows' && d && d.website) || '';
+                    if (w && w.indexOf('https://') === 0) { realUrl = w; return; }
+                    var dl = platformChoice === 'windows' && d && d.download || '';
+                    if (dl && dl.indexOf('https://') === 0) { realUrl = dl; }
+                }).catch(function() {
+                    realUrl = null;
+                }).then(function() {
+                    releaseReady = true;
+                    if (remaining <= 0) unlock();
+                });
+            }
+
+            function unlock() {
+                fill.style.width = '100%';
+                if (step === 3) {
+                    if (!releaseReady) { btn.textContent = 'Looking up download…'; return; }
+                    if (!realUrl) { btn.textContent = 'Download unavailable — please refresh'; return; }
+                    btn.textContent = 'Download Now';
+                    btn.setAttribute('href', realUrl);
+                    btn.setAttribute('rel', 'noopener');
+                } else {
+                    var next = makeToken();
+                    try { sessionStorage.setItem('bat_dl_t' + (step + 1), next); } catch (e) {}
+                    btn.textContent = 'Continue';
+                    btn.setAttribute('href', 'download.html?p='+encodeURIComponent(platformChoice)+'&s=' + (step + 1) + '&t=' + next);
+                }
+                btn.classList.remove('waiting');
+                btn.classList.add('ready');
+            }
+
+            var remaining = 7;
+            countEl.textContent = remaining;
+            fill.style.width = '14%';
+            var timer = setInterval(function() {
+                remaining--;
+                if (remaining > 0) {
+                    countEl.textContent = remaining;
+                    fill.style.width = (14 + (7 - remaining) * 12) + '%';
+                } else {
+                    clearInterval(timer);
+                    unlock();
+                }
+            }, 1000);
+        })();
+    </script>
+</body>
+</html>

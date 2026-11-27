@@ -1,0 +1,42 @@
+def adapterRoot=file('../..')
+def adapterLoader=project.name.contains('forge')?'forge':'fabric'
+def adapterMinecraft=project.name.contains('1.8.9')?'1.8.9':(project.name.contains('1.8')?'1.8':(project.name.contains('1.16.5')?'1.16.5':(project.name.contains('1.17.1')?'1.17.1':(project.name.contains('1.18.2')?'1.18.2':(project.name.contains('1.19.2')?'1.19.2':(project.name.contains('1.19.4')?'1.19.4':'1.20.1'))))))
+def sourceRoots=[new File(adapterRoot,'src/main/java'),file('src/main/java'),new File(adapterRoot,'ports/mc1.20.6/src'),new File(adapterRoot,'ports/mc1.20.4/src'),new File(adapterRoot,'ports/mc1.20.1/src')]
+if(adapterMinecraft in ['1.19.4','1.19.2','1.18.2','1.17.1','1.16.5','1.8.9','1.8'])sourceRoots.add(new File(adapterRoot,'ports/mc1.19.4/src'))
+if(adapterMinecraft in ['1.19.2','1.18.2','1.17.1','1.16.5','1.8.9','1.8']&&new File(adapterRoot,'ports/mc1.19.2/src').isDirectory())sourceRoots.add(new File(adapterRoot,'ports/mc1.19.2/src'))
+if(adapterMinecraft in ['1.18.2','1.17.1','1.16.5','1.8.9','1.8']&&new File(adapterRoot,'ports/mc1.18.2/src').isDirectory())sourceRoots.add(new File(adapterRoot,'ports/mc1.18.2/src'))
+if(adapterMinecraft in ['1.17.1','1.16.5','1.8.9','1.8']&&new File(adapterRoot,'ports/mc1.17.1/src').isDirectory())sourceRoots.add(new File(adapterRoot,'ports/mc1.17.1/src'))
+if(adapterMinecraft in ['1.16.5','1.8.9','1.8']&&new File(adapterRoot,'ports/mc1.16.5/src').isDirectory())sourceRoots.add(new File(adapterRoot,'ports/mc1.16.5/src'))
+if(adapterMinecraft in ['1.8.9','1.8']&&new File(adapterRoot,'ports/mc1.8.9/src').isDirectory())sourceRoots.add(new File(adapterRoot,'ports/mc1.8.9/src'))
+if(adapterMinecraft=='1.8'&&new File(adapterRoot,'ports/mc1.8/src').isDirectory())sourceRoots.add(new File(adapterRoot,'ports/mc1.8/src'))
+if(adapterLoader=='forge')sourceRoots.add(new File(adapterRoot,'ports/forge/src/main/java'))
+def adapt=tasks.register('adaptMinecraft1201',Exec) {
+    sourceRoots.each { inputs.files(fileTree(it) { include '**/*.java' }) }
+    inputs.file new File(adapterRoot,'scripts/adapt-1.20.4.py')
+    inputs.file new File(adapterRoot,'scripts/adapter_1204.py')
+    inputs.file new File(adapterRoot,'scripts/adapter_1201.py')
+    inputs.file new File(adapterRoot,'scripts/adapter_1194.py')
+    inputs.file new File(adapterRoot,'scripts/adapter_1192.py')
+    inputs.file new File(adapterRoot,'scripts/adapter_1182.py')
+    inputs.file new File(adapterRoot,'scripts/adapter_1171.py')
+    inputs.file new File(adapterRoot,'scripts/adapter_1165.py')
+    inputs.file new File(adapterRoot,'scripts/adapter_189.py')
+    inputs.file new File(adapterRoot,'scripts/VisualParitySmoke.java')
+    inputs.files(fileTree(new File(adapterRoot,'scripts/templates-1201')))
+    outputs.dir layout.buildDirectory.dir('version-sources')
+    outputs.file layout.buildDirectory.file('api-adaptation-report.json')
+    inputs.property 'minecraftTarget', adapterMinecraft
+    commandLine 'python',new File(adapterRoot,'scripts/adapt-1.20.4.py').absolutePath,'--minecraft',adapterMinecraft,'--loader',adapterLoader,'--project',projectDir.absolutePath
+}
+sourceSets.main.java.setSrcDirs([layout.buildDirectory.dir('version-sources'),layout.buildDirectory.dir('generated/protected-ui')])
+tasks.named('compileJava') {
+    dependsOn adapt
+    options.compilerArgs.addAll(['-Xmaxerrs','300'])
+}
+
+tasks.named('processResources') {
+    inputs.property 'legacyFogSignature1204',true
+    filesMatching('assets/batclient/shaders/core/tinted_glint.vsh') {
+        filter { line -> line.replace('fog_distance(Position, FogShape)', 'fog_distance(ModelViewMat, Position, FogShape)') }
+    }
+}

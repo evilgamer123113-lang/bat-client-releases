@@ -1,0 +1,84 @@
+plugins { id 'fabric-loom' version '1.17.21' }
+group='com.batclient.internal'
+version='0.1.0-fabric-internal'
+base { archivesName='bat-client-fabric-1.8-INTERNAL-UNVERIFIED' }
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.legacyfabric.net/repository/legacyfabric/' }
+    maven { url 'https://repo.repsy.io/nilsen84/maven' }
+}
+loom {
+    intermediaryUrl = 'https://repo.legacyfabric.net/repository/legacyfabric/net/legacyfabric/intermediary/%1$s/intermediary-%1$s-v2.jar'
+}
+dependencies {
+    minecraft 'com.mojang:minecraft:1.8'
+    mappings 'net.legacyfabric:yarn:1.8+build.604:v2'
+    modImplementation 'net.fabricmc:fabric-loader:0.20.1'
+    implementation 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT'
+    include 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT'
+    runtimeOnly 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:windows-x64'
+    include 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:windows-x64'
+    runtimeOnly 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:linux-x64'
+    include 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:linux-x64'
+    runtimeOnly 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:mac-x64'
+    include 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:mac-x64'
+    runtimeOnly 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:mac-arm64'
+    include 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:mac-arm64'
+    include('org.jetbrains.kotlin:kotlin-stdlib:2.3.10') { transitive=false }
+}
+java { toolchain.languageVersion=JavaLanguageVersion.of(21) }
+tasks.withType(JavaCompile).configureEach { options.release=8 }
+sourceSets.main.java.srcDir '../../src/main/java'
+sourceSets.main.resources.srcDir '../../src/main/resources'
+def smokeEntrypoint = providers.gradleProperty('visualParitySmoke').orNull == 'true' ? 'com.batclient.platform.fabric.VisualParitySmoke' : 'com.batclient.platform.fabric.Fabric189Smoke'
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    inputs.property 'version',project.version
+    inputs.property 'internalNativeFixture',true
+    inputs.property 'smokeEntrypoint',smokeEntrypoint
+    filesMatching('batclient.mixins.json') { filter { line -> line.replace('JAVA_21','JAVA_8') } }
+    filesMatching('batclient.nofapi.mixins.json') { filter { line -> line.replace('JAVA_21','JAVA_8') } }
+    filesMatching('fabric.mod.json') {
+        expand 'version':project.version
+        filter { line ->
+            if (line.contains('"fabric-')) return ''
+            line.replace('"1.21.1"','"1.8"')
+                .replace('">=21",','">=8"')
+                .replace('"batclient.mixins.json"','"batclient.mixins.json", "batclient.nofapi.mixins.json"')
+                .replace('"com.batclient.platform.fabric.BatFabricEntrypoint"','"com.batclient.platform.fabric.BatFabricEntrypoint", "' + smokeEntrypoint + '"')
+        }
+    }
+}
+ext.portMinecraftVersion='1.8'
+ext.portSmokeClass=smokeEntrypoint
+apply from: '../shared-ui.gradle'
+apply from: '../mc1.20.1.gradle'
+def lowerJava8=tasks.register('lowerToJava8') {
+    dependsOn tasks.named('adaptMinecraft1201')
+    def vsDir = layout.buildDirectory.dir('version-sources')
+    def cpFile = layout.buildDirectory.file('vr-cp.txt')
+    def vrClassDir = file('../../scripts/build-vr')
+    def vrJava = file('../../scripts/VarResolver.java')
+    def scriptsDir = file('../../scripts')
+    doLast {
+        def vs = vsDir.get().asFile
+        vrClassDir.mkdirs()
+        def runCmd = { List<?> cmd ->
+            def p = new ProcessBuilder(cmd.collect { it.toString() }).inheritIO().start()
+            if (p.waitFor() != 0) throw new GradleException('Command failed: ' + cmd)
+        }
+        if (!new File(vrClassDir, 'VarResolver.class').isFile()) {
+            runCmd(['javac', '--release', '21', '-d', vrClassDir.absolutePath, vrJava.absolutePath])
+        }
+        def cf = cpFile.get().asFile
+        cf.parentFile.mkdirs()
+        cf.setText(configurations.compileClasspath.asPath, 'UTF-8')
+        runCmd(['java', '-cp', vrClassDir.absolutePath, 'VarResolver', vs.absolutePath, '@' + cf.absolutePath])
+        runCmd(['python', '-c', "import sys, pathlib; sys.path.insert(0, r'${scriptsDir.absolutePath}'); from java8_compat import lower_to_java8\nfor p in pathlib.Path(r'${vs.absolutePath}').rglob('*.java'):\n    if p.name == 'J8.java': continue\n    p.write_text(lower_to_java8(p.read_text(encoding='utf-8')), encoding='utf-8')"])
+    }
+}
+tasks.named('compileJava') { dependsOn lowerJava8 }
+apply from: '../fabric-protection.gradle'
+tasks.register('release') {
+    doLast { throw new GradleException('INTERNAL UNVERIFIED port: actual game adapters/protection/runtime checks must pass before release.') }
+}

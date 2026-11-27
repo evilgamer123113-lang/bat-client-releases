@@ -1,0 +1,14 @@
+# Forge 1.21.11 internal port
+
+Forge 61.2.4 and Yarn 1.21.11 build 6. The 1.21.8 Forge source and the shared 1.21.11 adapter form the initial baseline. Forge-specific API and runtime compatibility are still open. No release artifact.
+
+The first `compileJava` attempt stopped in dependency resolution because Windows could not resolve `maven.minecraftforge.net`. See `D:/BatClientBuildCache/mod-ports-20261108/forge-12111-first-compile.log`. Forge's world render stage still needs its own API migration and a native capture.
+
+DNS resolved on retry. Game patching and access transformation completed, then Loom stopped remapping before javac. Forge's added `getFluid` and vanilla `method_74140` on `net/minecraft/class_1755` both resolve to the same zero-argument `getFluid` with return type `class_3611`. Next inspect the patched methods and use a Forge-specific mapping that keeps them distinct. Full log is `D:/BatClientBuildCache/mod-ports-20261108/forge-12111-r4.log`. No Forge 1.21.11 protected artifact or native result.
+
+## 2026-11-12 adapter update & native visual-parity completion
+- Added 1.21.11 Forge source adaptations in `scripts/adapter_12111.py` for `ForgeFullSmoke.java`, `ForgeWorldStageMixin.java` (capturing `frustum` in `renderMain` and injecting into `WorldRenderer.render`, `pushEntityRenders`, and `renderTargetBlockOutline`), `ForgeWorldFrame.java`, `ForgeClientHooks.java`, `ForgeClientResources.java`, and `ServerListExtrasMixin.java`, alongside the shared 1.21.11 `ChatHudMixin`, `NativeChat`, `NativeNametags`, and `NativeNametagStyleMixin` hooks.
+- Protected build (`r7`) passed in 54 seconds (`PROTECTED_FORGE_ARTIFACT_OK`, `SHA256: 620d95347c9e25541f921b0aae0e1d7559782cfd5aac12d95fff9f8425d9b5f7`, log `D:/BatClientBuildCache/mod-ports-20261108/forge-12111-r7.log`). Both the 50-target Mixin member audit and constructor callback audit passed with 0 issues.
+- Official Forge `1.21.11-61.2.4` installer (`SHA-1: d110e0020d37995f8d7bf92fb6b90b0aa34ec4c2`) verified against Forge Maven and completed in `D:/BatClientBuildCache/mod-native/forge-1.21.11-20261112-a1` (patched client `SHA-1: f2a31288eeb181a9004f90c8921fe76196e72bf1`, log `forge-12111-installer-a1.log`).
+- Native `a1` passed with exit 0 and `BAT_VISUAL_PARITY_CAPTURE_OK` (`D:/BatClientBuildCache/mod-ports-20261108/forge-12111-native-a1.log`) using the cosmetic agent (`SHA256: f74e95164713ff25a65e238b8e21f6add9c239cb5d74bfdf8b75f89fa86e48e8`), SerialGC, and the launcher-parent fixture. All 69 screenshots were captured in `D:/BatClientBuildCache/mod-native/forge-1.21.11-20261112-a1/visual-parity`.
+- Visually reviewed `main-menu.png`, `game-overlay.png`, `mod-manager.png`, `pause-menu.png`, `hud-editor.png`, and `world-hud.png`. Smooth rounded HUD backgrounds and single-pass pause blur verified; overlay card text remains dimmer than 1.21.1. Dedicated module behavior, packaged-launcher, and performance checks remain open.

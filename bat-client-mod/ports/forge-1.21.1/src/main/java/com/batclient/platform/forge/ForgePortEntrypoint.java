@@ -1,0 +1,21 @@
+package com.batclient.platform.forge;
+
+import com.batclient.BatClientMod;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+
+/** Internal full-source integration. No public compatibility claim. */
+@Mod("batclient")
+public final class ForgePortEntrypoint {
+    public ForgePortEntrypoint(){
+        var bus=FMLJavaModLoadingContext.get().getModEventBus();
+        ForgeClientResources.bootstrap(bus);
+        BatClientMod.initializeResources();
+        bus.addListener((FMLClientSetupEvent event)->event.enqueueWork(()->{
+            new BatClientMod().onInitializeClient();
+            if(Boolean.getBoolean("batclient.visualParity")){new VisualParitySmoke().onInitializeClient();return;}
+            if(Boolean.getBoolean("batclient.internalSmoke"))ForgeFullSmoke.install();
+        }));
+    }
+}

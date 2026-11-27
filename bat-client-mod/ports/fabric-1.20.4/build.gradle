@@ -1,0 +1,67 @@
+plugins { id 'fabric-loom' version '1.17.21' }
+group='com.batclient.internal'
+version='0.1.0-fabric-internal'
+base { archivesName='bat-client-fabric-1.20.4-INTERNAL-UNVERIFIED' }
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.repsy.io/nilsen84/maven' }
+}
+dependencies {
+    minecraft 'com.mojang:minecraft:1.20.4'
+    mappings 'net.fabricmc:yarn:1.20.4+build.3:v2'
+    modImplementation 'net.fabricmc:fabric-loader:0.20.1'
+    modImplementation 'net.fabricmc.fabric-api:fabric-api:0.97.3+1.20.4'
+    implementation 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT'
+    include 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT'
+    runtimeOnly 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:windows-x64'
+    include 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:windows-x64'
+    runtimeOnly 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:linux-x64'
+    include 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:linux-x64'
+    runtimeOnly 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:mac-x64'
+    include 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:mac-x64'
+    runtimeOnly 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:mac-arm64'
+    include 'io.github.nilsen84:ultralight-bindings:1.0.0-SNAPSHOT:mac-arm64'
+    include('org.jetbrains.kotlin:kotlin-stdlib:2.3.10') { transitive=false }
+}
+java { toolchain.languageVersion=JavaLanguageVersion.of(21) }
+tasks.withType(JavaCompile).configureEach { options.release=17 }
+sourceSets.main.java.srcDir '../../src/main/java'
+sourceSets.main.resources.srcDir '../../src/main/resources'
+processResources {
+    inputs.property 'version',project.version
+    inputs.property 'internalNativeFixture',true
+    filesMatching('batclient.mixins.json') { filter { line -> line.replace('JAVA_21','JAVA_17') } }
+    filesMatching('fabric.mod.json') {
+        expand 'version':project.version
+        filter { line -> line.replace('"1.21.1"','"1.20.4"').replace('>=21','>=17') }
+        filter { line -> line.replace('"com.batclient.platform.fabric.BatFabricEntrypoint"','"com.batclient.platform.fabric.BatFabricEntrypoint", "com.batclient.platform.fabric.Fabric1204Smoke"') }
+    }
+}
+apply from: '../shared-ui.gradle'
+apply from: '../mc1.20.4.gradle'
+ext.portSmokeClass='com.batclient.platform.fabric.Fabric1204Smoke'
+ext.portMinecraftVersion='1.20.4'
+apply from: '../fabric-protection.gradle'
+def internalRunPath='build/internal-runtime-'+(project.findProperty('internalRunId') ?: 'default')
+loom { runs { client { client(); runDir internalRunPath; vmArg '-Dbatclient.test.noPresence=true'; vmArg '-Dbatclient.internalSmoke=true' } } }
+tasks.named('runClient') {
+    timeout=java.time.Duration.ofMinutes(4)
+    doFirst { java.nio.file.Files.deleteIfExists(file(internalRunPath+'/result.txt').toPath()) }
+    doLast {
+        def result=file(internalRunPath+'/result.txt')
+        if(!result.isFile()||!result.text.startsWith('BAT_FABRIC_1204_INTERNAL_WORLD_OK:'))
+            throw new GradleException('Internal Fabric native world/menu assertions did not pass')
+    }
+}
+if(providers.gradleProperty('compatAgent').isPresent()){
+    tasks.named('runClient') {
+        def agent=file('../../../bat-client-agent/build/libs/bat-cosmetics.jar')
+        if(!agent.isFile())throw new GradleException('Actual cosmetics agent is required for this compatibility test')
+        classpath+=files(agent)
+        jvmArgs '-XX:+UseSerialGC','-Dbatclient.compatAgent=true',
+            '-javaagent:'+agent.absolutePath+'=1.20.4,named,http://127.0.0.1:9'
+    }
+}
+tasks.register('release') {
+    doLast { throw new GradleException('INTERNAL UNVERIFIED port: actual game adapters/protection/runtime checks must pass before release.') }
+}

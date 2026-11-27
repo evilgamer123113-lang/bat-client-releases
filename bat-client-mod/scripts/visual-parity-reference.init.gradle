@@ -1,0 +1,35 @@
+allprojects {
+    afterEvaluate {
+        def runPath = 'build/visual-parity-reference-v3'
+        def runRoot = file(runPath)
+        loom.runs.named('client') { runDir runPath }
+        def compileSmoke = tasks.register('compilePlatformSmoke', JavaCompile) {
+            source file('scripts/VisualParitySmoke.java')
+            dependsOn tasks.named("compileJava")
+            classpath = sourceSets.main.output + sourceSets.main.compileClasspath
+            destinationDirectory = layout.buildDirectory.dir('platform-smoke-classes')
+            options.release = 21
+        }
+        def metadata = tasks.register('platformSmokeMetadata') {
+            def directory = layout.buildDirectory.dir('platform-smoke-metadata')
+            outputs.dir directory
+            doLast {
+                def target = directory.get().file('fabric.mod.json').asFile
+                target.parentFile.mkdirs()
+                target.setText('{"schemaVersion":1,"id":"bat_platform_smoke","version":"1.0.0","environment":"client","entrypoints":{"client":["com.batclient.platform.fabric.VisualParitySmoke"]}}','UTF-8')
+            }
+        }
+        def smokeJar = tasks.register('jarPlatformSmoke', Jar) {
+            dependsOn compileSmoke, metadata
+            archiveFileName = 'platform-runtime-smoke.jar'
+            destinationDirectory = new File(runRoot, 'mods')
+            from compileSmoke.flatMap { it.destinationDirectory }
+            from layout.buildDirectory.dir('platform-smoke-metadata')
+        }
+        tasks.named('runClient') {
+            dependsOn smokeJar
+            environment 'ALSOFT_DRIVERS', 'null'
+            jvmArgs '-Dbatclient.visualParity=true','-Dbatclient.test.noPresence=true'
+        }
+    }
+}

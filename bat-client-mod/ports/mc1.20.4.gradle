@@ -1,0 +1,25 @@
+def adapterRoot=file('../..')
+def adapterLoader=project.name.contains('forge')?'forge':'fabric'
+def sourceRoots=[new File(adapterRoot,'src/main/java'),file('src/main/java'),new File(adapterRoot,'ports/mc1.20.6/src'),new File(adapterRoot,'ports/mc1.20.4/src')]
+if(adapterLoader=='forge')sourceRoots.add(new File(adapterRoot,'ports/forge/src/main/java'))
+def adapt=tasks.register('adaptMinecraft1204',Exec) {
+    sourceRoots.each { inputs.files(fileTree(it) { include '**/*.java' }) }
+    inputs.file new File(adapterRoot,'scripts/adapt-1.20.4.py')
+    inputs.file new File(adapterRoot,'scripts/adapter_1204.py')
+    inputs.file new File(adapterRoot,'scripts/VisualParitySmoke.java')
+    outputs.dir layout.buildDirectory.dir('version-sources')
+    outputs.file layout.buildDirectory.file('api-adaptation-report.json')
+    commandLine 'python',new File(adapterRoot,'scripts/adapt-1.20.4.py').absolutePath,'--loader',adapterLoader,'--project',projectDir.absolutePath
+}
+sourceSets.main.java.setSrcDirs([layout.buildDirectory.dir('version-sources'),layout.buildDirectory.dir('generated/protected-ui')])
+tasks.named('compileJava') {
+    dependsOn adapt
+    options.compilerArgs.addAll(['-Xmaxerrs','300'])
+}
+
+tasks.named('processResources') {
+    inputs.property 'legacyFogSignature1204',true
+    filesMatching('assets/batclient/shaders/core/tinted_glint.vsh') {
+        filter { line -> line.replace('fog_distance(Position, FogShape)', 'fog_distance(ModelViewMat, Position, FogShape)') }
+    }
+}

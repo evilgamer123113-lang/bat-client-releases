@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://ads.halalspark.co.uk">
+    <link rel="dns-prefetch" href="https://ads.halalspark.co.uk">
+    <title>Privacy Policy | Bat Client</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --bg-soft: #0b0b0c;
+            --ink: #f4f4f2;
+            --ink-dim: #9c9c98;
+            --ink-faint: #6b6b68;
+            --line: #1a1a1d;
+            --font-head: 'DM Sans', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+            --nav-h: 72px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--ink); font-family: var(--font-body); line-height: 1.7; padding-top: var(--nav-h); -webkit-font-smoothing: antialiased; }
+        a { color: inherit; }
+
+        .nav {
+            position: fixed; top: 0; left: 0; width: 100%; height: var(--nav-h);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 clamp(1.25rem, 4vw, 3rem);
+            background: rgba(10,10,10,0.82); backdrop-filter: blur(14px);
+            z-index: 1000; border-bottom: 1px solid var(--line);
+        }
+        .nav-brand { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; }
+        .nav-brand img { height: 34px; width: auto; display: block; }
+        .nav-brand b { font-family: var(--font-head); font-weight: 700; font-size: 1.2rem; letter-spacing: 0.3px; }
+        .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+        .nav-links a { color: var(--ink-dim); text-decoration: none; font-size: 0.92rem; font-weight: 500; transition: color 0.2s ease; }
+        .nav-links a:hover { color: var(--ink); }
+        .nav-cta { color: var(--bg) !important; background: var(--ink); border-radius: 6px; padding: 0.5rem 1.1rem; font-weight: 700 !important; }
+        .nav-cta:hover { color: var(--bg) !important; background: #ffffff; }
+
+        .content { max-width: 900px; margin: 0 auto; padding: 4.5rem clamp(1.25rem, 4vw, 3rem) 5rem; }
+        .page-head { margin-bottom: 3rem; }
+        .page-head h1 { font-family: var(--font-head); font-size: clamp(2.2rem, 5vw, 3.2rem); letter-spacing: -0.02em; line-height: 1.05; margin-bottom: 0.6rem; }
+        .page-head .meta { color: var(--ink-faint); font-size: 0.85rem; }
+        .section h2 { font-family: var(--font-head); font-size: 1.35rem; font-weight: 700; color: var(--ink); margin: 3rem 0 1rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+        .section h2:first-of-type { border-top: none; padding-top: 0; }
+        .section p, .section li, .section .txt { color: var(--ink-dim); margin-bottom: 1rem; font-size: 0.97rem; line-height: 1.75; }
+        .section ul { padding-left: 1.4rem; margin-bottom: 1rem; }
+        .section li { margin-bottom: 0.5rem; }
+        .section strong { color: var(--ink); font-weight: 600; }
+        .section a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+
+        footer { border-top: 1px solid var(--line); background: var(--bg); }
+        .footer-inner { max-width: 1280px; margin: 0 auto; padding: 3.5rem clamp(1.25rem,4vw,3rem) 2rem; }
+        .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; padding-bottom: 3rem; }
+        .footer-brand img { height: 30px; width: auto; margin-bottom: 1rem; }
+        .footer-brand p { color: var(--ink-dim); font-size: 0.88rem; max-width: 22rem; }
+        .footer-col h3 { font-family: var(--font-head); font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 1rem; }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+        .footer-col a { color: var(--ink-dim); text-decoration: none; font-size: 0.92rem; transition: color 0.2s; }
+        .footer-col a:hover { color: var(--ink); }
+        .footer-bottom { border-top: 1px solid var(--line); padding-top: 1.6rem; color: var(--ink-faint); font-size: 0.82rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+        .footer-disclaimer { margin-top: 1.4rem; padding-top: 1.2rem; border-top: 1px solid var(--line); color: var(--ink-faint); font-size: 0.75rem; line-height: 1.6; max-width: 60rem; }
+        .footer-disclaimer a { color: var(--ink-dim); text-decoration: underline; text-underline-offset: 3px; }
+
+        /* ---------- intro card ---------- */
+        .intro-card {
+            background: var(--bg-soft); border: 1px solid var(--line); border-radius: 10px;
+            padding: 1.8rem 2rem; margin: 6.5rem 0 3rem;
+        }
+        .intro-card p { margin-bottom: 0; }
+
+        /* ---------- table of contents ---------- */
+        .toc { border: 1px solid var(--line); border-radius: 10px; padding: 1.4rem 1.6rem; margin: 0 0 2.5rem; background: transparent; }
+        .toc .toc-title { font-family: var(--font-head); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.9rem; }
+        .toc ol { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem 1.5rem; }
+        .toc a { color: var(--ink-dim); text-decoration: none; font-size: 0.9rem; border-bottom: 1px solid transparent; transition: border-color 0.2s, color 0.2s; }
+        .toc a:hover { color: var(--ink); border-color: var(--line); }
+        @media (max-width: 620px) { .toc ol { grid-template-columns: 1fr; } }
+        .updated { color: var(--ink-faint); font-size: 0.85rem; }
+
+        @media (max-width: 900px) {
+            .nav-links { display: none; }
+            .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
+            .footer-brand { grid-column: span 2; }
+        }
+        @media (max-width: 620px) {
+            .footer-top { grid-template-columns: 1fr; }
+            .footer-brand { grid-column: span 1; }
+        }
+    </style>
+
+    <meta name="description" content="Bat Client collects no personal data. Read how the client, this website and HalalSpark ads handle your privacy — in plain terms.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://batclient.xyz/privacy.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Bat Client">
+    <meta property="og:title" content="Privacy Policy | Bat Client">
+    <meta property="og:description" content="Bat Client is built around not collecting your data. Everything stays on your machine, in plain terms.">
+    <meta property="og:url" content="https://batclient.xyz/privacy.html">
+    <meta property="og:image" content="https://batclient.xyz/bat-logo.png">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Privacy Policy | Bat Client">
+    <meta name="twitter:description" content="No personal data collected. Your settings and crash logs stay on your machine.">
+    <meta name="twitter:image" content="https://batclient.xyz/bat-logo.png">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Privacy Policy | Bat Client",
+      "url": "https://batclient.xyz/privacy.html",
+      "isPartOf": {"@type": "WebSite", "name": "Bat Client", "url": "https://batclient.xyz/"}
+    }
+    </script>
+</head>
+<body>
+    <nav class="nav">
+        <a href="index.html" class="nav-brand">
+            <img src="bat-logo.png" alt="Bat Client Logo">
+            <b>Bat Client</b>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html#features">Features</a></li>
+            <li><a href="index.html#compare">Compare</a></li>
+            <li><a href="index.html#faq">FAQ</a></li>
+            <li><a href="changelog.html">Changelog</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <a href="download.html" class="nav-cta">Download</a>
+    </nav>
+
+    <div class="content">
+        <div class="page-head">
+            <h1>Privacy Policy</h1>
+            <div class="meta">Last updated: September 2026</div>
+        </div>
+
+        <div class="section">
+            <div class="intro-card">
+                <p>The short version: Bat Client is built around not collecting your data. This page spells out exactly what happens on your machine and on this website, in plain terms.</p>
+            </div>
+
+            <div class="toc">
+                <div class="toc-title">On this page</div>
+                <ol>
+                    <li><a href="#collect">What we don't collect</a></li>
+                    <li><a href="#local">Your settings stay local</a></li>
+                    <li><a href="#logs">Crash logs are local</a></li>
+                    <li><a href="#website">This website</a></li>
+                    <li><a href="#ads">Ads and consent</a></li>
+                    <li><a href="#account">Accounts &amp; sign-in</a></li>
+                    <li><a href="#third-party">Links to other sites</a></li>
+                    <li><a href="#kids">Kids' privacy</a></li>
+                    <li><a href="#rights">Your rights</a></li>
+                    <li><a href="#retention">Data retention</a></li>
+                    <li><a href="#changes">Changes to this policy</a></li>
+                    <li><a href="#questions">Questions</a></li>
+                </ol>
+            </div>
+
+            <h2 id="collect">1. What we don't collect</h2>
+            <p>Bat Client runs without logging, tracking, or sending out your personal data. To be clear:</p>
+            <ul>
+                <li><strong>No personal records.</strong> We don't store your name, email, address, or IP tied to your identity.</li>
+                <li><strong>No account credentials.</strong> The client never sees your Minecraft, Microsoft, or other passwords. Authentication happens through the official Mojang/Microsoft sign-in pages, directly.</li>
+                <li><strong>No behavioral tracking.</strong> We don't run spyware or background analytics to watch what else runs on your machine.</li>
+            </ul>
+
+            <h2 id="local">2. Your settings stay on your machine</h2>
+            <p>Everything you configure in Bat Client — cosmetic tweaks, HUD layout, keybinds, performance settings — is saved to files on your own machine. It never uploads anywhere.</p>
+
+            <h2 id="logs">3. Crash logs are local</h2>
+            <p>If Bat Client crashes, it writes a log file on your computer with technical details like your OS, GPU, memory, and the Java stack at the moment of failure. This log never gets sent to us automatically. You only share it if you choose to attach it to a support message.</p>
+
+            <h2 id="website">4. This website</h2>
+            <p>When you visit batclient.xyz or the launcher checks for updates, the server logs routine stuff — roughly where you are, how many downloads, browser type, and which page sent you. This is standard hosting noise used to keep things running and plan capacity. It isn't used to identify you.</p>
+
+            <h2 id="ads">5. Ads and consent</h2>
+            <p>Banner ads on this site come from <strong>HalalSpark</strong>, a halal-certified network where every campaign is reviewed by a human before it runs — no gambling, adult content, or shady stuff. Ads keep Bat Client free.</p>
+            <div class="txt">To follow GDPR and the ePrivacy rules, we ask for your consent before setting any non-essential cookies.</div>
+            <ul>
+                <li><strong>Accept &amp; Continue</strong> — allows advertising cookies, unlocks the site, and loads halal-certified ads.</li>
+                <li><strong>No thanks — take me away</strong> — declines cookies and leaves the site. No non-essential cookies or ad scripts are set.</li>
+            </ul>
+            <div class="txt">Nothing ad-related runs until you hit "Accept &amp; Continue". After that, HalalSpark serves its ads and may set cookies to count impressions and cap how often you see an ad. Their own policy covers that.</div>
+            <div class="txt">You can change your mind any time — click "Ad Consent" in the footer to reset your choice. It's stored on your device and never sent to our servers.</div>
+
+            <h2 id="account">6. Accounts &amp; sign-in</h2>
+            <p>Bat Client lets you add Minecraft accounts to the launcher for convenience. Those credentials are only used to talk to Mojang's or Microsoft's official authentication endpoints at the moment you sign in — we never receive, store, or transmit your password. The access token that lets you play is kept on your own machine and used only by the launcher.</p>
+
+            <h2 id="third-party">7. Links to other sites</h2>
+            <p>The site links out to Discord, YouTube, and GitHub. Those sites have their own tracking, cookies, and rules. We'd suggest checking theirs if you spend much time there.</p>
+
+            <h2 id="kids">8. Kids' privacy</h2>
+            <p>We're mindful that younger players use this. Since Bat Client collects no data at all, we don't knowingly gather or process any personal information from minors either. We comply with COPPA and GDPR.</p>
+
+            <h2 id="rights">9. Your rights</h2>
+            <p>Because we don't hold personal data about you in the first place, most classic data-privacy rights are already satisfied by default — there's nothing of yours stored for us to show, correct, or delete. Regardless, you can always write to us (details under <a href="#questions">Questions</a>) and we'll do our best to help, including: accessing or confirming what we hold, requesting deletion, and asking how your data is handled.</p>
+
+            <h2 id="retention">10. Data retention</h2>
+            <p>Server logs from this website and update checks are kept only as long as nginx/hosting defaults retain them for operational purposes (typically a few weeks), then rotated automatically. They aren't mined, sold, or tied to identities. If you submit a support message or bug report, we keep just enough to resolve your issue and delete it once the thread is closed.</p>
+
+            <h2 id="changes">11. Changes to this policy</h2>
+            <p>If this policy changes, we'll update the "Last updated" date at the top. If you keep using Bat Client after that, you're agreeing to the updated version.</p>
+
+            <h2 id="questions">12. Questions</h2>
+            <p>Got a question about any of this? Email us at <a href="mailto:batsupport@batclient.xyz">batsupport@batclient.xyz</a> or drop by <a href="https://batclient.xyz/discord" target="_blank" rel="noopener noreferrer">our Discord</a>.</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <img src="bat-logo.png" alt="Bat Client Logo">
+                    <p>A Minecraft performance client focused on one thing: making the game run better on the hardware you've already got.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Client</h3>
+                    <ul>
+                        <li><a href="index.html#features">Features</a></li>
+                        <li><a href="index.html#compare">Compare</a></li>
+                        <li><a href="index.html#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Community</h3>
+                    <ul>
+                        <li><a href="https://batclient.xyz/discord" target="_blank">Discord</a></li>
+                        <li><a href="https://www.youtube.com/@ravenplayzzdev" target="_blank">YouTube</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="terms.html">Terms</a></li>
+                        <li><a href="privacy.html">Privacy</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="javascript:void(0)" onclick="BatConsent.show()">Ad Consent</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 Bat Client. All rights reserved.</span>
+                <span>Bat Client by Raven — made for players, not dashboards.</span>
+            </div>
+            <p class="footer-disclaimer">Bat Client is not the same as, and is not affiliated with, <a href="https://batmod.com/" target="_blank" rel="noopener noreferrer">Bat Mod (batmod.com)</a> or BatMUD. Three separate projects, three different teams.</p>
+        </div>
+    </footer>
+
+    <script src="consent-manager.js"></script>
+    <script src="ads-loader.js"></script>
+    <script>
+        window.BatAds && window.BatAds.refresh();
+    </script>
+</body>
+</html>

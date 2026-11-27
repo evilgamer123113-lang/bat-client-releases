@@ -1,0 +1,12 @@
+{
+  "name": "batclient-skin-api",
+  "version": "1.0.0",
+  "description": "Hosted Yggdrasil-compatible skin service for Bat Client cracked/offline players. Runs on batclient.xyz behind nginx.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}

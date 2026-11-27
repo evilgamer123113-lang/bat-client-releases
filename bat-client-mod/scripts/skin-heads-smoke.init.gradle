@@ -1,0 +1,18 @@
+allprojects {
+    afterEvaluate {
+        def compileHeads = tasks.register('compileSkinHeadsSmoke', JavaCompile) {
+            dependsOn tasks.named('classes')
+            source file('scripts/SkinHeadsSmoke.java')
+            classpath = sourceSets.main.runtimeClasspath
+            destinationDirectory = layout.buildDirectory.dir('skin-head-smoke-classes')
+            options.release = 21
+        }
+        tasks.register('skinHeadsSmoke', JavaExec) {
+            dependsOn compileHeads
+            classpath = files(compileHeads.flatMap { it.destinationDirectory }) + sourceSets.main.runtimeClasspath
+            mainClass = 'SkinHeadsSmoke'
+            args file('build/skin-head-smoke-fixtures').absolutePath
+            if(project.hasProperty('skinHeadsLive'))systemProperty 'bat.skin.live','true'
+        }
+    }
+}

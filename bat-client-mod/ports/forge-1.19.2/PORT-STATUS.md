@@ -1,0 +1,25 @@
+# Forge 1.19.2 Port Status
+
+- **Minecraft / Loader / Mappings:** `1.19.2` / Forge `43.5.0` / Yarn `1.19.2+build.28:v2`
+- **Build (`r3`):** `gradlew.bat build --rerun-tasks` (production, after `WebWindow.drawRegion` `RenderSystem` fix)
+  - **Artifact:** `ports/forge-1.19.2/build/libs/bat-client-forge-1.19.2-INTERNAL-UNVERIFIED-0.1.0-forge-internal.jar`
+  - **SHA-256:** `5E2008B6BB140E3AC7FCB851B8F386D5DD0AB1BD7AC71EF730B186C71EAABE46` (`22409911` bytes)
+  - **Checks:** `FORGE_47_MIXIN_BYTECODE_OK`, `PROTECTED_FORGE_ARTIFACT_OK`
+  - **Build log:** `D:/BatClientBuildCache/mod-ports-20261108/forge-1192-r2-build.log`
+- **Audits (`r2`):**
+  - `audit-port-mixins.py`: `ACTUAL_GAME_MIXIN_MEMBER_AUDIT: 47 targets; 0 issues`
+  - `audit-constructor-callbacks.py`: `COMPILED_CONSTRUCTOR_CALLBACK_AUDIT: 0 callbacks; 0 issues`
+- **Native Visual-Parity Smoke (`a1`):**
+  - **Prepare:** `python scripts/prepare-forge-production-smoke.py --minecraft 1.19.2 --forge 43.5.0 --runtime D:\BatClientBuildCache\mod-native\forge-1.19.2-20261113-a1 --cache D:\BatClientBuildCache\gradle-home\caches`
+  - **Install:** `java -jar ...\forge-1.19.2-43.5.0-installer.jar --installClient D:\BatClientBuildCache\mod-native\forge-1.19.2-20261113-a1`
+  - **Run:** `python scripts/run-forge-production-smoke.py --runtime D:\BatClientBuildCache\mod-native\forge-1.19.2-20261113-a1 --version 1.19.2-forge-43.5.0 --mod ports\forge-1.19.2\build\libs\bat-client-forge-1.19.2-INTERNAL-UNVERIFIED-0.1.0-forge-internal.jar --cache D:\BatClientBuildCache\gradle-home\caches --agent ..\bat-client-agent\build\libs\bat-cosmetics.jar --java "D:\BatClientBuildCache\mod-ports-20261108\launcher-parent-fixture\bat-client-next.exe" --visual-parity`
+  - **Result:** Exit `0`, `BAT_VISUAL_PARITY_CAPTURE_OK`, `69` PNGs under `D:/BatClientBuildCache/mod-native/forge-1.19.2-20261113-a1/visual-parity`
+  - **Smoke log:** `D:/BatClientBuildCache/mod-ports-20261108/forge-1192-a1.log`
+  - **6-screen review (`D:/BatClientBuildCache/mod-native/forge-1.19.2-visual/visual-parity`):** `main-menu.png`, `game-overlay.png`, `mod-manager.png`, `pause-menu.png`, `hud-editor.png`, and `world-hud.png` all render cleanly (`BAT_VISUAL_PARITY_CAPTURE_OK`; white `main-menu.png` fixed via `adapter_1192.py` explicit `RenderSystem` state in `WebWindow.drawRegion`).
+- **Forge 43.5.0-specific fixes (`adapter_1192.py` + `adapt-1.20.4.py`):**
+  - `ForgeWorldFrame.java`: `Matrix4f.load(Matrix4f)` and `Matrix3f.load(Matrix3f)`
+  - `ForgeClientHooks.java`: `RenderLevelStageEvent.Stage.AFTER_PARTICLES`
+  - `ForgeClientResources.java`: `RegisterShadersEvent.getResourceManager()`
+  - `NativeNametagStyleMixin.java`: `boolean layer` parameter (matches `1.19.2` `TextRenderer.draw` + `NativeNametags.drawLogo`)
+  - `InventoryNametagMixin.java`: `lambda$renderEntityInInventoryRaw$1` on Forge (`method_29977` on Fabric)
+- **Remaining:** Wider feature/performance certification.

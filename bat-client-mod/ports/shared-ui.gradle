@@ -1,0 +1,27 @@
+// Private UI outputs/key per target: parallel ports cannot invalidate each other's assets.
+def sharedUiRoot=file('../..')
+def packageUi=tasks.register('packageSharedWeb',Exec) {
+    inputs.dir new File(sharedUiRoot,'src/main/resources/assets/batclient/web')
+    inputs.files new File(sharedUiRoot,'scripts/package-web.cjs'),new File(sharedUiRoot,'package-lock.json')
+    outputs.dir layout.buildDirectory.dir('packaged-web')
+    workingDir sharedUiRoot
+    environment 'BATCLIENT_BUILD_DIR',layout.buildDirectory.get().asFile.absolutePath
+    commandLine 'node','scripts/package-web.cjs'
+}
+def protectUi=tasks.register('protectSharedWeb',Exec) {
+    dependsOn packageUi
+    inputs.dir layout.buildDirectory.dir('packaged-web')
+    inputs.file new File(sharedUiRoot,'scripts/protect-web.cjs')
+    outputs.dir layout.buildDirectory.dir('protected-web')
+    outputs.dir layout.buildDirectory.dir('generated/protected-ui')
+    workingDir sharedUiRoot
+    environment 'BATCLIENT_BUILD_DIR',layout.buildDirectory.get().asFile.absolutePath
+    commandLine 'node','scripts/protect-web.cjs'
+}
+sourceSets.main.java.srcDir layout.buildDirectory.dir('generated/protected-ui')
+sourceSets.main.resources { exclude 'assets/batclient/web/**' }
+tasks.named('compileJava') { dependsOn protectUi }
+tasks.named('processResources') {
+    dependsOn protectUi
+    from(layout.buildDirectory.dir('protected-web'))
+}

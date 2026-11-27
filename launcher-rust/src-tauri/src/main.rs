@@ -309,6 +309,7 @@ fn main() {
             wardrobe::wardrobe_slot,
             game_launch::launch_installed_game,
             game_launch::game_status,
+            game_launch::stop_running_game,
             background_prepare::prepare_selected_game,
             game_launch::launch_diagnostics,
             profiles::save_profile,

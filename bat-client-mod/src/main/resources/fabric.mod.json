@@ -1,0 +1,29 @@
+{
+	"schemaVersion": 1,
+	"id": "batclient",
+	"version": "${version}",
+	"name": "Bat Client",
+	"description": "Bat Client companion mod - Ultralight/WebKit powered in-game UI (settings, HUD, cosmetics).",
+	"authors": [
+		"Bat Client"
+	],
+	"license": "LicenseRef-Bat-Client-Proprietary",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"com.batclient.platform.fabric.BatFabricEntrypoint"
+		]
+	},
+	"mixins": [
+		"batclient.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.9",
+		"minecraft": "1.21.1",
+		"java": ">=21",
+		"fabric-key-binding-api-v1": "*",
+		"fabric-rendering-v1": "*",
+		"fabric-lifecycle-events-v1": "*",
+		"fabric-screen-api-v1": "*"
+	}
+}

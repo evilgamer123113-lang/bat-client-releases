@@ -1,0 +1,7 @@
+# fabric 1.18.2 - protected production native smoke PASS (r1 / a1)
+
+- **Protected build (`r1`)**: `gradlew.bat build --rerun-tasks` (production) -> `BUILD SUCCESSFUL`, `PROTECTED_FABRIC_PORT_OK`, `SHA256=CC5CA682071FFFC3EB7F22CD9AA2AB78FDD05AA29FECC0268E571B672F993BD8`, size `22391282`.
+- **Audits**: `audit-port-mixins.py` -> `47 targets; 0 issues`; `audit-constructor-callbacks.py` -> `0 callbacks; 0 issues`.
+- **Visual-parity smoke (`a1`)**: `run-fabric-production-smoke.py --minecraft 1.18.2 --runtime D:/BatClientBuildCache/mod-native/fabric-1.18.2-visual ... --visual-parity` -> 69 PNGs captured cleanly (`main-menu.png` white-screen bug fixed via `adapter_1192.py` explicit `RenderSystem` state in `WebWindow.drawRegion`; process exceeded 240s only during overworld chunk-save at shutdown).
+- **Fixes**: `scripts/adapter_1182.py` (Yarn `1.18.2+build.4` APIs), `scripts/adapter_1192.py` (`WebWindow.drawRegion` explicit `enableTexture`/`setShaderColor`/`disableDepthTest`/`depthMask(false)`/`disableCull`/`activeTexture(GL_TEXTURE0)`), `scripts/run-fabric-production-smoke.py` (pre-1.19 `natives-windows` classifier extraction + Modrinth fat `fabric-api-0.77.0+1.18.2.jar`).
+- **Visual review**: `main-menu.png` (368,802 B), `game-overlay.png`, `mod-manager.png`, `pause-menu.png`, `hud-editor.png`, `world-hud.png` all crisp. See `../../../../BAT-CLIENT-MOD-AGENT.md` and `../VISUAL-PARITY.md`.

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Bat Client</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="hud-theme.css">
+</head>
+<body class="overlay-page">
+    <!-- translucent backdrop: the Minecraft world stays visible behind it -->
+    <div class="overlay-dim"></div>
+
+    <!-- ============ TOP-RIGHT TOOL RAIL (no social / chat buttons) ============ -->
+    <div class="pause-rail">
+        <button class="pause-tool" data-action="settings" data-tip="MC SETTINGS" aria-label="Minecraft settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- ============ HUD EDITOR (only enabled modules displayed, draggable) ============ -->
+    <div class="hud-layer" id="hud-layer"></div>
+
+    <!-- Feather/Lunar-style snap guide lines (visible while dragging) -->
+    <div class="hud-guide hud-guide-v hidden" id="guide-v"></div>
+    <div class="hud-guide hud-guide-h hidden" id="guide-h"></div>
+
+    <!-- Centering + snap toggle (Feather-style; no help text) -->
+    <div class="hud-toolbar hidden" id="hud-toolbar">
+        <div class="hud-tb-btns">
+            <button class="hud-tb-btn" id="hud-center-h" title="Center horizontally" aria-label="Center horizontally">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M5 8h14M5 16h14"/></svg>
+            </button>
+            <button class="hud-tb-btn" id="hud-center-v" title="Center vertically" aria-label="Center vertically">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12h18M8 5v14M16 5v14"/></svg>
+            </button>
+            <button class="hud-tb-btn" id="hud-snap-toggle" title="Toggle snapping" aria-label="Toggle snapping">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h4V4M20 8h-4V4M4 16h4v4M20 16h-4v4"/><path d="M8 12h8"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- ============ IN-GAME CENTER MENU (Feather-style, Bat theme) ============ -->
+    <div class="overlay-center">
+        <img class="overlay-logo" src="bat-logo.png" alt="Bat Client logo">
+        <div class="overlay-brand">Bat Client</div>
+        <button class="overlay-primary" data-action="client-settings">BAT CLIENT SETTINGS</button>
+
+        <!-- quick actions under the main button -->
+        <div class="overlay-dock">
+        <button class="overlay-dock-btn" data-action="settings" title="Game settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+        </button>
+        <button class="overlay-dock-btn" data-action="cosmetics" title="Cosmetics">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#fff" d="M8 18 C12 10 20 8 27 12 C30 18 24 22 24 22 C24 22 18 16 14 18 C10 20 10 24 12 27 C15 31 20 30 23 28 C23 32 22 36 20 40 C18 38 14 38 12 40 C16 46 22 48 28 47 C28 52 27 56 26 60 L20 58 L18 63 L32 63 L44 60 L42 63 L36 58 L30 61 C30 52 30 44 32 40 C34 44 36 47 40 49 C44 50 48 48 50 44 C50 42 48 40 46 40 C46 40 44 40 42 40 C44 36 45 32 45 28 C50 30 57 31 60 27 C62 24 62 20 58 18 C54 16 48 22 48 22 C48 22 42 18 45 12 C52 8 60 10 64 18 C60 22 58 24 56 26 C54 28 52 30 52 34 C52 36 52 38 52 40 C56 40 58 42 58 44 C58 48 54 50 52 50 C46 48 40 42 38 36 C38 38 38 42 38 46 C38 50 36 54 32 56 C28 54 26 50 26 46 C26 42 26 38 26 36 C24 42 18 48 12 50 C10 50 6 48 6 44 C6 42 8 40 12 40 C12 38 12 36 12 34 C12 30 10 28 8 26 C6 24 6 20 8 18 Z"/></svg>
+        </button>
+        <button class="overlay-dock-btn" data-action="mods" title="Mods">
+            <svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+                <rect x="3" y="3" width="8" height="8" rx="2"/>
+                <rect x="13" y="3" width="8" height="8" rx="2"/>
+                <rect x="3" y="13" width="8" height="8" rx="2"/>
+                <rect x="13" y="13" width="8" height="8" rx="2"/>
+            </svg>
+        </button>
+        <button class="overlay-dock-btn" data-action="website" title="Website">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M3 12h18"/>
+                <path d="M12 3c2.5 2.7 4 5.7 4 9s-1.5 6.3-4 9c-2.5-2.7-4-5.7-4-9s1.5-6.3 4-9z"/>
+            </svg>
+        </button>
+        <button class="overlay-dock-btn" data-action="resume" title="Back to game">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
+                <path d="M6 6l12 12M18 6L6 18"/>
+            </svg>
+        </button>
+        </div>
+    </div>
+
+    <!-- ============ MOD MENU (Feather-style, Bat theme, no social/chat) ============ -->
+    <div class="panel-layer mm-layer hidden" id="panel-layer">
+        <div class="mm-win">
+        <div class="mm-head">
+            <div class="mm-title">
+                <img src="bat-logo.png" alt="">
+                <h1 id="headline">MOD MENU</h1>
+                <span class="time-pill" id="mm-clock">&#9790;</span>
+            </div>
+            <div class="mm-tools">
+                <button class="pause-tool" data-action="settings" data-tip="MC SETTINGS" aria-label="Minecraft settings">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="mm-tabs">
+            <button class="nav-item mm-tab active" data-view="mods">
+                <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>
+                MOD MENU
+            </button>
+            <button class="nav-item mm-tab mm-tab-i" data-view="settings" data-tip="SETTINGS" aria-label="Settings">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </button>
+            <button class="nav-item mm-tab mm-tab-i" data-view="cosmetics" data-tip="COSMETICS" aria-label="Cosmetics">
+                <svg viewBox="0 0 64 64" fill="currentColor" stroke="none" aria-hidden="true"><path d="M8 18 C12 10 20 8 27 12 C30 18 24 22 24 22 C24 22 18 16 14 18 C10 20 10 24 12 27 C15 31 20 30 23 28 C23 32 22 36 20 40 C18 38 14 38 12 40 C16 46 22 48 28 47 C28 52 27 56 26 60 L20 58 L18 63 L32 63 L44 60 L42 63 L36 58 L30 61 C30 52 30 44 32 40 C34 44 36 47 40 49 C44 50 48 48 50 44 C50 42 48 40 46 40 C46 40 44 40 42 40 C44 36 45 32 45 28 C50 30 57 31 60 27 C62 24 62 20 58 18 C54 16 48 22 48 22 C48 22 42 18 45 12 C52 8 60 10 64 18 C60 22 58 24 56 26 C54 28 52 30 52 34 C52 36 52 38 52 40 C56 40 58 42 58 44 C58 48 54 50 52 50 C46 48 40 42 38 36 C38 38 38 42 38 46 C38 50 36 54 32 56 C28 54 26 50 26 46 C26 42 26 38 26 36 C24 42 18 48 12 50 C10 50 6 48 6 44 C6 42 8 40 12 40 C12 38 12 36 12 34 C12 30 10 28 8 26 C6 24 6 20 8 18 Z"/></svg>
+            </button>
+            <button class="shots-x mm-x" data-action="back" aria-label="Close mod menu">&#10005;</button>
+        </div>
+
+        <div class="mm-body">
+            <div class="mm-panel">
+            <!-- modules grid -->
+            <section id="view-mods">
+                <div class="mm-sub">
+                    <button class="mm-subtab active" data-cat="all">All</button>
+                    <button class="mm-subtab" data-cat="hud">HUD</button>
+                    <button class="mm-subtab" data-cat="qol">QoL</button>
+                    <button class="mm-subtab" data-cat="perf">Performance</button>
+                    <button class="mm-subtab" data-cat="custom">Customization</button>
+                    <input class="mm-search" id="mm-search" type="text" placeholder="Search" spellcheck="false">
+                    <button class="mm-subicon" id="mm-fav" data-tip="FAVORITES" aria-label="Favorites only">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7.5-4.7-9.5-9A5.4 5.4 0 0 1 12 6.6 5.4 5.4 0 0 1 21.5 12c-2 4.3-9.5 9-9.5 9z"/></svg>
+                    </button>
+                    <button class="mm-subicon" id="mm-gridbtn" data-tip="GRID DENSITY" aria-label="Toggle grid density">
+                        <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>
+                    </button>
+                </div>
+                <div class="mod-grid" id="mod-grid"></div>
+
+                <!-- per-module settings page (gear on a card) -->
+                <div class="mod-settings hidden" id="mod-settings">
+                    <button class="ms-back" id="ms-back" aria-label="Back to modules">&#8249;</button>
+                    <div class="ms-head">
+                        <div class="ms-desc">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#89899a" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+                            <span id="ms-desc"></span>
+                        </div>
+                        <div class="ms-actions">
+                            <button class="ms-move" id="ms-move" data-tip="MOVE ON HUD" aria-label="Move widget on HUD">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"/></svg>
+                            </button>
+                            <button class="ms-pv active" id="ms-pv">Mod Preview</button>
+                        </div>
+                    </div>
+                    <div class="ms-cols">
+                        <div class="ms-sections" id="ms-sections"></div>
+                        <div class="ms-preview-wrap" id="ms-preview-wrap">
+                            <div class="ms-preview" id="ms-preview"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card hidden" id="view-settings">
+                <div class="card-row">
+                    <div class="card-row-text">
+                        <div class="card-row-title">RGB</div>
+                        <div class="card-row-desc">Cycle through rainbow colors (client)</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="rgb"><span></span></label>
+                </div>
+                <div class="card-row">
+                    <div class="card-row-text">
+                        <div class="card-row-title">Discord Presence</div>
+                        <div class="card-row-desc">Show Bat Client on your Discord profile</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="discord"><span></span></label>
+                </div>
+            </section>
+
+            <section class="card hidden" id="view-cosmetics">
+                <div class="card-row">
+                    <div class="card-row-text">
+                        <div class="card-row-title">Animated Cape</div>
+                        <div class="card-row-desc">Wavey animated cape from Bat Cosmetics</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="cape" checked><span></span></label>
+                </div>
+            </section>
+            </div><!-- /mm-panel -->
+        </div>
+        </div><!-- /mm-win -->
+    </div>
+
+    <script src="app.js"></script>
+    <script src="client-tools.js"></script>
+    <script src="waypoints.js"></script>
+</body>
+</html>

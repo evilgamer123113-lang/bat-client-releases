@@ -1,0 +1,22 @@
+Sodium 0.5.11+mc1.21 by CaffeineMC / JellySquid and contributors
+https://github.com/CaffeineMC/sodium
+
+This separately identifiable renderer is bundled unmodified under LGPL-3.0-only.
+Bat Client's proprietary license does not restrict Sodium or its source code.
+COPYING and COPYING.LESSER contain the applicable GNU license texts.
+
+Exact source: tag mc1.21-0.5.11
+Commit: 3030f9b223ea15c9d55905f15f157744f0e10fbc
+https://github.com/CaffeineMC/sodium/tree/3030f9b223ea15c9d55905f15f157744f0e10fbc
+The complete corresponding upstream source/build scripts are supplied here as
+source-mc1.21-0.5.11.zip. They contain no Bat Client proprietary sources.
+
+Original binary: official Modrinth version RncWhTxD
+https://modrinth.com/mod/sodium/version/mc1.21-0.5.11
+SHA-512:
+a8a4520c2891e6a3c891b0b5c1106c29851a97c8e5a0131fe94cdcdfd755b679ce55dbaeafd14638ef7987b8efcd32619209aba4460762027f1a2ebe121a4046
+
+Source archive SHA-256:
+17735c1faaf14b4d1d874a73984de37d6cdf6f463c4133b0553da17606b8007a
+
+Sodium's separately licensed assets retain their upstream notices inside its JAR.
