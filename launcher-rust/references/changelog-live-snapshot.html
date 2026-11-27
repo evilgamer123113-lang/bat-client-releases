@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="index, follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Changelog — Bat Client</title>
+    <meta name="description" content="Every Bat Client release and what changed — from performance fixes to new features. Track the latest updates here.">
+    <link rel="canonical" href="https://batclient.xyz/changelog.html">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Bat Client">
+    <meta property="og:title" content="Changelog — Bat Client">
+    <meta property="og:description" content="Every Bat Client release and what changed — performance fixes, new features, and more.">
+    <meta property="og:url" content="https://batclient.xyz/changelog.html">
+    <meta property="og:image" content="https://batclient.xyz/bat-logo.png">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Changelog — Bat Client">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --bg-soft: #0b0b0c;
+            --ink: #f4f4f2;
+            --ink-dim: #9c9c98;
+            --ink-faint: #6b6b68;
+            --line: #1a1a1d;
+            --font-head: 'DM Sans', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+            --nav-h: 72px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--ink); font-family: var(--font-body); line-height: 1.65; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        a { color: inherit; }
+        .nav {
+            position: fixed; top: 0; left: 0; width: 100%; height: var(--nav-h);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 clamp(1.25rem, 4vw, 3rem);
+            background: rgba(10,10,10,0.82);
+            backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+            z-index: 1000; border-bottom: 1px solid var(--line);
+        }
+        .nav-brand { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; }
+        .nav-brand img { height: 34px; width: auto; display: block; }
+        .nav-brand b { font-family: var(--font-head); font-weight: 700; font-size: 1.2rem; letter-spacing: 0.3px; }
+        .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+        .nav-links a { color: var(--ink-dim); text-decoration: none; font-size: 0.92rem; font-weight: 500; transition: color 0.2s ease; }
+        .nav-links a:hover { color: var(--ink); }
+        .nav-links a.active { color: var(--ink); }
+        .nav-cta {
+            color: var(--bg) !important; background: var(--ink); border-radius: 6px;
+            padding: 0.5rem 1.1rem; font-weight: 700 !important;
+        }
+        .nav-cta:hover { color: var(--bg) !important; background: #ffffff; }
+        .hero {
+            min-height: 40vh;
+            display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+            gap: 1rem;
+            max-width: 1280px; margin: 0 auto; padding: calc(var(--nav-h) + 4rem) clamp(1.25rem,4vw,3rem) 3rem;
+        }
+        .eyebrow {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            font-size: 0.78rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+            color: var(--ink-dim); border: 1px solid var(--line); border-radius: 999px; padding: 0.4rem 0.9rem;
+        }
+        .eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; }
+        .hero h1 { font-family: var(--font-head); font-weight: 700; font-size: clamp(2.4rem, 6vw, 4rem); line-height: 1.02; letter-spacing: -0.02em; }
+        .hero p { font-size: 1.05rem; color: var(--ink-dim); max-width: 38rem; }
+        .changelog { max-width: 1280px; margin: 0 auto; padding: 0 clamp(1.25rem,4vw,3rem) 6rem; }
+        .cl-list { border-top: 1px solid var(--line); }
+        .cl-item {
+            display: grid; grid-template-columns: 180px 1fr; gap: 2rem;
+            padding: 2.4rem 0; border-bottom: 1px solid var(--line);
+        }
+        .cl-ver { font-family: var(--font-head); font-weight: 700; font-size: 1.25rem; padding-top: 0.15rem; }
+        .cl-ver .cl-date { display: block; font-size: 0.74rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); margin-top: 0.4rem; }
+        .cl-ver .cl-tag {
+            display: inline-block; margin-top: 0.7rem; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em;
+            text-transform: uppercase; color: var(--bg); background: #4ade80; border-radius: 999px; padding: 0.25rem 0.6rem;
+        }
+        .cl-body h3 { font-family: var(--font-head); font-size: 1.05rem; font-weight: 700; margin-bottom: 0.7rem; }
+        .cl-body ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+        .cl-body li { color: var(--ink-dim); font-size: 0.94rem; position: relative; padding-left: 1.1rem; }
+        .cl-body li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 5px; height: 5px; border-radius: 50%; background: var(--ink-faint); }
+        .cl-body li strong { color: var(--ink); font-weight: 600; }
+        .cl-body li a { color: var(--ink); text-decoration: underline; }
+        footer { border-top: 1px solid var(--line); background: #0a0a0a; }
+        .footer-inner { max-width: 1280px; margin: 0 auto; padding: 3.5rem clamp(1.25rem,4vw,3rem) 2rem; }
+        .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; padding-bottom: 3rem; }
+        .footer-brand img { height: 30px; width: auto; margin-bottom: 1rem; }
+        .footer-brand p { color: var(--ink-dim); font-size: 0.88rem; max-width: 22rem; }
+        .footer-col h3 { font-family: var(--font-head); font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 1rem; }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+        .footer-col a { color: var(--ink-dim); text-decoration: none; font-size: 0.92rem; transition: color 0.2s; }
+        .footer-col a:hover { color: var(--ink); }
+        .footer-bottom { border-top: 1px solid var(--line); padding-top: 1.6rem; color: var(--ink-faint); font-size: 0.82rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+        .footer-disclaimer { margin-top: 1.4rem; padding-top: 1.2rem; border-top: 1px solid var(--line); color: var(--ink-faint); font-size: 0.75rem; line-height: 1.6; max-width: 60rem; }
+        .footer-disclaimer a { color: var(--ink-dim); text-decoration: underline; text-underline-offset: 3px; }
+        @media (max-width: 900px) {
+            .nav-links { display: none; }
+            .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
+            .footer-brand { grid-column: span 2; }
+            .cl-item { grid-template-columns: 1fr; gap: 0.6rem; }
+        }
+        @media (max-width: 560px) {
+            .footer-top { grid-template-columns: 1fr; }
+            .footer-brand { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav">
+        <a href="index.html" class="nav-brand">
+            <img src="bat-logo.png" alt="Bat Client Logo">
+            <b>Bat Client</b>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html#features">Features</a></li>
+            <li><a href="index.html#gallery">Screenshots</a></li>
+            <li><a href="index.html#compare">Compare</a></li>
+            <li><a href="changelog.html" class="active">Changelog</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <a href="download.html" class="nav-cta">Download</a>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <span class="eyebrow"><span class="dot"></span> Bat Client <b id="version-badge">2.2.97</b></span>
+            <h1>Changelog</h1>
+            <p>Every release and what changed — performance fixes, cracked-skin updates, and new features. The launcher auto-updates, so this page just tells you what you got.</p>
+        </section>
+
+        <section class="changelog">
+            <div class="cl-list">
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.97<span class="cl-date">Oct 29, 2026</span><span class="cl-tag">Latest</span></div>
+                    <div class="cl-body">
+                        <h3>Sodium opt-out and simpler mod removal</h3>
+                        <ul>
+                            <li>Honor Sodium removal and disable choices inside older Bat mod packages, preserving protected contents and an original backup.</li>
+                            <li>Keep removed automatic mods from returning after an in-flight download, and save removal choices atomically.</li>
+                            <li>Remove mods directly without a confirmation dialog, with duplicate-click and file-collision protection.</li>
+                            <li>Keep Sodium add-ons disabled while Sodium is opted out; manual Install and Enable remain available.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.96<span class="cl-date">Oct 29, 2026</span></div>
+                    <div class="cl-body">
+                        <h3>Storage cleanup and mod preferences</h3>
+                        <ul>
+                            <li>Automatically clean unused update extraction folders older than 24 hours while preserving active stages and update reports.</li>
+                            <li>Remember removed or disabled Sodium and other automatic FPS mods across loadouts. Explicit installation can restore them.</li>
+                            <li>Skip obsolete AggressiveOpts on Java 11 and newer without erasing custom JVM settings.</li>
+                            <li>Exclude Technical Utilities from automatic downloads and updates; check suggested updates against the selected Minecraft version and loader.</li>
+                            <li>Pause hidden and background skin/cape previews to avoid unnecessary launcher rendering.</li>
+                        </ul>
+                    </div>
+                </div>
+
+
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.95<span class="cl-date">Oct 25, 2026</span></div>
+                    <div class="cl-body">
+                        <h3>Launch compatibility and skin fixes</h3>
+                        <ul>
+                            <li>Custom garbage collectors now override the default G1 collector without causing conflicting JVM settings.</li>
+                            <li>Known incompatible Kind's Crystal Optimizer 1.6.3 builds are safely disabled on Minecraft 1.21.11, with the original JAR preserved.</li>
+                            <li>Updated skin profile handling for modern Authlib while preserving existing premium and server-provided textures.</li>
+                            <li>Windows, macOS Intel, macOS Apple Silicon and Linux packages checked on native runners, including real legacy and modern Authlib profile tests.</li>
+                        </ul>
+                    </div>
+                </div>
+
+
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.94<span class="cl-date">Oct 22, 2026</span></div>
+                    <div class="cl-body">
+                        <h3>Java detection and launch reliability</h3>
+                        <ul>
+                            <li>Correct Java 17 and Java 21 detection, including matching installed runtimes and verified automatic installation.</li>
+                            <li>Custom JVM arguments remain supported, with quoted paths and clear validation for invalid main-class or classpath entries.</li>
+                            <li>Fixed the cosmetics agent's missing ASM dependency error and added verification of bundled and cached agent files.</li>
+                            <li>Windows, macOS Intel, macOS Apple Silicon and Linux packages tested on native build runners.</li>
+                        </ul>
+                    </div>
+                </div>
+
+
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.93<span class="cl-date">Oct 15, 2026</span></div>
+                    <div class="cl-body">
+                        <h3>Windows, macOS &amp; Linux</h3>
+                        <ul>
+                            <li>Windows installer and portable update, macOS Intel and Apple Silicon ZIPs, and a Linux x64 AppImage.</li>
+                            <li>Java downloads match your operating system and processor, with SHA-256 verification.</li>
+                            <li>Automatic updates select the matching platform package. macOS app and Linux AppImage updates keep a backup of the previous version.</li>
+                            <li>Choose your operating system on the download page. macOS builds are ad-hoc signed and are not Apple-notarized.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.92<span class="cl-date">Sep 30, 2026</span></div>
+                    <div class="cl-body">
+                        <h3>Reworked Microsoft sign-in &amp; secure accounts</h3>
+                        <ul>
+                            <li><strong>Brand-new Microsoft login</strong> — a hand-rolled OAuth 2.0 + PKCE flow replaces the old device-code method. Sign in happens right inside the launcher in a dedicated window; no more copying a code over to a browser tab.</li>
+                            <li><strong>Secure account storage</strong> — your Microsoft tokens are now stored encrypted on disk, and sessions refresh automatically and more safely.</li>
+                            <li>Clearer sign-in errors — closing the login window, accounts that don't own Minecraft, and expired sessions are all explained instead of failing silently.</li>
+                            <li>All the launch &amp; download speed wins from 2.2.90 and 2.2.91 carry over.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.91<span class="cl-date">Sep 27, 2026</span></div>
+                    <div class="cl-body">
+                        <h3>Faster launch &amp; downloads (round 2)</h3>
+                        <ul>
+                            <li><strong>Much faster warm launches</strong> — the launcher no longer re-hashes every already-downloaded asset file on each launch, so starting a cached version is near-instant.</li>
+                            <li>Cached builds skip the network entirely when figuring out which Java to use — zero round-trips for versions you've already played.</li>
+                            <li>FPS boost mods are now remembered per profile, so re-launching a modded version skips the Modrinth checks and starts immediately.</li>
+                            <li>First-time downloads keep the high parallelism from 2.2.90 for the fastest possible install.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.90<span class="cl-date">Sep 27, 2026</span></div>
+                    <div class="cl-body">
+                        <h3>Instant launch &amp; faster downloads</h3>
+                        <ul>
+                            <li><strong>Instant Launch</strong> — the game files for your selected profile (client jar, natives, libraries, assets) are now pre-downloaded in the background as soon as you pick a profile, so pressing Launch starts Minecraft almost immediately instead of sitting on a long first-time download.</li>
+                            <li><strong>Faster downloads</strong> — download parallelism raised to around 16 threads (previously 2) so any remaining download finishes much faster.</li>
+                            <li>The background pre-download smoothly hands off the moment you press Launch, and finishes the job a normal launch would.</li>
+                            <li>Subtle status line under the Launch button shows pre-download progress.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.89<span class="cl-date">Sep 19, 2026</span></div>
+                    <div class="cl-body">
+                        <h3>Partner servers &amp; home widgets polish</h3>
+                        <ul>
+                            <li><strong>Launch into servers instantly</strong> — clicking a partner server on the home page now starts the game connected directly to that server.</li>
+                            <li><strong>Drag-to-slide news carousel</strong> — the home news widget now supports pointer drag with snap on release.</li>
+                            <li>Removed the "View all / View more" buttons from both home widgets.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.88<span class="cl-date">Sep 19, 2026</span></div>
+                    <div class="cl-body">
+                        <h3>Home dashboard redesign</h3>
+                        <ul>
+                            <li><strong>Latest News widget</strong> — horizontal image carousel of Bat Client news and updates, pulled live from our servers.</li>
+                            <li><strong>Partner Server widget</strong> — FlashMC, CubeCraft, Mineplex, The Hive and BlockMC with online status and one-click copy of each server address.</li>
+                            <li>Removed the old Flight Strip, Flight Log and "What's New" panels from the home tab.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.87<span class="cl-date">Sep 14, 2026</span></div>
+                    <div class="cl-body">
+                        <h3>Cracked skins everywhere you play</h3>
+                        <ul>
+                            <li><strong>Skin injector works on every version 1.8 → 1.21.11</strong> — all patch releases, every engine: Fabric, vanilla, Forge 1.13+, NeoForge, and classic Forge 1.8–1.12.2.</li>
+                            <li>Added class mappings for all legacy patch versions that previously had no data.</li>
+                            <li>Classic Forge (srgobf) name resolution fixed so it no longer fails at launch.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.86<span class="cl-date">Sep 14, 2026</span></div>
+                    <div class="cl-body">
+                        <h3>Update toast fix</h3>
+                        <ul>
+                            <li>The update-completed toast now uses a green success style and auto-dismisses after 4 seconds instead of staying on screen.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.85<span class="cl-date">Sep 14, 2026</span></div>
+                    <div class="cl-body">
+                        <h3>Multiplayer cracked-skin injection</h3>
+                        <ul>
+                            <li><strong>Custom skins render on cracked servers</strong> — Bat Client now fetches remote players' skins and injects them into your tab list so you actually see them.</li>
+                            <li>Verified live on multiplayer; skins show for other cracked-mode players.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.84<span class="cl-date">Sep 13, 2026</span></div>
+                    <div class="cl-body">
+                        <h3>Update pipeline verified end-to-end</h3>
+                        <ul>
+                            <li>Full ZIP self-update path validated live: chunked download, SHA-256 check, staged swap and relaunch all working.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.83<span class="cl-date">Sep 13, 2026</span></div>
+                    <div class="cl-body">
+                        <h3>Updater crash fix</h3>
+                        <ul>
+                            <li>Fixed a bug that could stop the ZIP updater before it swapped files, leaving users stuck on an old version. If you're on 2.2.81 or earlier, grab the Setup installer once to hop back onto automatic updates.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.82<span class="cl-date">Sep 12, 2026</span></div>
+                    <div class="cl-body">
+                        <h3>Launch reliability</h3>
+                        <ul>
+                            <li>Fixed a case where the launcher reported "launched" even when the game never started, hiding the real error.</li>
+                            <li>Launcher log now shows the underlying error so failures are diagnosable.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.81<span class="cl-date">Sep 12, 2026</span></div>
+                    <div class="cl-body">
+                        <h3>Version registry sync</h3>
+                        <ul>
+                            <li>In-place ZIP updates now sync the Windows uninstall registry entries so Control Panel shows the real installed version.</li>
+                            <li>Removed duplicate uninstall keys left behind by older updates.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.80<span class="cl-date">Sep 12, 2026</span></div>
+                    <div class="cl-body">
+                        <h3>Auth refresh handling</h3>
+                        <ul>
+                            <li>Fixed an authlib-injector debug flag that could crash launches.</li>
+                            <li>Expired Microsoft sessions now show a clear "sign in again" message instead of failing silently.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.79<span class="cl-date">Sep 10, 2026</span></div>
+                    <div class="cl-body">
+                        <h3>Skin diagnostics</h3>
+                        <ul>
+                            <li>Launches authlib-injector with debug logging so skin/profile requests can be traced when skins don't load.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.78<span class="cl-date">Sep 10, 2026</span></div>
+                    <div class="cl-body">
+                        <h3>Update installation overhaul</h3>
+                        <ul>
+                            <li>Squash bugs in the ZIP updater's file-swap logic — updates now install reliably in place and relaunch correctly.</li>
+                            <li>Signed texture properties now travel with session profiles, fixing skin loading for premium accounts.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.65<span class="cl-date">Sep 6, 2026</span></div>
+                    <div class="cl-body">
+                        <h3>Update freeze fully fixed</h3>
+                        <ul>
+                            <li>SHA-256 verification is now streamed, so big updates no longer freeze the launcher window mid-download.</li>
+                            <li>Builds on the async extraction and single-instance guard from 2.2.64.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.64<span class="cl-date">Sep 6, 2026</span></div>
+                    <div class="cl-body">
+                        <h3>Stability release</h3>
+                        <ul>
+                            <li>Single-instance lock prevents multiple launcher copies from corrupting each other's files.</li>
+                            <li>Zip extraction and update installs are now async — no more frozen window during updates.</li>
+                            <li>Portable builds fixed so packaged updates extract correctly every time.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="cl-item">
+                    <div class="cl-ver">2.2.63<span class="cl-date">Sep 2026</span></div>
+                    <div class="cl-body">
+                        <h3>Launch fixes &amp; hosted skin API</h3>
+                        <ul>
+                            <li>Fixed a startup hang caused by an asynchronous skin-upload race.</li>
+                            <li>Hosted skin server went live — skins and capes stored and served from our own API.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <img src="bat-logo.png" alt="Bat Client Logo">
+                    <p>A Minecraft performance client focused on one thing: making the game run better on the hardware you've already got.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Client</h3>
+                    <ul>
+                        <li><a href="index.html#features">Features</a></li>
+                        <li><a href="index.html#compare">Compare</a></li>
+                        <li><a href="changelog.html">Changelog</a></li>
+                        <li><a href="index.html#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Community</h3>
+                    <ul>
+                        <li><a href="https://batclient.xyz/discord" target="_blank">Discord</a></li>
+                        <li><a href="https://www.youtube.com/@ravenplayzzdev" target="_blank">YouTube</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="terms.html">Terms</a></li>
+                        <li><a href="privacy.html">Privacy</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="javascript:void(0)" onclick="BatConsent.show()">Ad Consent</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 Bat Client. All rights reserved.</span>
+                <span>Bat Client by Raven — made for players, not dashboards.</span>
+            </div>
+            <p class="footer-disclaimer">Bat Client is not the same as, and is not affiliated with, <a href="https://batmod.com/" target="_blank" rel="noopener noreferrer">Bat Mod (batmod.com)</a> or BatMUD. Three separate projects, three different teams.</p>
+        </div>
+    </footer>
+
+    <script src="consent-manager.js"></script>
+</body>
+</html>

@@ -174,6 +174,25 @@ pub fn apply(root: &Path) -> Result<usize, String> {
     if !dir.exists() {
         return Ok(0);
     }
+    // If the user has an enabled Sodium JAR in mods/ (e.g. re-installed or re-enabled),
+    // Sodium is NOT opted out — never disable Sodium Extra / Reese's Sodium Options.
+    for item in fs::read_dir(&dir).map_err(|_| "Cannot inspect renderer opt-out")? {
+        let Ok(item) = item else { continue };
+        let name = item.file_name().to_string_lossy().into_owned();
+        if !name.ends_with(".jar") {
+            continue;
+        }
+        if let Ok(path) = lib::regular_file(&dir, &name) {
+            let has_sodium = fs::File::open(&path)
+                .ok()
+                .and_then(|f| zip::ZipArchive::new(f).ok())
+                .and_then(|mut z| metadata(&mut z).ok().flatten())
+                .is_some_and(|m| m["id"] == "sodium");
+            if has_sodium {
+                return Ok(0);
+            }
+        }
+    }
     let mut changed = 0;
     for item in fs::read_dir(&dir).map_err(|_| "Cannot inspect renderer opt-out")? {
         let item = item.map_err(|_| "Cannot inspect mod file")?;
@@ -331,6 +350,28 @@ mod tests {
             fs::read(game.join("mods/addon.jar.disabled")).unwrap(),
             addon
         );
+    }
+    #[test]
+    fn enabled_sodium_prevents_addon_disable() {
+        let root = tempfile::tempdir().unwrap();
+        let game = root.path().join("game");
+        fs::create_dir_all(game.join("mods")).unwrap();
+        lib::atomic_json(
+            &root.path().join("profiles.config.json"),
+            &json!({"appSettings":{"gameDir":game}}),
+        )
+        .unwrap();
+        lib::atomic_json(
+            &root.path().join("dismissed-mods.json"),
+            &json!(["AANobbMI"]),
+        )
+        .unwrap();
+        fs::write(game.join("mods/sodium.jar"), jar(json!({"id":"sodium"}), vec![])).unwrap();
+        let addon = jar(json!({"id":"sodium-extra"}), vec![]);
+        fs::write(game.join("mods/sodium-extra.jar"), &addon).unwrap();
+        assert_eq!(apply(root.path()).unwrap(), 0);
+        assert!(game.join("mods/sodium-extra.jar").is_file());
+        assert!(!game.join("mods/sodium-extra.jar.disabled").exists());
     }
     #[test]
     fn signed_or_hard_dependency_archives_are_unchanged() {

@@ -356,3 +356,10 @@ html,body,#main,.app-shell,.titlebar,.sidebar,.sidebar-bottom,.page,.quick-card,
 #page-home #play-button:disabled {
   opacity: .72;
 }
+#page-home #play-button.is-killing {
+  background: #b91c1c;
+  color: #ffffff;
+}
+#page-home #play-button.is-killing:hover:not(:disabled) {
+  background: #dc2626;
+}
